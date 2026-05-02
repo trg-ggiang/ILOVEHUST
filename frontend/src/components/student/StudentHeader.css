@@ -1,0 +1,239 @@
+.student-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: 96px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #dfe3e8;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 24px;
+}
+
+.header-menu-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: #0f172a;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.header-menu-btn:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.student-search {
+  flex: 1 1 360px;
+  max-width: 640px;
+  min-width: 180px;
+  height: 62px;
+  border: 1px solid #d9dee5;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  color: #94a3b8;
+  background: #f8fafc;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.student-search:focus-within {
+  border-color: #fca5a5;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+  background: #ffffff;
+}
+
+.student-search input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 20px;
+  color: #111827;
+  background: transparent;
+}
+
+.student-search input::placeholder {
+  color: #9ca3af;
+}
+
+.header-language {
+  display: flex;
+  gap: 8px;
+}
+
+.header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.header-language button {
+  width: 44px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.header-language button:hover {
+  border-color: #fecaca;
+  color: #dc2626;
+}
+
+.header-language button.active {
+  border-color: #e70000;
+  color: #ffffff;
+  background: linear-gradient(145deg, #ef4444, #dc2626);
+  box-shadow: 0 8px 14px rgba(220, 38, 38, 0.22);
+}
+
+.notify-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: #374151;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.notify-btn:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.notify-dot {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #ff1d1d;
+  animation: pingDot 1.8s ease-in-out infinite;
+}
+
+.header-divider {
+  width: 1px;
+  height: 54px;
+  background: #e5e7eb;
+}
+
+.student-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.student-meta {
+  text-align: right;
+}
+
+.student-meta strong {
+  display: block;
+  font-size: 16px;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+.student-meta span {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.1;
+}
+
+.student-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #ff2121, #de0000);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  font-weight: 700;
+  box-shadow: 0 12px 20px rgba(220, 38, 38, 0.25);
+}
+
+@keyframes pingDot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 29, 29, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(255, 29, 29, 0);
+  }
+}
+
+@media (max-width: 1200px) {
+  .student-header {
+    height: 82px;
+    padding: 0 16px;
+  }
+
+  .student-search {
+    height: 52px;
+    border-radius: 16px;
+    max-width: none;
+  }
+
+  .student-search input {
+    font-size: 16px;
+  }
+
+  .student-avatar {
+    width: 46px;
+    height: 46px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .student-header {
+    height: 72px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .student-search {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 44px;
+  }
+
+  .header-right {
+    gap: 8px;
+  }
+
+  .header-divider,
+  .student-meta,
+  .header-language {
+    display: none;
+  }
+
+  .student-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+}

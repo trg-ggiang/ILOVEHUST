@@ -1,11 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
-import ProtectedRoute from "./components/ProtectedRoute";
-import Login from "./pages/Login";
-import CompleteProfile from "./pages/CompleteProfile";
-import Dashboard from "./pages/Dashboard";
-
-import "./index.css";
+﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/admin/Login";
+import Dashboard from "./pages/student/Dashboard";
+import CompleteProfile from "./pages/student/CompleteProfile";
+import GradesPage from "./pages/student/Grades";
+import ForumPage from "./pages/student/Forum";
+import MessagesPage from "./pages/student/Messages";
 
 function App() {
   return (
@@ -13,14 +12,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
-
-        <Route element={<ProtectedRoute />}>
-          <Route path="/complete-profile" element={<CompleteProfile />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Route>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/grades" element={<GradesPage />} />
+        <Route path="/forum" element={<ForumPage />} />
+        <Route path="/messages" element={<MessagesPage />} />
+        <Route path="/complete-profile" element={<CompleteProfile />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
 export default App;
+

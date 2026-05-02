@@ -7,28 +7,38 @@ datasource db {
 }
 
 model User {
-  id               Int            @id @default(autoincrement())
-  email            String         @unique
-  phone            String?        @unique
-  passwordHash     String         @map("password_hash")
-  role             Int            @default(1) // 0 = admin, 1 = student
-  isActive         Boolean        @default(true) @map("is_active")
-  lastLoginAt      DateTime?      @map("last_login_at")
-  createdAt        DateTime       @default(now()) @map("created_at")
-  updatedAt        DateTime       @updatedAt @map("updated_at")
+  id           Int     @id @default(autoincrement())
+  email        String  @unique
+  phone        String? @unique
+  passwordHash String  @map("password_hash")
+  role         Int     @default(1) // 0 = admin, 1 = student
 
-  studentProfile   StudentProfile?
-  gradeRecords     GradeRecord[]
+  preferredLanguage String @default("vi") @map("preferred_language")
+
+  isActive    Boolean   @default(true) @map("is_active")
+  lastLoginAt DateTime? @map("last_login_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  studentProfile       StudentProfile?
+  gradeRecords         GradeRecord[]
+  studentTasks         StudentTask[]
+  createdConversations Conversation[]       @relation("ConversationCreator")
+  conversationMembers  ConversationMember[]
+  sentMessages         Message[]            @relation("MessageSender")
+  forumPosts           ForumPost[]
+  forumComments        ForumComment[]
+  forumPostLikes       ForumPostLike[]
 
   @@map("users")
 }
 
 model Major {
-  id            Int              @id @default(autoincrement())
-  majorCode     String           @unique @map("major_code")
-  majorName     String           @map("major_name")
-  facultyName   String?          @map("faculty_name")
-  createdAt     DateTime         @default(now()) @map("created_at")
+  id          Int      @id @default(autoincrement())
+  majorCode   String   @unique @map("major_code")
+  majorName   String   @map("major_name")
+  facultyName String?  @map("faculty_name")
+  createdAt   DateTime @default(now()) @map("created_at")
 
   studentProfiles StudentProfile[]
 
@@ -36,74 +46,237 @@ model Major {
 }
 
 model StudentProfile {
-  id               Int        @id @default(autoincrement())
-  userId           Int        @unique @map("user_id")
-  majorId          Int?       @map("major_id")
-  fullName         String     @map("full_name")
-  studentCode      String?    @unique @map("student_code")
-  schoolYear       Int?       @map("school_year")
-  gpa              Decimal?   @db.Decimal(3, 2)
-  cpa              Decimal?   @db.Decimal(3, 2)
-  profileCompleted Boolean    @default(false) @map("profile_completed")
-  cttConnected     Boolean    @default(false) @map("ctt_connected")
-  avatarUrl        String?    @map("avatar_url")
+  id               Int      @id @default(autoincrement())
+  userId           Int      @unique @map("user_id")
+  majorId          Int?     @map("major_id")
+  fullName         String   @map("full_name")
+  studentCode      String?  @unique @map("student_code")
+  schoolYear       Int?     @map("school_year")
+  gpa              Decimal? @db.Decimal(3, 2)
+  cpa              Decimal? @db.Decimal(3, 2)
+  profileCompleted Boolean  @default(false) @map("profile_completed")
+  cttConnected     Boolean  @default(false) @map("ctt_connected")
+  avatarUrl        String?  @map("avatar_url")
   bio              String?
-  createdAt        DateTime   @default(now()) @map("created_at")
-  updatedAt        DateTime   @updatedAt @map("updated_at")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
 
-  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  major            Major?     @relation(fields: [majorId], references: [id])
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  major Major? @relation(fields: [majorId], references: [id])
 
   @@map("student_profiles")
 }
 
 model Semester {
-  id            Int           @id @default(autoincrement())
-  semesterCode  String        @unique @map("semester_code")
-  semesterName  String        @map("semester_name")
-  academicYear  String        @map("academic_year")
-  termNumber    Int           @map("term_number")
-  startDate     DateTime?     @map("start_date") @db.Date
-  endDate       DateTime?     @map("end_date") @db.Date
-  isCurrent     Boolean       @default(false) @map("is_current")
-  createdAt     DateTime      @default(now()) @map("created_at")
+  id           Int       @id @default(autoincrement())
+  semesterCode String    @unique @map("semester_code")
+  semesterName String    @map("semester_name")
+  academicYear String    @map("academic_year")
+  termNumber   Int       @map("term_number")
+  startDate    DateTime? @map("start_date") @db.Date
+  endDate      DateTime? @map("end_date") @db.Date
+  isCurrent    Boolean   @default(false) @map("is_current")
+  createdAt    DateTime  @default(now()) @map("created_at")
 
-  gradeRecords  GradeRecord[]
+  gradeRecords GradeRecord[]
 
   @@map("semesters")
 }
 
 model Course {
-  id            Int           @id @default(autoincrement())
-  courseCode    String        @unique @map("course_code")
-  courseName    String        @map("course_name")
-  credits       Int
-  createdAt     DateTime      @default(now()) @map("created_at")
+  id         Int      @id @default(autoincrement())
+  courseCode String   @unique @map("course_code")
+  courseName String   @map("course_name")
+  credits    Int
+  createdAt  DateTime @default(now()) @map("created_at")
 
-  gradeRecords  GradeRecord[]
+  gradeRecords GradeRecord[]
 
   @@map("courses")
 }
 
 model GradeRecord {
-  id               Int        @id @default(autoincrement())
-  userId           Int        @map("user_id")
-  semesterId       Int        @map("semester_id")
-  courseId         Int        @map("course_id")
-  processScore     Decimal?   @map("process_score") @db.Decimal(4, 2)
-  examScore        Decimal?   @map("exam_score") @db.Decimal(4, 2)
-  score10          Decimal?   @map("score_10") @db.Decimal(4, 2)
-  score4           Decimal?   @map("score_4") @db.Decimal(3, 2)
-  letterScore      String?    @map("letter_score")
-  resultStatus     String?    @map("result_status")
-  importedFromCtt  Boolean    @default(false) @map("imported_from_ctt")
-  createdAt        DateTime   @default(now()) @map("created_at")
-  updatedAt        DateTime   @updatedAt @map("updated_at")
+  id              Int      @id @default(autoincrement())
+  userId          Int      @map("user_id")
+  semesterId      Int      @map("semester_id")
+  courseId        Int      @map("course_id")
+  processScore    Decimal? @map("process_score") @db.Decimal(4, 2)
+  examScore       Decimal? @map("exam_score") @db.Decimal(4, 2)
+  score10         Decimal? @map("score_10") @db.Decimal(4, 2)
+  score4          Decimal? @map("score_4") @db.Decimal(3, 2)
+  letterScore     String?  @map("letter_score")
+  resultStatus    String?  @map("result_status")
+  importedFromCtt Boolean  @default(false) @map("imported_from_ctt")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
-  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  semester         Semester   @relation(fields: [semesterId], references: [id], onDelete: Cascade)
-  course           Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semester Semester @relation(fields: [semesterId], references: [id], onDelete: Cascade)
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([userId, semesterId, courseId])
   @@map("grade_records")
+}
+
+model StudentTask {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @map("user_id")
+  title     String
+  dueAt     DateTime? @map("due_at")
+  dueLabel  String?   @map("due_label")
+  completed Boolean   @default(false)
+  priority  String    @default("normal")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, completed])
+  @@index([dueAt])
+  @@map("student_tasks")
+}
+
+model Conversation {
+  id          Int      @id @default(autoincrement())
+  title       String?
+  type        String   @default("direct")
+  createdById Int?     @map("created_by_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  createdBy User?                @relation("ConversationCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  members   ConversationMember[]
+  messages  Message[]
+
+  @@index([type])
+  @@index([createdAt])
+  @@map("conversations")
+}
+
+model ConversationMember {
+  conversationId Int       @map("conversation_id")
+  userId         Int       @map("user_id")
+  role           String    @default("member")
+  unreadCount    Int       @default(0) @map("unread_count")
+  lastReadAt     DateTime? @map("last_read_at")
+  isArchived     Boolean   @default(false) @map("is_archived")
+  isStarred      Boolean   @default(false) @map("is_starred")
+  joinedAt       DateTime  @default(now()) @map("joined_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([conversationId, userId])
+  @@index([userId, isArchived])
+  @@map("conversation_members")
+}
+
+model Message {
+  id             Int      @id @default(autoincrement())
+  conversationId Int      @map("conversation_id")
+  senderId       Int      @map("sender_id")
+  content        String   @db.Text
+  messageType    String   @default("text") @map("message_type")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  conversation Conversation        @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User                @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  attachments  MessageAttachment[]
+
+  @@index([conversationId, createdAt])
+  @@index([senderId])
+  @@map("messages")
+}
+
+model MessageAttachment {
+  id        Int      @id @default(autoincrement())
+  messageId Int      @map("message_id")
+  fileName  String   @map("file_name")
+  fileUrl   String   @map("file_url")
+  mimeType  String   @map("mime_type")
+  fileSize  Int      @map("file_size")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@map("message_attachments")
+}
+
+model ForumCategory {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  color       String?
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  posts ForumPost[]
+
+  @@map("forum_categories")
+}
+
+model ForumPost {
+  id         Int      @id @default(autoincrement())
+  authorId   Int      @map("author_id")
+  categoryId Int      @map("category_id")
+  title      String
+  content    String   @db.Text
+  tags       String[]
+  isHot      Boolean  @default(false) @map("is_hot")
+  isPinned   Boolean  @default(false) @map("is_pinned")
+  isLocked   Boolean  @default(false) @map("is_locked")
+  viewCount  Int      @default(0) @map("view_count")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  author   User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category ForumCategory   @relation(fields: [categoryId], references: [id])
+  comments ForumComment[]
+  likes    ForumPostLike[]
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([isHot, createdAt])
+  @@index([createdAt])
+  @@map("forum_posts")
+}
+
+model ForumComment {
+  id        Int      @id @default(autoincrement())
+  postId    Int      @map("post_id")
+  authorId  Int      @map("author_id")
+  parentId  Int?     @map("parent_id")
+  content   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  post    ForumPost      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author  User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent  ForumComment?  @relation("ForumCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies ForumComment[] @relation("ForumCommentReplies")
+
+  @@index([postId])
+  @@index([authorId])
+  @@index([parentId])
+  @@map("forum_comments")
+}
+
+model ForumPostLike {
+  id        Int      @id @default(autoincrement())
+  postId    Int      @map("post_id")
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  post ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([userId])
+  @@map("forum_post_likes")
 }

@@ -1,0 +1,234 @@
+.student-taskbar {
+  width: 320px;
+  min-width: 320px;
+  height: 100vh;
+  max-height: 100vh;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid #dfe3e8;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px 20px;
+  gap: 12px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  transition: width 0.25s ease, min-width 0.25s ease, padding 0.25s ease;
+  z-index: 30;
+}
+
+.student-taskbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.student-taskbar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.22), rgba(148, 163, 184, 0.08));
+  pointer-events: none;
+}
+
+.student-taskbar.collapsed {
+  width: 86px;
+  min-width: 86px;
+  padding: 12px 10px 20px;
+}
+
+.taskbar-top {
+  min-height: 92px;
+  display: flex;
+  align-items: center;
+  padding: 6px 8px 10px;
+  border-bottom: 1px solid #eceff3;
+}
+
+.taskbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: linear-gradient(145deg, #ff2121, #de0000);
+  box-shadow: 0 14px 26px rgba(224, 0, 0, 0.25);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.brand-icon:hover {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.brand-text h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.brand-text p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1;
+}
+
+.taskbar-nav,
+.taskbar-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.taskbar-nav {
+  padding: 10px 6px 0;
+}
+
+.taskbar-item {
+  position: relative;
+  height: 54px;
+  width: 100%;
+  border-radius: 16px;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  color: #334155;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.taskbar-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 3px;
+  height: 34px;
+  border-radius: 999px;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.taskbar-item:hover {
+  background: #f8fafc;
+  transform: translateX(2px);
+}
+
+.taskbar-item.active {
+  background: #fff1f1;
+  color: #e30000;
+}
+
+.taskbar-item.active::before {
+  background: #e30000;
+}
+
+.taskbar-divider {
+  margin: auto 10px 6px;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.taskbar-bottom {
+  padding: 0 6px;
+}
+
+.student-taskbar.collapsed .brand-text,
+.student-taskbar.collapsed .taskbar-item span {
+  display: none;
+}
+
+.student-taskbar.collapsed .taskbar-brand {
+  justify-content: center;
+}
+
+.student-taskbar.collapsed .taskbar-item {
+  justify-content: center;
+  padding: 0;
+}
+
+.student-taskbar.collapsed .taskbar-item::before {
+  left: 50%;
+  top: auto;
+  bottom: 5px;
+  width: 20px;
+  height: 3px;
+  transform: translateX(-50%);
+}
+
+.taskbar-overlay {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .student-taskbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 60;
+    transform: translateX(-105%);
+    transition: transform 0.25s ease;
+    width: 290px;
+    min-width: 290px;
+    padding: 12px 12px 18px;
+  }
+
+  .student-taskbar.collapsed {
+    transform: translateX(-105%);
+    width: 290px;
+    min-width: 290px;
+  }
+
+  .student-taskbar:not(.collapsed) {
+    transform: translateX(0);
+  }
+
+  .student-taskbar .brand-text,
+  .student-taskbar .taskbar-item span {
+    display: block;
+  }
+
+  .student-taskbar .taskbar-item {
+    justify-content: flex-start;
+    padding: 0 14px;
+  }
+
+  .student-taskbar .taskbar-item::before {
+    left: 0;
+    top: 10px;
+    width: 3px;
+    height: 34px;
+    transform: none;
+  }
+
+  .taskbar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.26);
+    border: none;
+    display: block;
+    z-index: 40;
+  }
+}
