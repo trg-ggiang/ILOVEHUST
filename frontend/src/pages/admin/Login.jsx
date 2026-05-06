@@ -1,5 +1,5 @@
 ﻿import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   GraduationCap,
   Mail,
@@ -22,10 +22,11 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({ key: "", text: "" });
   const [loading, setLoading] = useState(false);
 
   const t = useMemo(() => LOGIN_TEXT[language] || LOGIN_TEXT.vi, [language]);
+  const displayMessage = message.key ? t[message.key] : message.text;
 
   const isStudentProfileReady = (user) => {
     if (user.role !== 1) {
@@ -42,19 +43,20 @@ export default function Login() {
   const handleLanguageChange = (value) => {
     setLanguage(value);
     setStoredLanguage(value);
+    setMessage((current) => (current.key ? current : { key: "", text: "" }));
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setMessage("");
+    setMessage({ key: "", text: "" });
 
     if (!email.trim()) {
-      setMessage(t.requiredEmail);
+      setMessage({ key: "requiredEmail", text: "" });
       return;
     }
 
     if (!password.trim()) {
-      setMessage(t.requiredPassword);
+      setMessage({ key: "requiredPassword", text: "" });
       return;
     }
 
@@ -80,7 +82,7 @@ export default function Login() {
         navigate("/dashboard", { replace: true });
       }
     } catch (error) {
-      setMessage(error.response?.data?.message || t.loginFailed);
+      setMessage({ key: "", text: error.response?.data?.message || t.loginFailed });
     } finally {
       setLoading(false);
     }
@@ -149,7 +151,7 @@ export default function Login() {
               </div>
               <section>
                 <h1>I Love Hust</h1>
-                <p>Student Portal</p>
+                <p>{t.portalSubtitle}</p>
               </section>
             </div>
 
@@ -226,7 +228,7 @@ export default function Login() {
                 <a href="#">{t.forgot}</a>
               </div>
 
-              {message && <p className="login-error">{message}</p>}
+              {displayMessage && <p className="login-error">{displayMessage}</p>}
 
               <button className="login-button" type="submit" disabled={loading}>
                 <span>{loading ? t.loading : t.button}</span>
@@ -235,7 +237,7 @@ export default function Login() {
             </form>
 
             <div className="signup-text">
-              {t.noAccount} <a href="#">{t.create}</a>
+              {t.noAccount} <Link to="/register">{t.create}</Link>
             </div>
           </div>
         </div>

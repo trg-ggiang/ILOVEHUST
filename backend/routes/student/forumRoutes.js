@@ -16,7 +16,7 @@ function toPostResponse(post, currentUserId) {
 
   return {
     id: post.id,
-    author: profile?.fullName || post.author?.email || "Student",
+    author: profile?.fullName || post.author?.email || "Sinh viên",
     authorInitial: (profile?.fullName || post.author?.email || "?").trim().charAt(0).toUpperCase(),
     title: post.title,
     content: post.content,
@@ -26,7 +26,7 @@ function toPostResponse(post, currentUserId) {
     comments: post._count?.comments || post.comments?.length || 0,
     commentItems: (post.comments || []).map((comment) => {
       const commentProfile = comment.author?.studentProfile;
-      const authorName = commentProfile?.fullName || comment.author?.email || "Student";
+      const authorName = commentProfile?.fullName || comment.author?.email || "Sinh viên";
 
       return {
         id: comment.id,
@@ -165,7 +165,7 @@ router.get("/", authMiddleware, async (req, res) => {
     return res.json(await getForumPayload(req));
   } catch (error) {
     console.error("FORUM LIST ERROR:", error);
-    return res.status(500).json({ message: "Loi server khi tai forum" });
+    return res.status(500).json({ message: "Lỗi server khi tải diễn đàn" });
   }
 });
 
@@ -179,7 +179,7 @@ router.post("/posts", authMiddleware, async (req, res) => {
       : [];
 
     if (!title || !content) {
-      return res.status(400).json({ message: "Tieu de va noi dung khong duoc de trong" });
+      return res.status(400).json({ message: "Tiêu đề và nội dung không được để trống" });
     }
 
     const category = await prisma.forumCategory.findUnique({
@@ -187,7 +187,7 @@ router.post("/posts", authMiddleware, async (req, res) => {
     });
 
     if (!category) {
-      return res.status(400).json({ message: "Danh muc forum khong hop le" });
+      return res.status(400).json({ message: "Danh mục diễn đàn không hợp lệ" });
     }
 
     await prisma.forumPost.create({
@@ -203,7 +203,7 @@ router.post("/posts", authMiddleware, async (req, res) => {
     return res.status(201).json(await getForumPayload(req));
   } catch (error) {
     console.error("FORUM CREATE POST ERROR:", error);
-    return res.status(500).json({ message: "Loi server khi tao bai viet" });
+    return res.status(500).json({ message: "Lỗi server khi tạo bài viết" });
   }
 });
 
@@ -211,7 +211,7 @@ router.post("/posts/:postId/likes", authMiddleware, async (req, res) => {
   try {
     const postId = Number(req.params.postId);
     if (!Number.isInteger(postId)) {
-      return res.status(400).json({ message: "Bai viet khong hop le" });
+      return res.status(400).json({ message: "Bài viết không hợp lệ" });
     }
 
     const existing = await prisma.forumPostLike.findUnique({
@@ -237,7 +237,7 @@ router.post("/posts/:postId/likes", authMiddleware, async (req, res) => {
     return res.json(await getForumPayload(req));
   } catch (error) {
     console.error("FORUM LIKE ERROR:", error);
-    return res.status(500).json({ message: "Loi server khi cap nhat like" });
+    return res.status(500).json({ message: "Lỗi server khi cập nhật lượt thích" });
   }
 });
 
@@ -247,11 +247,11 @@ router.post("/posts/:postId/comments", authMiddleware, async (req, res) => {
     const content = String(req.body?.content || "").trim();
 
     if (!Number.isInteger(postId)) {
-      return res.status(400).json({ message: "Bai viet khong hop le" });
+      return res.status(400).json({ message: "Bài viết không hợp lệ" });
     }
 
     if (!content) {
-      return res.status(400).json({ message: "Noi dung binh luan khong duoc de trong" });
+      return res.status(400).json({ message: "Nội dung bình luận không được để trống" });
     }
 
     await prisma.forumComment.create({
@@ -265,7 +265,7 @@ router.post("/posts/:postId/comments", authMiddleware, async (req, res) => {
     return res.status(201).json(await getForumPayload(req));
   } catch (error) {
     console.error("FORUM COMMENT ERROR:", error);
-    return res.status(500).json({ message: "Loi server khi tao binh luan" });
+    return res.status(500).json({ message: "Lỗi server khi tạo bình luận" });
   }
 });
 

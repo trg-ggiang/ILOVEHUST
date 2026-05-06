@@ -23,6 +23,12 @@
   font-size: 14px;
 }
 
+.grades-error {
+  margin: 0;
+  color: #dc2626;
+  font-weight: 800;
+}
+
 .export-btn {
   height: 44px;
   border: none;
@@ -299,6 +305,7 @@
   max-height: 336px;
   overflow-y: auto;
   overflow-x: hidden;
+  overscroll-behavior: contain;
 }
 
 .grades-table th {
@@ -416,6 +423,8 @@
 
   .grades-table-wrap {
     overflow: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   .grades-table {

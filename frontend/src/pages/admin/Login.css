@@ -421,6 +421,33 @@
   font-size: 14px;
 }
 
+.register-page {
+  align-items: flex-start;
+  overflow-y: auto;
+}
+
+.register-page .login-card {
+  min-height: 760px;
+}
+
+.register-form-wrap {
+  max-width: 520px;
+}
+
+.register-page .login-header {
+  margin-bottom: 26px;
+}
+
+.register-page .login-form {
+  gap: 16px;
+}
+
+.register-password-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
 @keyframes pulse {
   0%, 100% {
     opacity: 0.75;
@@ -475,5 +502,13 @@
     margin: 2px 0 0;
     color: #6b7280;
     font-size: 14px;
+  }
+
+  .register-page .login-card {
+    min-height: auto;
+  }
+
+  .register-password-grid {
+    grid-template-columns: 1fr;
   }
 }

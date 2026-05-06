@@ -23,9 +23,11 @@ model User {
   studentProfile       StudentProfile?
   gradeRecords         GradeRecord[]
   studentTasks         StudentTask[]
-  createdConversations Conversation[]       @relation("ConversationCreator")
+  scheduleClasses      StudentScheduleClass[]
+  scheduleEvents       StudentScheduleEvent[]
+  createdConversations Conversation[]         @relation("ConversationCreator")
   conversationMembers  ConversationMember[]
-  sentMessages         Message[]            @relation("MessageSender")
+  sentMessages         Message[]              @relation("MessageSender")
   forumPosts           ForumPost[]
   forumComments        ForumComment[]
   forumPostLikes       ForumPostLike[]
@@ -78,7 +80,8 @@ model Semester {
   isCurrent    Boolean   @default(false) @map("is_current")
   createdAt    DateTime  @default(now()) @map("created_at")
 
-  gradeRecords GradeRecord[]
+  gradeRecords    GradeRecord[]
+  scheduleClasses StudentScheduleClass[]
 
   @@map("semesters")
 }
@@ -90,7 +93,8 @@ model Course {
   credits    Int
   createdAt  DateTime @default(now()) @map("created_at")
 
-  gradeRecords GradeRecord[]
+  gradeRecords    GradeRecord[]
+  scheduleClasses StudentScheduleClass[]
 
   @@map("courses")
 }
@@ -119,21 +123,66 @@ model GradeRecord {
 }
 
 model StudentTask {
-  id        Int       @id @default(autoincrement())
-  userId    Int       @map("user_id")
-  title     String
-  dueAt     DateTime? @map("due_at")
-  dueLabel  String?   @map("due_label")
-  completed Boolean   @default(false)
-  priority  String    @default("normal")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id          Int       @id @default(autoincrement())
+  userId      Int       @map("user_id")
+  title       String
+  description String?   @db.Text
+  dueAt       DateTime? @map("due_at")
+  dueLabel    String?   @map("due_label")
+  completed   Boolean   @default(false)
+  priority    String    @default("medium")
+  category    String    @default("Khác")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, completed])
+  @@index([userId, priority])
   @@index([dueAt])
   @@map("student_tasks")
+}
+
+model StudentScheduleClass {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  courseId   Int?     @map("course_id")
+  semesterId Int?     @map("semester_id")
+  subject    String
+  classType  String   @default("Ly thuyet") @map("class_type")
+  weekday    Int
+  startTime  String   @map("start_time") @db.VarChar(5)
+  endTime    String   @map("end_time") @db.VarChar(5)
+  room       String?
+  color      String   @default("blue")
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course?   @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  semester Semester? @relation(fields: [semesterId], references: [id], onDelete: SetNull)
+
+  @@index([userId, weekday])
+  @@index([semesterId])
+  @@map("student_schedule_classes")
+}
+
+model StudentScheduleEvent {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  title     String
+  eventDate DateTime @map("event_date") @db.Date
+  eventTime String?  @map("event_time") @db.VarChar(5)
+  eventType String   @default("assignment") @map("event_type")
+  color     String   @default("purple")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, eventDate])
+  @@map("student_schedule_events")
 }
 
 model Conversation {

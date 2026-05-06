@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   BarChart3,
-  BookOpen,
   Clock,
   Filter,
   Flame,
@@ -22,8 +21,10 @@ import {
   setStoredLanguage,
   setStoredSidebarState,
 } from "../../i18n/language";
+import { FORUM_TEXT, STUDENT_COMMON_TEXT } from "../../i18n/translations";
 import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
+import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
 import "./Dashboard.css";
 import "./Forum.css";
 
@@ -43,19 +44,23 @@ const COLOR_CLASS = {
   orange: "orange",
 };
 
-function formatRelativeTime(value) {
+function formatRelativeTime(value, text) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
 
   const diffMs = Date.now() - date.getTime();
   const diffMinutes = Math.max(1, Math.floor(diffMs / 60000));
-  if (diffMinutes < 60) return `${diffMinutes} phut truoc`;
+  if (diffMinutes < 60) return text.minuteAgo(diffMinutes);
 
   const diffHours = Math.floor(diffMinutes / 60);
-  if (diffHours < 24) return `${diffHours} gio truoc`;
+  if (diffHours < 24) return text.hourAgo(diffHours);
 
   const diffDays = Math.floor(diffHours / 24);
-  return `${diffDays} ngay truoc`;
+  return text.dayAgo(diffDays);
+}
+
+function getCategoryName(category, text) {
+  return text.categories[category.slug] || category.name;
 }
 
 export default function ForumPage() {
@@ -76,6 +81,8 @@ export default function ForumPage() {
   const [openCommentsPostId, setOpenCommentsPostId] = useState(null);
   const [commentDrafts, setCommentDrafts] = useState({});
   const [error, setError] = useState("");
+  const t = useMemo(() => FORUM_TEXT[language] || FORUM_TEXT.vi, [language]);
+  const commonText = useMemo(() => STUDENT_COMMON_TEXT[language] || STUDENT_COMMON_TEXT.vi, [language]);
 
   const selectableCategories = useMemo(
     () => payload.categories.filter((category) => category.slug !== "all" && category.slug !== "hot"),
@@ -112,7 +119,7 @@ export default function ForumPage() {
         setPayload(response.data || { categories: [], posts: [], trendingTopics: [] });
       } catch {
         if (!mounted) return;
-        setError("Khong the tai dien dan.");
+        setError(t.loadFailed);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -123,32 +130,10 @@ export default function ForumPage() {
       mounted = false;
       window.clearTimeout(timeoutId);
     };
-  }, [navigate, searchText, selectedCategory]);
+  }, [navigate, searchText, selectedCategory, t.loadFailed]);
 
   function handleMenuClick(key) {
-    if (key === "logout") {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("fullName");
-      navigate("/login", { replace: true });
-      return;
-    }
-
-    if (key === "home") {
-      navigate("/dashboard");
-      return;
-    }
-
-    if (key === "grades") {
-      navigate("/grades");
-      return;
-    }
-
-    if (key === "forum") return;
-
-    if (key === "messages") {
-      navigate("/messages");
-    }
+    handleStudentMenuNavigation(key, navigate, "forum");
   }
 
   async function reloadForum() {
@@ -164,7 +149,7 @@ export default function ForumPage() {
     const content = newPost.content.trim();
 
     if (!title || !content) {
-      setError("Vui long nhap tieu de va noi dung.");
+      setError(t.requiredPost);
       return;
     }
 
@@ -184,7 +169,7 @@ export default function ForumPage() {
       setNewPost({ title: "", content: "", categorySlug: "hoc-tap", tags: "" });
       setShowPostForm(false);
     } catch {
-      setError("Khong the tao bai viet.");
+      setError(t.createFailed);
     }
   }
 
@@ -194,7 +179,7 @@ export default function ForumPage() {
       const response = await api.post(`/forum/posts/${postId}/likes`);
       setPayload(response.data || payload);
     } catch {
-      setError("Khong the cap nhat like.");
+      setError(t.likeFailed);
     }
   }
 
@@ -210,7 +195,7 @@ export default function ForumPage() {
       setOpenCommentsPostId(postId);
       setCommentDrafts((current) => ({ ...current, [postId]: "" }));
     } catch {
-      setError("Khong the gui binh luan.");
+      setError(t.commentFailed);
     }
   }
 
@@ -226,7 +211,7 @@ export default function ForumPage() {
 
       <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
         <StudentHeader
-          fullName={localStorage.getItem("fullName") || "Student"}
+          fullName={localStorage.getItem("fullName") || commonText.fallbackName}
           studentCode=""
           language={language}
           onLanguageChange={setLanguage}
@@ -237,12 +222,12 @@ export default function ForumPage() {
         <section className="student-main-content forum-content">
           <div className="forum-page-head">
             <div>
-              <h1>Dien dan</h1>
-              <p>Noi trao doi kien thuc va ket noi cong dong</p>
+              <h1>{t.pageTitle}</h1>
+              <p>{t.pageSubtitle}</p>
             </div>
             <button type="button" className="create-post-btn" onClick={() => setShowPostForm((prev) => !prev)}>
               <Plus size={18} />
-              Tao bai viet
+              {t.createPost}
             </button>
           </div>
 
@@ -252,12 +237,12 @@ export default function ForumPage() {
                 type="text"
                 value={newPost.title}
                 onChange={(event) => setNewPost((current) => ({ ...current, title: event.target.value }))}
-                placeholder="Tieu de bai viet"
+                placeholder={t.titlePlaceholder}
               />
               <textarea
                 value={newPost.content}
                 onChange={(event) => setNewPost((current) => ({ ...current, content: event.target.value }))}
-                placeholder="Ban muon chia se dieu gi?"
+                placeholder={t.contentPlaceholder}
                 rows={4}
               />
               <div className="forum-create-row">
@@ -267,7 +252,7 @@ export default function ForumPage() {
                 >
                   {selectableCategories.map((category) => (
                     <option key={category.slug} value={category.slug}>
-                      {category.name}
+                      {getCategoryName(category, t)}
                     </option>
                   ))}
                 </select>
@@ -275,9 +260,9 @@ export default function ForumPage() {
                   type="text"
                   value={newPost.tags}
                   onChange={(event) => setNewPost((current) => ({ ...current, tags: event.target.value }))}
-                  placeholder="Tags, cach nhau bang dau phay"
+                  placeholder={t.tagsPlaceholder}
                 />
-                <button type="submit">Dang bai</button>
+                <button type="submit">{t.submitPost}</button>
               </div>
             </form>
           ) : null}
@@ -299,7 +284,7 @@ export default function ForumPage() {
                     <Icon size={24} />
                     <span>{category.count}</span>
                   </div>
-                  <strong>{category.name}</strong>
+                  <strong>{getCategoryName(category, t)}</strong>
                 </button>
               );
             })}
@@ -312,12 +297,12 @@ export default function ForumPage() {
                 type="text"
                 value={searchText}
                 onChange={(event) => setSearchText(event.target.value)}
-                placeholder="Tim kiem bai viet..."
+                placeholder={t.searchPlaceholder}
               />
             </label>
             <button type="button" className="forum-filter-btn" onClick={reloadForum}>
               <Filter size={18} />
-              Bo loc
+              {t.filter}
             </button>
           </div>
 
@@ -325,8 +310,8 @@ export default function ForumPage() {
 
           <div className="forum-grid">
             <div className="forum-post-list">
-              {loading ? <p className="empty-text">Dang tai dien dan...</p> : null}
-              {!loading && payload.posts.length === 0 ? <p className="empty-text">Chua co bai viet phu hop.</p> : null}
+              {loading ? <p className="empty-text">{t.loading}</p> : null}
+              {!loading && payload.posts.length === 0 ? <p className="empty-text">{t.emptyPosts}</p> : null}
 
               {payload.posts.map((post) => (
                 <article key={post.id} className="forum-post-card">
@@ -337,16 +322,16 @@ export default function ForumPage() {
                         <strong>{post.author}</strong>
                         <span>
                           <Clock size={13} />
-                          {formatRelativeTime(post.time)}
+                          {formatRelativeTime(post.time, t)}
                         </span>
                         {post.isHot ? (
                           <em>
                             <Flame size={13} />
-                            Hot
+                            {t.hot}
                           </em>
                         ) : null}
                       </div>
-                      <small>{post.category}</small>
+                      <small>{getCategoryName({ slug: post.categorySlug, name: post.category }, t)}</small>
                     </div>
                   </div>
 
@@ -366,7 +351,7 @@ export default function ForumPage() {
                       onClick={() => handleToggleLike(post.id)}
                     >
                       <ThumbsUp size={18} />
-                      {post.likedByCurrentUser ? "Da thich" : "Thich"} · {post.likes}
+                      {post.likedByCurrentUser ? t.liked : t.like} · {post.likes}
                     </button>
                     <button
                       type="button"
@@ -374,7 +359,7 @@ export default function ForumPage() {
                       onClick={() => setOpenCommentsPostId(openCommentsPostId === post.id ? null : post.id)}
                     >
                       <MessageCircle size={18} />
-                      Binh luan · {post.comments}
+                      {t.comments} · {post.comments}
                     </button>
                   </div>
 
@@ -382,7 +367,7 @@ export default function ForumPage() {
                     <div className="forum-comments-panel">
                       <div className="forum-comments-list">
                         {(post.commentItems || []).length === 0 ? (
-                          <p className="forum-empty-comments">Chua co binh luan nao.</p>
+                          <p className="forum-empty-comments">{t.emptyComments}</p>
                         ) : null}
                         {(post.commentItems || []).map((comment) => (
                           <div key={comment.id} className="forum-comment">
@@ -390,7 +375,7 @@ export default function ForumPage() {
                             <div className="forum-comment-bubble">
                               <div>
                                 <strong>{comment.author}</strong>
-                                <span>{formatRelativeTime(comment.time)}</span>
+                                <span>{formatRelativeTime(comment.time, t)}</span>
                               </div>
                               <p>{comment.content}</p>
                             </div>
@@ -405,10 +390,10 @@ export default function ForumPage() {
                           onChange={(event) =>
                             setCommentDrafts((current) => ({ ...current, [post.id]: event.target.value }))
                           }
-                          placeholder="Viet binh luan..."
+                          placeholder={t.commentPlaceholder}
                           autoFocus
                         />
-                        <button type="submit" aria-label="Gui binh luan">
+                        <button type="submit" aria-label={t.sendComment}>
                           <Send size={16} />
                         </button>
                       </form>
@@ -421,7 +406,7 @@ export default function ForumPage() {
             <aside className="forum-trending">
               <h3>
                 <BarChart3 size={20} />
-                Chủ đề đang hot
+                {t.trending}
               </h3>
               {payload.trendingTopics.map((topic, index) => {
                 const topicLabel = typeof topic === "string" ? topic : topic.tag;
@@ -431,7 +416,7 @@ export default function ForumPage() {
                   <button key={topicLabel} type="button" onClick={() => setSearchText(topicLabel.replace("#", ""))}>
                     <span>{index + 1}</span>
                     <strong>{topicLabel}</strong>
-                    <small>{topicCount} bài</small>
+                    <small>{t.postCount(topicCount)}</small>
                   </button>
                 );
               })}

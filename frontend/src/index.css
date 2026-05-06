@@ -1,8 +1,19 @@
 :root {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family:
+    "Inter",
+    "Noto Sans JP",
+    "Noto Sans",
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
+  letter-spacing: 0;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -12,6 +23,14 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 html,
@@ -19,10 +38,28 @@ body,
 #root {
   width: 100%;
   min-height: 100%;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
 }
 
 html,
 body {
   margin: 0;
   min-width: 320px;
+  font-family: inherit;
+  color: #111827;
+  background: #f8fafc;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body {
+  position: relative;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }

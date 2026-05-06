@@ -1,10 +1,14 @@
 ﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/admin/Login";
+import Register from "./pages/admin/Register";
 import Dashboard from "./pages/student/Dashboard";
 import CompleteProfile from "./pages/student/CompleteProfile";
 import GradesPage from "./pages/student/Grades";
 import ForumPage from "./pages/student/Forum";
 import MessagesPage from "./pages/student/Messages";
+import SchedulePage from "./pages/student/Schedule";
+import StatisticsPage from "./pages/student/Statistics";
+import TasksPage from "./pages/student/Tasks";
 
 function App() {
   return (
@@ -12,10 +16,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/grades" element={<GradesPage />} />
         <Route path="/forum" element={<ForumPage />} />
         <Route path="/messages" element={<MessagesPage />} />
+        <Route path="/tasks" element={<TasksPage />} />
+        <Route path="/schedule" element={<SchedulePage />} />
+        <Route path="/statistics" element={<StatisticsPage />} />
+        <Route path="/stats" element={<StatisticsPage />} />
         <Route path="/complete-profile" element={<CompleteProfile />} />
       </Routes>
     </BrowserRouter>

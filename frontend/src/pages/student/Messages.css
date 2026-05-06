@@ -95,6 +95,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 8px;
 }
 
@@ -342,6 +343,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 22px;
   display: flex;
   flex-direction: column;
@@ -480,6 +482,10 @@
   text-align: right;
 }
 
+.message-composer {
+  position: relative;
+}
+
 .message-input-row {
   padding: 18px;
   border-top: 1px solid #f1f5f9;
@@ -514,11 +520,50 @@
   background: linear-gradient(145deg, #b91c1c, #991b1b);
 }
 
+.message-input-row button.active {
+  color: #dc2626;
+  background: #fee2e2;
+  box-shadow: 0 8px 16px rgba(220, 38, 38, 0.12);
+}
+
 .message-input-row button:disabled {
   color: #cbd5e1;
   background: #f8fafc;
   cursor: not-allowed;
   box-shadow: none;
+}
+
+.emoji-picker {
+  position: absolute;
+  right: 76px;
+  bottom: 76px;
+  z-index: 5;
+  width: 236px;
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  background: #fff;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.16);
+}
+
+.emoji-picker button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.emoji-picker button:hover {
+  background: #fef2f2;
 }
 
 .hidden-file-input {
@@ -530,6 +575,7 @@
   border-left: 1px solid #f1f5f9;
   padding: 18px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   background: #fff;
 }
 
@@ -703,6 +749,13 @@
   .message-input-row {
     padding: 12px;
     gap: 7px;
+  }
+
+  .emoji-picker {
+    right: 56px;
+    bottom: 66px;
+    width: 212px;
+    grid-template-columns: repeat(6, 1fr);
   }
 
   .chat-search-panel {

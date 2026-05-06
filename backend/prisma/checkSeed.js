@@ -34,6 +34,8 @@ async function main() {
     courseCount,
     gradeRecordCount,
     taskCount,
+    scheduleClassCount,
+    scheduleEventCount,
     forumCategoryCount,
     forumPostCount,
     forumCommentCount,
@@ -47,6 +49,8 @@ async function main() {
     prisma.course.count(),
     prisma.gradeRecord.count(),
     prisma.studentTask.count(),
+    prisma.studentScheduleClass.count(),
+    prisma.studentScheduleEvent.count(),
     prisma.forumCategory.count(),
     prisma.forumPost.count(),
     prisma.forumComment.count(),
@@ -63,6 +67,8 @@ async function main() {
   assertCheck(courseCount >= 12, "Expected at least 12 courses", errors);
   assertCheck(gradeRecordCount >= 18, "Expected at least 18 grade records", errors);
   assertCheck(taskCount >= 5, "Expected at least 5 student tasks", errors);
+  assertCheck(scheduleClassCount >= 7, "Expected at least 7 schedule classes", errors);
+  assertCheck(scheduleEventCount >= 3, "Expected at least 3 schedule events", errors);
   assertCheck(forumCategoryCount >= 3, "Expected at least 3 forum categories", errors);
   assertCheck(forumPostCount >= 5, "Expected at least 5 forum posts", errors);
   assertCheck(forumCommentCount >= 10, "Expected at least 10 forum comments", errors);
@@ -97,6 +103,8 @@ async function main() {
     courses: courseCount,
     gradeRecords: gradeRecordCount,
     studentTasks: taskCount,
+    scheduleClasses: scheduleClassCount,
+    scheduleEvents: scheduleEventCount,
     forumCategories: forumCategoryCount,
     forumPosts: forumPostCount,
     forumComments: forumCommentCount,

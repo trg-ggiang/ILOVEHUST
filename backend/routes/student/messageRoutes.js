@@ -25,7 +25,7 @@ const upload = multer({
 });
 
 function getDisplayName(user) {
-  return user?.studentProfile?.fullName || user?.email || "Student";
+  return user?.studentProfile?.fullName || user?.email || "Sinh viên";
 }
 
 function getInitial(name) {
@@ -45,18 +45,27 @@ function toConversationResponse(conversation, currentUserId) {
   const currentMember = conversation.members.find((member) => member.userId === currentUserId);
   const peer = getConversationPeer(conversation, currentUserId);
   const isGroup = conversation.type === "group";
-  const name = isGroup ? conversation.title || "Nhom chat" : getDisplayName(peer);
+  const name = isGroup ? conversation.title || "Nhóm chat" : getDisplayName(peer);
   const lastMessage = conversation.messages?.[0] || null;
   const lastSenderName =
-    lastMessage?.senderId === currentUserId ? "Ban" : getDisplayName(lastMessage?.sender);
+    lastMessage?.senderId === currentUserId ? "Bạn" : getDisplayName(lastMessage?.sender);
   const attachmentCount = lastMessage?.attachments?.length || 0;
-  const lastContent = lastMessage?.content || (attachmentCount > 0 ? `Da gui ${attachmentCount} tep dinh kem` : "");
+  const lastContent = lastMessage?.content || (attachmentCount > 0 ? `Đã gửi ${attachmentCount} tệp đính kèm` : "");
 
   return {
     id: conversation.id,
     name,
     avatarInitial: getInitial(name),
-    lastMessage: lastMessage ? `${lastSenderName}: ${lastContent}` : "Chua co tin nhan",
+    lastMessage: lastMessage ? `${lastSenderName}: ${lastContent}` : "Chưa có tin nhắn",
+    lastMessagePreview: lastMessage
+      ? {
+          senderName: lastSenderName,
+          senderIsSelf: lastMessage.senderId === currentUserId,
+          content: lastContent,
+          messageType: lastMessage.messageType,
+          attachmentCount,
+        }
+      : null,
     lastMessageAt: lastMessage?.createdAt || conversation.updatedAt,
     unread: currentMember?.unreadCount || 0,
     isGroup,
@@ -142,7 +151,19 @@ async function getConversationList(userId, search = "") {
     .sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt));
 }
 
-function toConversationDetail(conversation, currentUserId) {
+function messageMatchesSearch(message, search) {
+  if (!search) return true;
+  const query = search.toLowerCase();
+  return (
+    String(message.content || "").toLowerCase().includes(query) ||
+    getDisplayName(message.sender).toLowerCase().includes(query) ||
+    (message.attachments || []).some((attachment) =>
+      String(attachment.fileName || "").toLowerCase().includes(query)
+    )
+  );
+}
+
+function toConversationDetail(conversation, currentUserId, search = "") {
   const base = toConversationResponse(
     {
       ...conversation,
@@ -151,6 +172,9 @@ function toConversationDetail(conversation, currentUserId) {
         : [],
     },
     currentUserId
+  );
+  const filteredMessages = conversation.messages.filter((message) =>
+    messageMatchesSearch(message, search)
   );
 
   return {
@@ -170,10 +194,16 @@ function toConversationDetail(conversation, currentUserId) {
       .map(toAttachmentResponse)
       .slice(-12)
       .reverse(),
-    messages: conversation.messages.map((message) => ({
+    messageSearch: {
+      query: search,
+      total: conversation.messages.length,
+      matched: filteredMessages.length,
+    },
+    messages: filteredMessages.map((message) => ({
       id: message.id,
       sender: getDisplayName(message.sender),
       content: message.content,
+      messageType: message.messageType,
       time: message.createdAt,
       isSelf: message.senderId === currentUserId,
       attachments: (message.attachments || []).map(toAttachmentResponse),
@@ -188,20 +218,21 @@ router.get("/", authMiddleware, async (req, res) => {
     return res.json({ conversations });
   } catch (error) {
     console.error("MESSAGES LIST ERROR:", error);
-    return res.status(500).json({ message: "Loi server khi tai tin nhan" });
+    return res.status(500).json({ message: "Lỗi server khi tải tin nhắn" });
   }
 });
 
 router.get("/:conversationId", authMiddleware, async (req, res) => {
   try {
     const conversationId = Number(req.params.conversationId);
+    const search = String(req.query?.search || "").trim();
     if (!Number.isInteger(conversationId)) {
-      return res.status(400).json({ message: "Cuoc tro chuyen khong hop le" });
+      return res.status(400).json({ message: "Cuộc trò chuyện không hợp lệ" });
     }
 
     const conversation = await findConversationForUser(conversationId, req.user.id);
     if (!conversation) {
-      return res.status(404).json({ message: "Khong tim thay cuoc tro chuyen" });
+      return res.status(404).json({ message: "Không tìm thấy cuộc trò chuyện" });
     }
 
     await prisma.conversationMember.update({
@@ -217,10 +248,10 @@ router.get("/:conversationId", authMiddleware, async (req, res) => {
       },
     });
 
-    return res.json({ conversation: toConversationDetail(conversation, req.user.id) });
+    return res.json({ conversation: toConversationDetail(conversation, req.user.id, search) });
   } catch (error) {
     console.error("MESSAGE DETAIL ERROR:", error);
-    return res.status(500).json({ message: "Loi server khi tai cuoc tro chuyen" });
+    return res.status(500).json({ message: "Lỗi server khi tải cuộc trò chuyện" });
   }
 });
 
@@ -228,7 +259,7 @@ router.patch("/:conversationId/star", authMiddleware, async (req, res) => {
   try {
     const conversationId = Number(req.params.conversationId);
     if (!Number.isInteger(conversationId)) {
-      return res.status(400).json({ message: "Cuoc tro chuyen khong hop le" });
+      return res.status(400).json({ message: "Cuộc trò chuyện không hợp lệ" });
     }
 
     const member = await prisma.conversationMember.findUnique({
@@ -241,7 +272,7 @@ router.patch("/:conversationId/star", authMiddleware, async (req, res) => {
     });
 
     if (!member || member.isArchived) {
-      return res.status(404).json({ message: "Khong tim thay cuoc tro chuyen" });
+      return res.status(404).json({ message: "Không tìm thấy cuộc trò chuyện" });
     }
 
     await prisma.conversationMember.update({
@@ -265,7 +296,7 @@ router.patch("/:conversationId/star", authMiddleware, async (req, res) => {
     });
   } catch (error) {
     console.error("STAR CONVERSATION ERROR:", error);
-    return res.status(500).json({ message: "Loi server khi cap nhat danh dau" });
+    return res.status(500).json({ message: "Lỗi server khi cập nhật đánh dấu" });
   }
 });
 
@@ -275,11 +306,11 @@ router.post("/:conversationId/messages", authMiddleware, async (req, res) => {
     const content = String(req.body?.content || "").trim();
 
     if (!Number.isInteger(conversationId)) {
-      return res.status(400).json({ message: "Cuoc tro chuyen khong hop le" });
+      return res.status(400).json({ message: "Cuộc trò chuyện không hợp lệ" });
     }
 
     if (!content) {
-      return res.status(400).json({ message: "Noi dung tin nhan khong duoc de trong" });
+      return res.status(400).json({ message: "Nội dung tin nhắn không được để trống" });
     }
 
     const conversation = await prisma.conversation.findFirst({
@@ -295,7 +326,7 @@ router.post("/:conversationId/messages", authMiddleware, async (req, res) => {
     });
 
     if (!conversation) {
-      return res.status(404).json({ message: "Khong tim thay cuoc tro chuyen" });
+      return res.status(404).json({ message: "Không tìm thấy cuộc trò chuyện" });
     }
 
     await prisma.$transaction([
@@ -336,7 +367,7 @@ router.post("/:conversationId/messages", authMiddleware, async (req, res) => {
     });
   } catch (error) {
     console.error("SEND MESSAGE ERROR:", error);
-    return res.status(500).json({ message: "Loi server khi gui tin nhan" });
+    return res.status(500).json({ message: "Lỗi server khi gửi tin nhắn" });
   }
 });
 
@@ -347,11 +378,11 @@ router.post("/:conversationId/attachments", authMiddleware, upload.array("files"
     const rawContent = String(req.body?.content || "").trim();
 
     if (!Number.isInteger(conversationId)) {
-      return res.status(400).json({ message: "Cuoc tro chuyen khong hop le" });
+      return res.status(400).json({ message: "Cuộc trò chuyện không hợp lệ" });
     }
 
     if (!files.length) {
-      return res.status(400).json({ message: "Chua co tep dinh kem" });
+      return res.status(400).json({ message: "Chưa có tệp đính kèm" });
     }
 
     const conversation = await prisma.conversation.findFirst({
@@ -367,14 +398,14 @@ router.post("/:conversationId/attachments", authMiddleware, upload.array("files"
     });
 
     if (!conversation) {
-      return res.status(404).json({ message: "Khong tim thay cuoc tro chuyen" });
+      return res.status(404).json({ message: "Không tìm thấy cuộc trò chuyện" });
     }
 
     const content =
       rawContent ||
       (files.length === 1
-        ? `Da gui ${files[0].originalname}`
-        : `Da gui ${files.length} tep dinh kem`);
+        ? `Đã gửi ${files[0].originalname}`
+        : `Đã gửi ${files.length} tệp đính kèm`);
 
     await prisma.$transaction(async (tx) => {
       const message = await tx.message.create({
@@ -427,7 +458,7 @@ router.post("/:conversationId/attachments", authMiddleware, upload.array("files"
     });
   } catch (error) {
     console.error("UPLOAD MESSAGE ATTACHMENT ERROR:", error);
-    return res.status(500).json({ message: "Loi server khi tai tep dinh kem" });
+    return res.status(500).json({ message: "Lỗi server khi tải tệp đính kèm" });
   }
 });
 

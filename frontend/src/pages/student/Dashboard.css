@@ -2,7 +2,9 @@
   position: relative;
   isolation: isolate;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
   width: 100%;
+  max-width: 100vw;
   min-height: 100vh;
   background: linear-gradient(145deg, #f8fafc, #fff5f5);
 }
@@ -34,6 +36,8 @@
 .student-main {
   margin-left: 320px;
   min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
   display: flex;
   flex-direction: column;
   transition: margin-left 0.25s ease;
@@ -47,6 +51,7 @@
   padding: 26px 28px 30px;
   max-width: 1480px;
   width: 100%;
+  min-width: 0;
   margin: 0 auto;
 }
 

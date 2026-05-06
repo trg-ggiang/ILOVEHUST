@@ -24,6 +24,7 @@ import {
 import { DASHBOARD_TEXT } from "../../i18n/translations";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import StudentHeader from "../../components/student/StudentHeader";
+import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
 import "./Dashboard.css";
 
 const TASK_COMPLETE_REFRESH_DELAY_MS = 500;
@@ -47,7 +48,7 @@ function wait(ms) {
   });
 }
 
-function GpaAreaChart({ data, emptyLabel }) {
+function GpaAreaChart({ data, emptyLabel, chartLabel }) {
   const width = 640;
   const height = 300;
   const paddingX = 42;
@@ -74,7 +75,7 @@ function GpaAreaChart({ data, emptyLabel }) {
   return (
     <div className="gpa-svg-wrap">
       {points.length === 0 ? <p className="empty-text">{emptyLabel}</p> : null}
-      <svg viewBox={`0 0 ${width} ${height}`} className="gpa-svg" role="img" aria-label="GPA Chart">
+      <svg viewBox={`0 0 ${width} ${height}`} className="gpa-svg" role="img" aria-label={chartLabel}>
         <defs>
           <linearGradient id="gpaFill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#ef4444" stopOpacity="0.24" />
@@ -198,30 +199,9 @@ export default function Dashboard() {
   }, [navigate]);
 
   function handleMenuClick(key) {
-    if (key === "logout") {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("fullName");
-      navigate("/login", { replace: true });
-      return;
+    if (!handleStudentMenuNavigation(key, navigate, "home")) {
+      setActiveMenu(key);
     }
-
-    if (key === "grades") {
-      navigate("/grades");
-      return;
-    }
-
-    if (key === "forum") {
-      navigate("/forum");
-      return;
-    }
-
-    if (key === "messages") {
-      navigate("/messages");
-      return;
-    }
-
-    setActiveMenu(key);
   }
 
   async function handleCreateTask(event) {
@@ -229,7 +209,7 @@ export default function Dashboard() {
 
     const title = newTaskTitle.trim();
     if (!title) {
-      setTaskError(t.taskRequired || "Vui long nhap task.");
+      setTaskError(t.taskRequired || "Vui lòng nhập nhiệm vụ.");
       return;
     }
 
@@ -238,13 +218,13 @@ export default function Dashboard() {
       setTaskError("");
       await api.post("/students/me/tasks", {
         title,
-        dueLabel: t.taskDefaultTime || "Hom nay",
+        dueLabel: t.taskDefaultTime || "Hôm nay",
       });
       setNewTaskTitle("");
       setShowTaskForm(false);
       await refreshDashboard();
     } catch {
-      setTaskError(t.taskCreateFailed || "Khong the tao task.");
+      setTaskError(t.taskCreateFailed);
     } finally {
       setTaskSaving(false);
     }
@@ -267,7 +247,7 @@ export default function Dashboard() {
       }
       await refreshDashboard();
     } catch {
-      setTaskError(t.taskUpdateFailed || "Khong the cap nhat task.");
+      setTaskError(t.taskUpdateFailed);
       await refreshDashboard();
     }
   }
@@ -280,6 +260,9 @@ export default function Dashboard() {
   const todayTasks = dashboard?.todayTasks || [];
 
   const lastName = student.fullName.split(" ").filter(Boolean).pop() || student.fullName;
+  const welcomeText = language === "ja"
+    ? `${t.welcome}、${lastName}さん！`
+    : `${t.welcome}, ${lastName}!`;
 
   return (
     <div className="student-layout">
@@ -305,7 +288,7 @@ export default function Dashboard() {
 
         <section className="student-main-content">
           <div className="welcome-area">
-            <h1>{`${t.welcome}、${lastName}${language === "ja" ? "さん！" : "!"}`}</h1>
+            <h1>{welcomeText}</h1>
             <p>{t.sub}</p>
           </div>
 
@@ -324,7 +307,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <GpaAreaChart data={gpa.history || []} emptyLabel={t.noData} />
+              <GpaAreaChart data={gpa.history || []} emptyLabel={t.noData} chartLabel={t.chartLabel} />
 
               <div className="gpa-meta-grid">
                 <div>
@@ -416,7 +399,7 @@ export default function Dashboard() {
                       <div key={item.id} className="grade-item">
                         <div>
                           <strong>{item.subject}</strong>
-                          <p>{item.credits} credits</p>
+                          <p>{item.credits} {t.creditsUnit}</p>
                         </div>
                         <div className="grade-score-wrap">
                           <span className={`grade-score ${tone}`}>{item.score10 ?? "-"}</span>
@@ -440,7 +423,7 @@ export default function Dashboard() {
                   <button
                     type="button"
                     className="icon-btn"
-                    aria-label="add task"
+                    aria-label={t.addTaskAria}
                     onClick={() => {
                       setShowTaskForm((prev) => !prev);
                       setTaskError("");
@@ -457,7 +440,7 @@ export default function Dashboard() {
                         type="text"
                         value={newTaskTitle}
                         onChange={(event) => setNewTaskTitle(event.target.value)}
-                        placeholder={t.taskPlaceholder || "Them task moi..."}
+                        placeholder={t.taskPlaceholder}
                         autoFocus
                       />
                       <button type="submit" disabled={taskSaving}>

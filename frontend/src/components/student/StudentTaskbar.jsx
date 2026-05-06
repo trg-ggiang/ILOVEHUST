@@ -95,7 +95,7 @@ export default function StudentTaskbar({
         </div>
       </aside>
 
-      {isOpen ? <button type="button" className="taskbar-overlay" aria-label="Hide menu" onClick={onClose} /> : null}
+      {isOpen ? <button type="button" className="taskbar-overlay" aria-label={t.hideMenu} onClick={onClose} /> : null}
     </>
   );
 }

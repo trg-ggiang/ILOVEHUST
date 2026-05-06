@@ -18,7 +18,7 @@ export default function StudentHeader({
       <button
         type="button"
         className="header-menu-btn"
-        aria-label="Toggle sidebar"
+        aria-label={t.toggleSidebar}
         onClick={onToggleSidebar}
       >
         <Menu size={22} strokeWidth={2} />
@@ -33,7 +33,7 @@ export default function StudentHeader({
         />
       </label>
 
-      <div className="header-language" role="group" aria-label="language switch">
+      <div className="header-language" role="group" aria-label={t.languageSwitch}>
         <button
           type="button"
           className={language === "vi" ? "active" : ""}
@@ -51,7 +51,7 @@ export default function StudentHeader({
       </div>
 
       <div className="header-right">
-        <button type="button" className="notify-btn" aria-label="Notifications">
+        <button type="button" className="notify-btn" aria-label={t.notifications}>
           <Bell size={20} strokeWidth={2} />
           <span className="notify-dot" />
         </button>

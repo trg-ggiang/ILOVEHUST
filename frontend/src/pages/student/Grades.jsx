@@ -24,6 +24,7 @@ import {
 import { GRADES_TEXT } from "../../i18n/translations";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import StudentHeader from "../../components/student/StudentHeader";
+import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
 import "./Grades.css";
 
 const ALL_SEMESTER_KEY = "__all__";
@@ -35,13 +36,6 @@ function normalizePdfText(value) {
     .replace(/[^\x20-\x7E]/g, " ")
     .trim();
 }
-
-const SCORE_DISTRIBUTION = [
-  { key: "excellent", min: 9, color: "#10b981" },
-  { key: "good", min: 8, color: "#3b82f6" },
-  { key: "fair", min: 7, color: "#f59e0b" },
-  { key: "average", min: -Infinity, color: "#ef4444" },
-];
 
 function polarToCartesian(cx, cy, radius, angle) {
   const radian = ((angle - 90) * Math.PI) / 180;
@@ -64,20 +58,7 @@ function createPiePath(cx, cy, radius, startAngle, endAngle) {
   ].join(" ");
 }
 
-function buildScoreDistribution(grades) {
-  const counts = SCORE_DISTRIBUTION.map((item) => ({ ...item, count: 0 }));
-
-  grades.forEach((grade) => {
-    const score = Number(grade.avg ?? 0);
-    const bucket = counts.find((item) => score >= item.min);
-    if (bucket) bucket.count += 1;
-  });
-
-  return counts;
-}
-
-function ScoreDistributionChart({ grades, labels, emptyLabel }) {
-  const distribution = buildScoreDistribution(grades);
+function ScoreDistributionChart({ distribution = [], labels, emptyLabel, ariaLabel }) {
   const total = distribution.reduce((sum, item) => sum + item.count, 0);
   const cx = 150;
   const cy = 140;
@@ -87,7 +68,7 @@ function ScoreDistributionChart({ grades, labels, emptyLabel }) {
   return (
     <div className="score-distribution">
       {total === 0 ? <p className="empty-text">{emptyLabel}</p> : null}
-      <svg viewBox="0 0 300 280" className="score-pie" role="img" aria-label="Score distribution">
+      <svg viewBox="0 0 300 280" className="score-pie" role="img" aria-label={ariaLabel}>
         {total > 0
           ? distribution.map((item) => {
               const percentage = item.count / total;
@@ -151,7 +132,7 @@ function RadarChartBlock({ data }) {
   const polygon = points.map((p) => `${p.x},${p.y}`).join(" ");
 
   return (
-    <svg viewBox="0 0 320 280" className="grades-radar" role="img" aria-label="Skill Radar">
+    <svg viewBox="0 0 320 280" className="grades-radar" role="img" aria-label="Biểu đồ kỹ năng">
       {levels.map((level) => {
         const r = (level / 100) * radius;
         const ringPoints = data
@@ -199,9 +180,21 @@ export default function GradesPage() {
   const [searchText, setSearchText] = useState("");
   const [activeMenu, setActiveMenu] = useState("grades");
   const [profile, setProfile] = useState({ fullName: "", studentCode: "" });
-  const [payload, setPayload] = useState({ semesters: [], grades: [], stats: {}, subjectStats: [], skillData: [] });
+  const [payload, setPayload] = useState({ semesters: [], grades: [], stats: {}, subjectStats: [], skillData: [], scoreDistribution: [] });
+  const [pageReady, setPageReady] = useState(false);
+  const [error, setError] = useState("");
 
   const t = useMemo(() => GRADES_TEXT[language] || GRADES_TEXT.vi, [language]);
+
+  async function loadGrades(semester = selectedSemester, search = searchText) {
+    const response = await api.get("/students/me/grades", {
+      params: {
+        semester,
+        search,
+      },
+    });
+    setPayload(response.data || { semesters: [], grades: [], stats: {}, subjectStats: [], skillData: [], scoreDistribution: [] });
+  }
 
   useEffect(() => {
     setStoredLanguage(language);
@@ -222,7 +215,15 @@ export default function GradesPage() {
       }
 
       try {
-        const [meRes, gradesRes] = await Promise.all([api.get("/auth/me"), api.get("/students/me/grades")]);
+        const [meRes, gradesRes] = await Promise.all([
+          api.get("/auth/me"),
+          api.get("/students/me/grades", {
+            params: {
+              semester: ALL_SEMESTER_KEY,
+              search: "",
+            },
+          }),
+        ]);
         const me = meRes.data?.user;
 
         if (!mounted || !me) return;
@@ -237,7 +238,8 @@ export default function GradesPage() {
           studentCode: gradesRes.data?.profile?.studentCode || me.studentCode || "",
         });
 
-        setPayload(gradesRes.data || { semesters: [], grades: [], stats: {}, subjectStats: [], skillData: [] });
+        setPayload(gradesRes.data || { semesters: [], grades: [], stats: {}, subjectStats: [], skillData: [], scoreDistribution: [] });
+        setPageReady(true);
       } catch {
         if (!mounted) return;
         localStorage.removeItem("token");
@@ -251,34 +253,40 @@ export default function GradesPage() {
     };
   }, [navigate]);
 
+  useEffect(() => {
+    if (!pageReady) return undefined;
+
+    let mounted = true;
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        setError("");
+        const response = await api.get("/students/me/grades", {
+          params: {
+            semester: selectedSemester,
+            search: searchText,
+          },
+        });
+        if (mounted) {
+          setPayload(response.data || { semesters: [], grades: [], stats: {}, subjectStats: [], skillData: [], scoreDistribution: [] });
+        }
+      } catch {
+        if (mounted) setError(t.loadFailed);
+      }
+    }, 180);
+
+    return () => {
+      mounted = false;
+      window.clearTimeout(timeoutId);
+    };
+  }, [pageReady, searchText, selectedSemester, t.loadFailed]);
+
   const semesters = useMemo(
     () => [{ value: ALL_SEMESTER_KEY, label: t.allSemesters }, ...(payload.semesters || []).map((s) => ({ value: s, label: s }))],
     [payload.semesters, t.allSemesters]
   );
 
-  const filteredGrades = useMemo(() => {
-    const source = payload.grades || [];
-    return source.filter((g) => {
-      const semesterMatch = selectedSemester === ALL_SEMESTER_KEY || g.semester === selectedSemester;
-      const text = `${g.subject} ${g.code}`.toLowerCase();
-      const searchMatch = !searchText.trim() || text.includes(searchText.toLowerCase());
-      return semesterMatch && searchMatch;
-    });
-  }, [payload.grades, searchText, selectedSemester]);
-
-  const derivedStats = useMemo(() => {
-    const totalCredits = filteredGrades.reduce((sum, g) => sum + (g.credits || 0), 0);
-    const weighted = filteredGrades.reduce((sum, g) => sum + ((g.avg || 0) * (g.credits || 0)), 0);
-    const avgGPA = totalCredits > 0 ? (weighted / totalCredits).toFixed(2) : "0.00";
-    const passed = filteredGrades.filter((g) => g.status === "Dat").length;
-    return {
-      totalCredits,
-      avgGPA,
-      totalCourses: filteredGrades.length,
-      passedCourses: passed,
-      rank: Number(avgGPA) >= 8.5 ? "A+" : Number(avgGPA) >= 7 ? "A" : Number(avgGPA) >= 5.5 ? "B" : "C",
-    };
-  }, [filteredGrades]);
+  const grades = payload.grades || [];
+  const derivedStats = payload.stats || { avgGPA: 0, totalCredits: 0, totalCourses: 0, passedCourses: 0, rank: "C" };
 
   function handleExportPdf() {
     const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
@@ -315,8 +323,8 @@ export default function GradesPage() {
         normalizePdfText(t.thStatus),
         "Semester",
       ]],
-      body: filteredGrades.map((grade, index) => {
-        const isPassed = grade.status === "Dat";
+      body: grades.map((grade, index) => {
+        const isPassed = grade.statusKey === "passed" || grade.status === "Đạt" || grade.status === "Dat";
         return [
           String(index + 1),
           normalizePdfText(grade.subject),
@@ -355,29 +363,9 @@ export default function GradesPage() {
   }
 
   function handleMenuClick(key) {
-    if (key === "logout") {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("fullName");
-      navigate("/login", { replace: true });
-      return;
+    if (!handleStudentMenuNavigation(key, navigate, "grades")) {
+      setActiveMenu(key);
     }
-    if (key === "home") {
-      navigate("/dashboard");
-      return;
-    }
-    if (key === "grades") {
-      return;
-    }
-    if (key === "forum") {
-      navigate("/forum");
-      return;
-    }
-    if (key === "messages") {
-      navigate("/messages");
-      return;
-    }
-    setActiveMenu(key);
   }
 
   return (
@@ -410,6 +398,8 @@ export default function GradesPage() {
             </button>
           </div>
 
+          {error ? <p className="grades-error">{error}</p> : null}
+
           <div className="grades-stats-grid">
             <article className="grades-stat-card red">
               <div className="grades-stat-top"><TrendingUp size={20} /><span>{t.gpaTag}</span></div>
@@ -440,9 +430,10 @@ export default function GradesPage() {
                 {t.subjectChart}
               </h3>
               <ScoreDistributionChart
-                grades={filteredGrades}
+                distribution={payload.scoreDistribution || []}
                 labels={t.scoreDistribution}
-                emptyLabel={t.noData || "No data"}
+                emptyLabel={t.noData}
+                ariaLabel={t.subjectChart}
               />
             </article>
             <article className="grades-chart-card">
@@ -474,7 +465,9 @@ export default function GradesPage() {
               <ChevronDown size={18} />
             </div>
 
-            <button type="button" className="filter-btn"><Filter size={18} /> {t.filterLabel}</button>
+            <button type="button" className="filter-btn" onClick={() => loadGrades()}>
+              <Filter size={18} /> {t.filterLabel}
+            </button>
           </div>
 
           <div className="grades-table-wrap">
@@ -491,8 +484,8 @@ export default function GradesPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredGrades.map((grade) => {
-                  const isPassed = grade.status === "Dat";
+                {grades.map((grade) => {
+                  const isPassed = grade.statusKey === "passed" || grade.status === "Đạt" || grade.status === "Dat";
                   return (
                     <tr key={grade.id}>
                       <td>

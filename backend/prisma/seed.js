@@ -10,27 +10,27 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({ adapter });
 
 const semesterSeeds = [
-  { code: "2023-1", name: "Hoc ky 1 nam hoc 2023", year: "2023-2024", term: 1, current: false },
-  { code: "2023-2", name: "Hoc ky 2 nam hoc 2023", year: "2023-2024", term: 2, current: false },
-  { code: "2024-1", name: "Hoc ky 1 nam hoc 2024", year: "2024-2025", term: 1, current: false },
-  { code: "2024-2", name: "Hoc ky 2 nam hoc 2024", year: "2024-2025", term: 2, current: false },
-  { code: "2025-1", name: "Hoc ky 1 nam hoc 2025", year: "2025-2026", term: 1, current: false },
-  { code: "2025-2", name: "Hoc ky 2 nam hoc 2025", year: "2025-2026", term: 2, current: true },
+  { code: "2023-1", name: "Học kỳ 1 năm học 2023", year: "2023-2024", term: 1, current: false },
+  { code: "2023-2", name: "Học kỳ 2 năm học 2023", year: "2023-2024", term: 2, current: false },
+  { code: "2024-1", name: "Học kỳ 1 năm học 2024", year: "2024-2025", term: 1, current: false },
+  { code: "2024-2", name: "Học kỳ 2 năm học 2024", year: "2024-2025", term: 2, current: false },
+  { code: "2025-1", name: "Học kỳ 1 năm học 2025", year: "2025-2026", term: 1, current: false },
+  { code: "2025-2", name: "Học kỳ 2 năm học 2025", year: "2025-2026", term: 2, current: true },
 ];
 
 const courseSeeds = [
-  { code: "IT1110", name: "Tin hoc dai cuong", credits: 3 },
-  { code: "IT2002", name: "Co so du lieu", credits: 3 },
-  { code: "IT2020", name: "Lap trinh huong doi tuong", credits: 3 },
-  { code: "IT2030", name: "Cau truc du lieu va giai thuat", credits: 4 },
-  { code: "IT2040", name: "He dieu hanh", credits: 3 },
-  { code: "IT2050", name: "Mang may tinh", credits: 3 },
-  { code: "IT3011", name: "Cong nghe phan mem", credits: 3 },
-  { code: "IT3022", name: "Tri tue nhan tao", credits: 3 },
-  { code: "IT3033", name: "Hoc may", credits: 3 },
-  { code: "IT3044", name: "Phat trien ung dung web", credits: 3 },
-  { code: "IT3055", name: "Bao mat thong tin", credits: 3 },
-  { code: "IT3066", name: "Phan tich du lieu", credits: 3 },
+  { code: "IT1110", name: "Tin học đại cương", credits: 3 },
+  { code: "IT2002", name: "Cơ sở dữ liệu", credits: 3 },
+  { code: "IT2020", name: "Lập trình hướng đối tượng", credits: 3 },
+  { code: "IT2030", name: "Cấu trúc dữ liệu và giải thuật", credits: 4 },
+  { code: "IT2040", name: "Hệ điều hành", credits: 3 },
+  { code: "IT2050", name: "Mạng máy tính", credits: 3 },
+  { code: "IT3011", name: "Công nghệ phần mềm", credits: 3 },
+  { code: "IT3022", name: "Trí tuệ nhân tạo", credits: 3 },
+  { code: "IT3033", name: "Học máy", credits: 3 },
+  { code: "IT3044", name: "Phát triển ứng dụng web", credits: 3 },
+  { code: "IT3055", name: "Bảo mật thông tin", credits: 3 },
+  { code: "IT3066", name: "Phân tích dữ liệu", credits: 3 },
 ];
 
 const gradeSeedRows = [
@@ -60,54 +60,105 @@ const gradeSeedRows = [
 ];
 
 const taskSeeds = [
-  { title: "Hoan thanh bai tap lon Cong nghe phan mem", dueLabel: "Hom nay, 20:00", completed: false, priority: "high" },
-  { title: "On tap chuong cay nhi phan mon CTDL", dueLabel: "Hom nay, 21:30", completed: false, priority: "high" },
-  { title: "Doc truoc slide Machine Learning", dueLabel: "Ngay mai, 08:00", completed: false, priority: "normal" },
-  { title: "Nop bao cao lab Mang may tinh", dueLabel: "Da xong", completed: true, priority: "normal" },
-  { title: "Cap nhat CV ung tuyen thuc tap", dueLabel: "Thu 6", completed: false, priority: "low" },
+  {
+    title: "Nộp bài tập Toán",
+    description: "Bài tập chương 3 - Tích phân",
+    dueDate: "2026-04-29",
+    completed: false,
+    priority: "high",
+    category: "Học tập",
+  },
+  {
+    title: "Họp nhóm dự án CNPM",
+    description: "Review sprint 2 và planning sprint 3",
+    dueDate: "2026-04-28",
+    completed: false,
+    priority: "medium",
+    category: "Dự án",
+  },
+  {
+    title: "Ôn tập CTDL",
+    description: "Ôn lại phần cây nhị phân và đồ thị",
+    dueDate: "2026-04-30",
+    completed: false,
+    priority: "high",
+    category: "Học tập",
+  },
+  {
+    title: "Mượn sách thư viện",
+    description: "Sách: Introduction to Algorithms",
+    dueDate: "2026-04-28",
+    completed: true,
+    priority: "low",
+    category: "Khác",
+  },
+  {
+    title: "Chuẩn bị slide thuyết trình",
+    description: "Bài thuyết trình môn Mạng máy tính",
+    dueDate: "2026-05-01",
+    completed: false,
+    priority: "medium",
+    category: "Học tập",
+  },
+];
+
+const scheduleClassSeeds = [
+  { courseCode: "IT3011", subject: "Công nghệ phần mềm", type: "Lý thuyết", start: "08:00", end: "10:00", room: "D3-301", day: 1, color: "blue" },
+  { courseCode: "IT3033", subject: "Học máy", type: "Thực hành", start: "10:15", end: "12:00", room: "D5-205", day: 1, color: "purple" },
+  { courseCode: "IT2030", subject: "Cấu trúc dữ liệu", type: "Lý thuyết", start: "14:00", end: "16:00", room: "D3-101", day: 2, color: "red" },
+  { courseCode: "IT3044", subject: "Phát triển Web", type: "Thực hành", start: "08:00", end: "10:00", room: "Lab 402", day: 3, color: "green" },
+  { courseCode: "IT2050", subject: "Mạng máy tính", type: "Lý thuyết", start: "13:00", end: "15:00", room: "D9-201", day: 3, color: "orange" },
+  { courseCode: "IT2040", subject: "Hệ điều hành", type: "Lý thuyết", start: "08:00", end: "10:00", room: "D3-204", day: 4, color: "pink" },
+  { courseCode: "IT2002", subject: "Quản trị CSDL", type: "Thực hành", start: "15:00", end: "17:00", room: "Lab 305", day: 5, color: "indigo" },
+];
+
+const scheduleEventSeeds = [
+  { title: "Kiểm tra giữa kỳ CTDL", date: "2026-05-05", time: "08:00", type: "exam", color: "red" },
+  { title: "Nộp bài tập lớn Web", date: "2026-05-10", time: "23:59", type: "assignment", color: "blue" },
+  { title: "Thuyết trình nhóm CNPM", date: "2026-05-15", time: "14:00", type: "presentation", color: "green" },
 ];
 
 const forumCategorySeeds = [
-  { name: "Hoc tap", slug: "hoc-tap", description: "Trao doi tai lieu, bai tap va kinh nghiem hoc tap", icon: "TrendingUp", color: "blue", sortOrder: 1 },
-  { name: "Thac mac", slug: "thac-mac", description: "Dat cau hoi va nhan giai dap tu cong dong", icon: "MessageCircle", color: "purple", sortOrder: 2 },
-  { name: "Chia se", slug: "chia-se", description: "Chia se kinh nghiem, co hoi va cau chuyen sinh vien", icon: "Star", color: "green", sortOrder: 3 },
+  { name: "Học tập", slug: "hoc-tap", description: "Trao đổi tài liệu, bài tập và kinh nghiệm học tập", icon: "TrendingUp", color: "blue", sortOrder: 1 },
+  { name: "Thắc mắc", slug: "thac-mac", description: "Đặt câu hỏi và nhận giải đáp từ cộng đồng", icon: "MessageCircle", color: "purple", sortOrder: 2 },
+  { name: "Chia sẻ", slug: "chia-se", description: "Chia sẻ kinh nghiệm, cơ hội và câu chuyện sinh viên", icon: "Star", color: "green", sortOrder: 3 },
 ];
 
 const forumUserSeeds = [
-  { email: "nguyenvana@ilovehust.local", phone: "0920000001", fullName: "Nguyen Van A", studentCode: "20240001" },
-  { email: "tranthib@ilovehust.local", phone: "0920000002", fullName: "Tran Thi B", studentCode: "20240002" },
-  { email: "levanc@ilovehust.local", phone: "0920000003", fullName: "Le Van C", studentCode: "20240003" },
-  { email: "phamthid@ilovehust.local", phone: "0920000004", fullName: "Pham Thi D", studentCode: "20240004" },
-  { email: "hoangvane@ilovehust.local", phone: "0920000005", fullName: "Hoang Van E", studentCode: "20240005" },
+  { email: "nguyenvana@ilovehust.local", phone: "0920000001", fullName: "Nguyễn Văn A", studentCode: "20240001" },
+  { email: "tranthib@ilovehust.local", phone: "0920000002", fullName: "Trần Thị B", studentCode: "20240002" },
+  { email: "levanc@ilovehust.local", phone: "0920000003", fullName: "Lê Văn C", studentCode: "20240003" },
+  { email: "phamthid@ilovehust.local", phone: "0920000004", fullName: "Phạm Thị D", studentCode: "20240004" },
+  { email: "hoangvane@ilovehust.local", phone: "0920000005", fullName: "Hoàng Văn E", studentCode: "20240005" },
 ];
 
 const forumPostSeeds = [
   {
     authorEmail: "nguyenvana@ilovehust.local",
     categorySlug: "hoc-tap",
-    title: "Can tai lieu on tap mon Cau truc du lieu va giai thuat",
+    title: "Cần tài liệu ôn tập môn Cấu trúc dữ liệu và giải thuật",
     content:
-      "Minh dang chuan bi cho ky thi cuoi ky mon CTDL. Cac ban co tai lieu hay de on tap khong? Dac biet la phan cay nhi phan va do thi.",
-    tags: ["CTDL", "Tai lieu", "On tap"],
+      "Mình đang chuẩn bị cho kỳ thi cuối kỳ môn CTDL. Các bạn có tài liệu hay để ôn tập không? Đặc biệt là phần cây nhị phân và đồ thị.",
+    tags: ["CTDL", "Tài liệu", "Ôn tập"],
     isHot: true,
     viewCount: 186,
     comments: [
-      "Ban xem lai slide thay co cho tren Teams, phan do thi kha sat de thi.",
-      "Minh co file tong hop bai tap, de minh gui len group lop.",
+      "Bạn xem lại slide thầy cô cho trên Teams, phần đồ thị khá sát đề thi.",
+      "Mình có file tổng hợp bài tập, để mình gửi lên group lớp.",
     ],
   },
   {
     authorEmail: "tranthib@ilovehust.local",
     categorySlug: "thac-mac",
-    title: "Lam the nao de cai thien performance trong JavaScript?",
+    title: "Làm thế nào để cải thiện performance trong JavaScript?",
     content:
-      "Em dang lam project web va gap van de ve hieu suat khi xu ly nhieu data. Moi nguoi co tips nao ve render va cache khong a?",
+      "Em đang làm project web và gặp vấn đề về hiệu suất khi xử lý nhiều data. Mọi người có tips nào về render và cache không ạ?",
     tags: ["JavaScript", "Performance", "Web Dev"],
     isHot: false,
     viewCount: 94,
     comments: [
-      "Thu kiem tra lai dependency array trong useEffect va tranh render lai list qua nhieu.",
-      "Neu list lon thi nen dung pagination hoac virtual list.",
+      "Thử kiểm tra lại dependency array trong useEffect và tránh render lại list quá nhiều.",
+      "Nếu list lớn thì nên dùng pagination hoặc virtual list.",
     ],
   },
   {
@@ -115,42 +166,42 @@ const forumPostSeeds = [
     categorySlug: "chia-se",
     title: "Share kinh nghiem phong van thuc tap tai FPT Software",
     content:
-      "Vua pass phong van intern FPT, minh chia se mot so kinh nghiem. Round 1 test logic, round 2 hoi project va kien thuc OOP, database.",
-    tags: ["Thuc tap", "FPT", "Phong van"],
+      "Vừa pass phỏng vấn intern FPT, mình chia sẻ một số kinh nghiệm. Round 1 test logic, round 2 hỏi project và kiến thức OOP, database.",
+    tags: ["Thực tập", "FPT", "Phỏng vấn"],
     isHot: true,
     viewCount: 271,
     comments: [
-      "Cam on ban, phan hoi project co can demo san pham khong?",
-      "Minh thay nen chuan bi them SQL join va transaction.",
-      "Bai viet huu ich qua.",
+      "Cảm ơn bạn, phần hỏi project có cần demo sản phẩm không?",
+      "Mình thấy nên chuẩn bị thêm SQL join và transaction.",
+      "Bài viết hữu ích quá.",
     ],
   },
   {
     authorEmail: "phamthid@ilovehust.local",
     categorySlug: "hoc-tap",
-    title: "Tim teammate cho do an cuoi ky mon Cong nghe phan mem",
+    title: "Tìm teammate cho đồ án cuối kỳ môn Công nghệ phần mềm",
     content:
-      "Minh can tim them 2 ban lam team do an CNPM. Topic la xay dung he thong quan ly thu vien, uu tien ban biet React hoac Node.js.",
-    tags: ["Do an", "CNPM", "Team"],
+      "Mình cần tìm thêm 2 bạn làm team đồ án CNPM. Topic là xây dựng hệ thống quản lý thư viện, ưu tiên bạn biết React hoặc Node.js.",
+    tags: ["Đồ án", "CNPM", "Team"],
     isHot: false,
     viewCount: 83,
     comments: [
-      "Minh co the phu trach backend Node.js.",
-      "Team da co thiet ke database chua ban?",
+      "Mình có thể phụ trách backend Node.js.",
+      "Team đã có thiết kế database chưa bạn?",
     ],
   },
   {
     authorEmail: "hoangvane@ilovehust.local",
     categorySlug: "thac-mac",
-    title: "Hoc Machine Learning nen bat dau tu dau?",
+    title: "Học Machine Learning nên bắt đầu từ đâu?",
     content:
-      "Em moi nam 2 va muon tim hieu ve ML. Anh chi co the recommend roadmap, mon nen hoc truoc va tai lieu phu hop khong a?",
+      "Em mới năm 2 và muốn tìm hiểu về ML. Anh chị có thể recommend roadmap, môn nên học trước và tài liệu phù hợp không ạ?",
     tags: ["Machine Learning", "AI", "Roadmap"],
     isHot: true,
     viewCount: 238,
     comments: [
-      "Nen hoc chac xac suat thong ke va dai so tuyen tinh truoc.",
-      "Ban co the bat dau voi Python, numpy, pandas roi sang scikit-learn.",
+      "Nên học chắc xác suất thống kê và đại số tuyến tính trước.",
+      "Bạn có thể bắt đầu với Python, numpy, pandas rồi sang scikit-learn.",
     ],
   },
 ];
@@ -167,10 +218,10 @@ const chatSeeds = [
     ],
     unreadForStudent: 3,
     messages: [
-      { sender: "nguyenvana@ilovehust.local", content: "Chao moi nguoi!", minutesAgo: 120 },
-      { sender: "student@ilovehust.local", content: "Hi, hom nay minh trao doi bai CTDL nhe.", minutesAgo: 116 },
-      { sender: "tranthib@ilovehust.local", content: "Minh dang mac phan cay nhi phan tim kiem.", minutesAgo: 84 },
-      { sender: "levanc@ilovehust.local", content: "Mai minh hop luc 2pm nhe cac ban.", minutesAgo: 30 },
+      { sender: "nguyenvana@ilovehust.local", content: "Chào mọi người!", minutesAgo: 120 },
+      { sender: "student@ilovehust.local", content: "Hi, hôm nay mình trao đổi bài CTDL nhé.", minutesAgo: 116 },
+      { sender: "tranthib@ilovehust.local", content: "Mình đang mắc phần cây nhị phân tìm kiếm.", minutesAgo: 84 },
+      { sender: "levanc@ilovehust.local", content: "Mai mình họp lúc 2pm nhé các bạn.", minutesAgo: 30 },
     ],
   },
   {
@@ -178,10 +229,10 @@ const chatSeeds = [
     members: ["student@ilovehust.local", "nguyenvana@ilovehust.local"],
     unreadForStudent: 0,
     messages: [
-      { sender: "nguyenvana@ilovehust.local", content: "Bai tap hom nay kho qua ban oi.", minutesAgo: 190 },
-      { sender: "student@ilovehust.local", content: "Ban dang vuong bai nao?", minutesAgo: 184 },
-      { sender: "nguyenvana@ilovehust.local", content: "Bai insert va delete trong BST ay.", minutesAgo: 181 },
-      { sender: "student@ilovehust.local", content: "Ok de minh gui tai lieu phan do cho ban.", minutesAgo: 176 },
+      { sender: "nguyenvana@ilovehust.local", content: "Bài tập hôm nay khó quá bạn ơi.", minutesAgo: 190 },
+      { sender: "student@ilovehust.local", content: "Bạn đang vướng bài nào?", minutesAgo: 184 },
+      { sender: "nguyenvana@ilovehust.local", content: "Bài insert và delete trong BST ấy.", minutesAgo: 181 },
+      { sender: "student@ilovehust.local", content: "Ok để mình gửi tài liệu phần đó cho bạn.", minutesAgo: 176 },
     ],
   },
   {
@@ -189,8 +240,8 @@ const chatSeeds = [
     members: ["student@ilovehust.local", "tranthib@ilovehust.local"],
     unreadForStudent: 0,
     messages: [
-      { sender: "student@ilovehust.local", content: "Minh da xem pull request cua ban roi.", minutesAgo: 1500 },
-      { sender: "tranthib@ilovehust.local", content: "Thanks ban nhieu nhe!", minutesAgo: 1440 },
+      { sender: "student@ilovehust.local", content: "Mình đã xem pull request của bạn rồi.", minutesAgo: 1500 },
+      { sender: "tranthib@ilovehust.local", content: "Thanks bạn nhiều nhé!", minutesAgo: 1440 },
     ],
   },
   {
@@ -204,8 +255,8 @@ const chatSeeds = [
     ],
     unreadForStudent: 1,
     messages: [
-      { sender: "phamthid@ilovehust.local", content: "Code da push len Github roi nhe.", minutesAgo: 1340 },
-      { sender: "hoangvane@ilovehust.local", content: "Toi nay minh review UI tiep.", minutesAgo: 1320 },
+      { sender: "phamthid@ilovehust.local", content: "Code đã push lên Github rồi nhé.", minutesAgo: 1340 },
+      { sender: "hoangvane@ilovehust.local", content: "Tối nay mình review UI tiếp.", minutesAgo: 1320 },
     ],
   },
   {
@@ -213,7 +264,7 @@ const chatSeeds = [
     members: ["student@ilovehust.local", "levanc@ilovehust.local"],
     unreadForStudent: 0,
     messages: [
-      { sender: "levanc@ilovehust.local", content: "Oke ban, cam on ban nha.", minutesAgo: 2880 },
+      { sender: "levanc@ilovehust.local", content: "Oke bạn, cảm ơn bạn nha.", minutesAgo: 2880 },
     ],
   },
 ];
@@ -315,7 +366,7 @@ async function main() {
     where: { userId: student.id },
     update: {
       majorId: major.id,
-      fullName: "Nguyen Van A",
+      fullName: "Nguyễn Văn A",
       studentCode: "20241234",
       schoolYear: 3,
       gpa: "3.75",
@@ -326,7 +377,7 @@ async function main() {
     create: {
       userId: student.id,
       majorId: major.id,
-      fullName: "Nguyen Van A",
+      fullName: "Nguyễn Văn A",
       studentCode: "20241234",
       schoolYear: 3,
       gpa: "3.75",
@@ -408,13 +459,49 @@ async function main() {
   });
 
   await prisma.studentTask.createMany({
-    data: taskSeeds.map((item, index) => ({
+    data: taskSeeds.map((item) => ({
       userId: student.id,
       title: item.title,
-      dueAt: new Date(Date.now() + (index + 1) * 60 * 60 * 1000),
-      dueLabel: item.dueLabel,
+      description: item.description,
+      dueAt: new Date(`${item.dueDate}T00:00:00.000Z`),
+      dueLabel: item.dueDate,
       completed: item.completed,
       priority: item.priority,
+      category: item.category,
+    })),
+  });
+
+  await prisma.studentScheduleEvent.deleteMany({
+    where: { userId: student.id },
+  });
+
+  await prisma.studentScheduleClass.deleteMany({
+    where: { userId: student.id },
+  });
+
+  await prisma.studentScheduleClass.createMany({
+    data: scheduleClassSeeds.map((item) => ({
+      userId: student.id,
+      courseId: courses[item.courseCode]?.id || null,
+      semesterId: semesters["2025-2"].id,
+      subject: item.subject,
+      classType: item.type,
+      weekday: item.day,
+      startTime: item.start,
+      endTime: item.end,
+      room: item.room,
+      color: item.color,
+    })),
+  });
+
+  await prisma.studentScheduleEvent.createMany({
+    data: scheduleEventSeeds.map((item) => ({
+      userId: student.id,
+      title: item.title,
+      eventDate: new Date(`${item.date}T00:00:00.000Z`),
+      eventTime: item.time,
+      eventType: item.type,
+      color: item.color,
     })),
   });
 
@@ -526,7 +613,7 @@ async function main() {
     }
   }
 
-  console.log("Seed done with grades, tasks, forum, and chat demo data");
+  console.log("Seed done with grades, tasks, schedule, forum, and chat demo data");
 }
 
 main()
