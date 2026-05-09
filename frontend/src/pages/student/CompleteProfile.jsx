@@ -25,11 +25,7 @@ import "./CompleteProfile.css";
 
 const I18N = COMPLETE_PROFILE_TEXT;
 
-const COURSE_OPTIONS = [
-  { value: "general", label: { vi: "Dai cuong", ja: "\u4e00\u822c" } },
-  { value: "advanced", label: { vi: "Nang cao", ja: "\u5c02\u9580" } },
-  { value: "research", label: { vi: "Nghien cuu", ja: "\u7814\u7a76" } },
-];
+const COURSE_OPTIONS = ["general", "advanced", "research"];
 
 function getSchoolYearFromAdmissionYear(admissionYear) {
   if (!admissionYear) {
@@ -52,6 +48,13 @@ function formatValue(value) {
     return "-";
   }
   return String(value);
+}
+
+function getGenderLabel(value, text) {
+  if (value === "male") return text.genderMale;
+  if (value === "female") return text.genderFemale;
+  if (value === "other") return text.genderOther;
+  return value;
 }
 
 export default function CompleteProfile() {
@@ -81,7 +84,7 @@ export default function CompleteProfile() {
     schoolYear: "",
   });
 
-  const t = useMemo(() => I18N[language] || I18N.ja, [language]);
+  const t = useMemo(() => I18N[language] || I18N.vi, [language]);
 
   const yearOptions = useMemo(() => {
     const currentYear = new Date().getFullYear();
@@ -381,7 +384,7 @@ export default function CompleteProfile() {
                 <div className="cp-avatar-circle">
                   <User size={44} />
                 </div>
-                <button className="cp-avatar-edit" type="button" aria-label="edit avatar">
+                <button className="cp-avatar-edit" type="button" aria-label={t.editAvatarAria}>
                   <Camera size={14} />
                 </button>
               </div>
@@ -535,8 +538,8 @@ export default function CompleteProfile() {
                     >
                       <option value="">{t.choose}</option>
                       {COURSE_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label[language] || option.label.vi}
+                        <option key={option} value={option}>
+                          {t.courseOptions[option]}
                         </option>
                       ))}
                     </select>
@@ -636,7 +639,7 @@ export default function CompleteProfile() {
                   </div>
                   <div>
                     <span>{t.pGender}</span>
-                    <p>{formatValue(form.gender)}</p>
+                    <p>{formatValue(getGenderLabel(form.gender, t))}</p>
                   </div>
                   <div className="cp-review-span-all">
                     <span>{t.pAddress}</span>
@@ -660,7 +663,7 @@ export default function CompleteProfile() {
                     <span>{t.pCourse}</span>
                     <p>
                       {formatValue(
-                        COURSE_OPTIONS.find((option) => option.value === form.course)?.label[language]
+                        t.courseOptions[form.course]
                       )}
                     </p>
                   </div>

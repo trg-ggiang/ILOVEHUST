@@ -1,8 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+JP:wght@400;500;600;700&display=swap");
+
 :root {
-  font-family:
-    "Inter",
-    "Noto Sans JP",
+  --app-font-family:
     "Noto Sans",
+    "Noto Sans JP",
     "Segoe UI",
     system-ui,
     -apple-system,
@@ -10,6 +11,9 @@
     "Helvetica Neue",
     Arial,
     sans-serif;
+
+  font-family:
+    var(--app-font-family);
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -46,7 +50,7 @@ html,
 body {
   margin: 0;
   min-width: 320px;
-  font-family: inherit;
+  font-family: var(--app-font-family);
   color: #111827;
   background: #f8fafc;
   scrollbar-width: none;

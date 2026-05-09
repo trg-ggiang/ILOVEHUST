@@ -111,7 +111,7 @@ function ScoreDistributionChart({ distribution = [], labels, emptyLabel, ariaLab
   );
 }
 
-function RadarChartBlock({ data }) {
+function RadarChartBlock({ data, ariaLabel }) {
   const cx = 160;
   const cy = 140;
   const radius = 96;
@@ -132,7 +132,7 @@ function RadarChartBlock({ data }) {
   const polygon = points.map((p) => `${p.x},${p.y}`).join(" ");
 
   return (
-    <svg viewBox="0 0 320 280" className="grades-radar" role="img" aria-label="Biểu đồ kỹ năng">
+    <svg viewBox="0 0 320 280" className="grades-radar" role="img" aria-label={ariaLabel}>
       {levels.map((level) => {
         const r = (level / 100) * radius;
         const ringPoints = data
@@ -170,6 +170,13 @@ function RadarChartBlock({ data }) {
       ))}
     </svg>
   );
+}
+
+function localizeSkillData(data, labels = {}) {
+  return (data || []).map((item) => ({
+    ...item,
+    skill: labels[item.skill] || item.skill,
+  }));
 }
 
 export default function GradesPage() {
@@ -287,10 +294,13 @@ export default function GradesPage() {
 
   const grades = payload.grades || [];
   const derivedStats = payload.stats || { avgGPA: 0, totalCredits: 0, totalCourses: 0, passedCourses: 0, rank: "C" };
+  const localizedSkillData = useMemo(
+    () => localizeSkillData(payload.skillData, t.skillLabels),
+    [payload.skillData, t.skillLabels]
+  );
 
   function handleExportPdf() {
     const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
-    const title = language === "ja" ? "Grade Transcript" : "Bang diem";
     const studentLine = `${profile.fullName || "-"} - ${profile.studentCode || "-"}`;
     const semesterLine =
       selectedSemester === ALL_SEMESTER_KEY
@@ -298,11 +308,11 @@ export default function GradesPage() {
         : selectedSemester;
 
     doc.setFontSize(18);
-    doc.text(normalizePdfText(title), 40, 42);
+    doc.text(normalizePdfText(t.pdfTitle), 40, 42);
     doc.setFontSize(11);
     doc.text(normalizePdfText(studentLine), 40, 62);
     doc.text(
-      normalizePdfText(`Semester: ${semesterLine} | GPA: ${derivedStats.avgGPA} | Credits: ${derivedStats.totalCredits}`),
+      normalizePdfText(`${t.pdfSemester}: ${semesterLine} | ${t.pdfGpa}: ${derivedStats.avgGPA} | ${t.pdfCredits}: ${derivedStats.totalCredits}`),
       40,
       78
     );
@@ -321,7 +331,7 @@ export default function GradesPage() {
         normalizePdfText(t.thFinal),
         normalizePdfText(t.thAvg),
         normalizePdfText(t.thStatus),
-        "Semester",
+        normalizePdfText(t.pdfSemester),
       ]],
       body: grades.map((grade, index) => {
         const isPassed = grade.statusKey === "passed" || grade.status === "Đạt" || grade.status === "Dat";
@@ -351,7 +361,7 @@ export default function GradesPage() {
       didDrawPage: () => {
         doc.setFontSize(9);
         doc.text(
-          normalizePdfText(`Generated at ${new Date().toLocaleString()}`),
+          normalizePdfText(`${t.pdfGeneratedAt} ${new Date().toLocaleString(language === "ja" ? "ja-JP" : "vi-VN")}`),
           40,
           doc.internal.pageSize.getHeight() - 20
         );
@@ -441,7 +451,7 @@ export default function GradesPage() {
                 <span className="chart-icon blue"><Zap size={19} /></span>
                 {t.skillChart}
               </h3>
-              <RadarChartBlock data={payload.skillData || []} />
+              <RadarChartBlock data={localizedSkillData} ariaLabel={t.skillChart} />
             </article>
           </div>
 

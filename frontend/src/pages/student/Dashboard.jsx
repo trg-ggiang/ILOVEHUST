@@ -48,6 +48,20 @@ function wait(ms) {
   });
 }
 
+function formatTaskTime(task, language, text) {
+  const rawLabel = String(task?.dueLabel || task?.time || "").trim();
+
+  if (["Hôm nay", "Hom nay", "今日"].includes(rawLabel)) {
+    return text.taskDefaultTime;
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(rawLabel)) {
+    return new Date(`${rawLabel}T00:00:00`).toLocaleDateString(language === "ja" ? "ja-JP" : "vi-VN");
+  }
+
+  return rawLabel || text.taskDefaultTime;
+}
+
 function GpaAreaChart({ data, emptyLabel, chartLabel }) {
   const width = 640;
   const height = 300;
@@ -460,7 +474,7 @@ export default function Dashboard() {
                       <span className="task-check" aria-hidden="true">{task.completed ? "✓" : ""}</span>
                       <div className="task-copy">
                         <strong>{task.task}</strong>
-                        <p>{task.time}</p>
+                        <p>{formatTaskTime(task, language, t)}</p>
                       </div>
                     </button>
                   ))}

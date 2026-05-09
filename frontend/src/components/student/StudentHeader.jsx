@@ -6,7 +6,7 @@ export default function StudentHeader({
   fullName,
   studentCode,
   onSearchChange,
-  language = "ja",
+  language = "vi",
   onLanguageChange,
   onToggleSidebar,
 }) {

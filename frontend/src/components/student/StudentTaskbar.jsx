@@ -35,7 +35,7 @@ const SECONDARY_ITEMS = [
 export default function StudentTaskbar({
   activeKey = "home",
   onMenuClick,
-  language = "ja",
+  language = "vi",
   isOpen = true,
   onClose,
 }) {
