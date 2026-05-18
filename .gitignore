@@ -1,2 +1,5 @@
 node_modules/
 backend/uploads/
+dist/
+backend/dist/
+frontend/dist/

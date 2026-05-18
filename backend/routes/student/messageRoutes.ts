@@ -4,6 +4,7 @@ import path from "path";
 import multer from "multer";
 import prisma from "../../database.js";
 import authMiddleware from "../../middleware/authMiddleware.js";
+import { createMessageNotifications } from "../../utils/notifications.js";
 
 const router = express.Router();
 const uploadDir = path.resolve("uploads/messages");
@@ -84,6 +85,20 @@ function toAttachmentResponse(attachment) {
     mimeType: attachment.mimeType,
     fileSize: attachment.fileSize,
     isImage: attachment.mimeType.startsWith("image/"),
+  };
+}
+
+function toStudentSearchResponse(user) {
+  const profile = user.studentProfile;
+  const name = getDisplayName(user);
+
+  return {
+    id: user.id,
+    fullName: name,
+    studentCode: profile?.studentCode || "",
+    email: user.email,
+    avatarInitial: getInitial(name),
+    online: isOnline(user),
   };
 }
 
@@ -222,6 +237,156 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/students/search", authMiddleware, async (req, res) => {
+  try {
+    const query = String(req.query?.q || "").trim();
+
+    if (query.length < 2) {
+      return res.json({ students: [] });
+    }
+
+    const students = await prisma.user.findMany({
+      where: {
+        id: { not: req.user.id },
+        role: 1,
+        isActive: true,
+        studentProfile: {
+          is: {
+            profileCompleted: true,
+          },
+        },
+        OR: [
+          { email: { contains: query, mode: "insensitive" } },
+          {
+            studentProfile: {
+              is: {
+                studentCode: { contains: query, mode: "insensitive" },
+              },
+            },
+          },
+          {
+            studentProfile: {
+              is: {
+                fullName: { contains: query, mode: "insensitive" },
+              },
+            },
+          },
+        ],
+      },
+      include: { studentProfile: true },
+      orderBy: [
+        { studentProfile: { studentCode: "asc" } },
+        { email: "asc" },
+      ],
+      take: 12,
+    });
+
+    return res.json({ students: students.map(toStudentSearchResponse) });
+  } catch (error) {
+    console.error("SEARCH STUDENTS ERROR:", error);
+    return res.status(500).json({ message: "Lỗi server khi tìm sinh viên" });
+  }
+});
+
+router.post("/direct", authMiddleware, async (req, res) => {
+  try {
+    const targetUserId = Number(req.body?.userId);
+
+    if (!Number.isInteger(targetUserId) || targetUserId <= 0 || targetUserId === req.user.id) {
+      return res.status(400).json({ message: "Sinh viên không hợp lệ" });
+    }
+
+    const targetUser = await prisma.user.findFirst({
+      where: {
+        id: targetUserId,
+        role: 1,
+        isActive: true,
+        studentProfile: {
+          is: {
+            profileCompleted: true,
+          },
+        },
+      },
+      select: { id: true },
+    });
+
+    if (!targetUser) {
+      return res.status(404).json({ message: "Không tìm thấy sinh viên" });
+    }
+
+    const existing = await prisma.conversation.findFirst({
+      where: {
+        type: "direct",
+        AND: [
+          { members: { some: { userId: req.user.id, isArchived: false } } },
+          { members: { some: { userId: targetUserId, isArchived: false } } },
+        ],
+      },
+      include: {
+        members: {
+          include: {
+            user: {
+              include: { studentProfile: true },
+            },
+          },
+        },
+        messages: {
+          orderBy: { createdAt: "asc" },
+          include: {
+            sender: {
+              include: { studentProfile: true },
+            },
+            attachments: true,
+          },
+        },
+      },
+    });
+
+    const conversation =
+      existing ||
+      (await prisma.conversation.create({
+        data: {
+          type: "direct",
+          createdById: req.user.id,
+          members: {
+            create: [
+              { userId: req.user.id },
+              { userId: targetUserId },
+            ],
+          },
+        },
+        include: {
+          members: {
+            include: {
+              user: {
+                include: { studentProfile: true },
+              },
+            },
+          },
+          messages: {
+            orderBy: { createdAt: "asc" },
+            include: {
+              sender: {
+                include: { studentProfile: true },
+              },
+              attachments: true,
+            },
+          },
+        },
+      }));
+
+    const conversations = await getConversationList(req.user.id);
+
+    return res.status(existing ? 200 : 201).json({
+      conversation: toConversationDetail(conversation, req.user.id),
+      conversations,
+    });
+  } catch (error) {
+    console.error("START DIRECT CHAT ERROR:", error);
+    return res.status(500).json({ message: "Lỗi server khi tạo cuộc trò chuyện" });
+  }
+});
+
 router.get("/:conversationId", authMiddleware, async (req, res) => {
   try {
     const conversationId = Number(req.params.conversationId);
@@ -329,22 +494,23 @@ router.post("/:conversationId/messages", authMiddleware, async (req, res) => {
       return res.status(404).json({ message: "Không tìm thấy cuộc trò chuyện" });
     }
 
-    await prisma.$transaction([
-      prisma.message.create({
+    await prisma.$transaction(async (tx) => {
+      const message = await tx.message.create({
         data: {
           conversationId,
           senderId: req.user.id,
           content,
         },
-      }),
-      prisma.conversation.update({
+      });
+
+      await tx.conversation.update({
         where: { id: conversationId },
         data: { updatedAt: new Date() },
-      }),
-      ...conversation.members
-        .filter((member) => member.userId !== req.user.id)
-        .map((member) =>
-          prisma.conversationMember.update({
+      });
+
+      for (const member of conversation.members) {
+        if (member.userId !== req.user.id) {
+          await tx.conversationMember.update({
             where: {
               conversationId_userId: {
                 conversationId,
@@ -354,9 +520,16 @@ router.post("/:conversationId/messages", authMiddleware, async (req, res) => {
             data: {
               unreadCount: { increment: 1 },
             },
-          })
-        ),
-    ]);
+          });
+        }
+      }
+
+      const sender = await tx.user.findUnique({
+        where: { id: req.user.id },
+        include: { studentProfile: true },
+      });
+      await createMessageNotifications(tx, { conversation, sender, message });
+    });
 
     const updatedConversation = await findConversationForUser(conversationId, req.user.id);
     const conversations = await getConversationList(req.user.id);
@@ -447,6 +620,12 @@ router.post("/:conversationId/attachments", authMiddleware, upload.array("files"
           });
         }
       }
+
+      const sender = await tx.user.findUnique({
+        where: { id: req.user.id },
+        include: { studentProfile: true },
+      });
+      await createMessageNotifications(tx, { conversation, sender, message });
     });
 
     const updatedConversation = await findConversationForUser(conversationId, req.user.id);

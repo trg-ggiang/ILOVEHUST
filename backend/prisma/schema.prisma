@@ -31,6 +31,8 @@ model User {
   forumPosts           ForumPost[]
   forumComments        ForumComment[]
   forumPostLikes       ForumPostLike[]
+  notifications        Notification[]         @relation("NotificationRecipient")
+  notificationActions  Notification[]         @relation("NotificationActor")
 
   @@map("users")
 }
@@ -328,4 +330,28 @@ model ForumPostLike {
   @@unique([postId, userId])
   @@index([userId])
   @@map("forum_post_likes")
+}
+
+model Notification {
+  id         Int       @id @default(autoincrement())
+  userId     Int       @map("user_id")
+  actorId    Int?      @map("actor_id")
+  type       String
+  title      String
+  message    String    @db.Text
+  link       String?
+  entityType String?   @map("entity_type")
+  entityId   Int?      @map("entity_id")
+  dedupeKey  String?   @unique @map("dedupe_key")
+  metadata   Json?
+  readAt     DateTime? @map("read_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  user  User  @relation("NotificationRecipient", fields: [userId], references: [id], onDelete: Cascade)
+  actor User? @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([userId, readAt, createdAt])
+  @@index([type])
+  @@index([entityType, entityId])
+  @@map("notifications")
 }

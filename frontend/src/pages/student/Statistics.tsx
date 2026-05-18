@@ -360,6 +360,7 @@ export default function StatisticsPage() {
           <section className="statistics-achievement-card">
             <h3><Award size={28} /> {t.achievements}</h3>
             <div className="statistics-achievement-grid">
+              {achievements.length === 0 ? <p className="empty-text">{t.noAchievements}</p> : null}
               {achievements.map((achievement) => {
                 const Icon = ACHIEVEMENT_ICONS[achievement.key] || Award;
                 const translated = t.achievementsByKey[achievement.key];
@@ -407,6 +408,7 @@ export default function StatisticsPage() {
             <article className="statistics-goal-card">
               <h3>{t.nextGoals}</h3>
               <div className="statistics-goal-list">
+                {goals.length === 0 ? <p className="empty-text">{t.noGoals}</p> : null}
                 {goals.map((goal) => {
                   const translated = t.goalsByKey[goal.key];
                   return (

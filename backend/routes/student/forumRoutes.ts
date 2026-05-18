@@ -1,6 +1,7 @@
 import express from "express";
 import prisma from "../../database.js";
 import authMiddleware from "../../middleware/authMiddleware.js";
+import { createForumCommentNotification, createForumLikeNotification } from "../../utils/notifications.js";
 
 const router = express.Router();
 
@@ -226,11 +227,22 @@ router.post("/posts/:postId/likes", authMiddleware, async (req, res) => {
     if (existing) {
       await prisma.forumPostLike.delete({ where: { id: existing.id } });
     } else {
-      await prisma.forumPostLike.create({
-        data: {
-          postId,
-          userId: req.user.id,
-        },
+      await prisma.$transaction(async (tx) => {
+        await tx.forumPostLike.create({
+          data: {
+            postId,
+            userId: req.user.id,
+          },
+        });
+
+        const [post, actor] = await Promise.all([
+          tx.forumPost.findUnique({ where: { id: postId } }),
+          tx.user.findUnique({
+            where: { id: req.user.id },
+            include: { studentProfile: true },
+          }),
+        ]);
+        await createForumLikeNotification(tx, { post, actor });
       });
     }
 
@@ -254,12 +266,23 @@ router.post("/posts/:postId/comments", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "Nội dung bình luận không được để trống" });
     }
 
-    await prisma.forumComment.create({
-      data: {
-        postId,
-        authorId: req.user.id,
-        content,
-      },
+    await prisma.$transaction(async (tx) => {
+      const comment = await tx.forumComment.create({
+        data: {
+          postId,
+          authorId: req.user.id,
+          content,
+        },
+      });
+
+      const [post, actor] = await Promise.all([
+        tx.forumPost.findUnique({ where: { id: postId } }),
+        tx.user.findUnique({
+          where: { id: req.user.id },
+          include: { studentProfile: true },
+        }),
+      ]);
+      await createForumCommentNotification(tx, { post, comment, actor });
     });
 
     return res.status(201).json(await getForumPayload(req));

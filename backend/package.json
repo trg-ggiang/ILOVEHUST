@@ -2,12 +2,13 @@
   "name": "backend",
   "version": "1.0.0",
   "type": "module",
-  "main": "server.js",
+  "main": "dist/server.js",
   "scripts": {
     "prisma:generate": "prisma generate",
-    "seed:check": "node prisma/checkSeed.js",
-    "dev": "npm run prisma:generate && node --watch server.js",
-    "start": "node server.js"
+    "seed:check": "tsx prisma/checkSeed.ts",
+    "build": "tsc",
+    "dev": "npm run prisma:generate && tsx watch server.ts",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,14 @@
   },
   "description": "",
   "devDependencies": {
-    "prisma": "^7.6.0"
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.1.0",
+    "@types/node": "^25.8.0",
+    "@types/pg": "^8.20.0",
+    "prisma": "^7.6.0",
+    "tsx": "^4.22.1",
+    "typescript": "^6.0.3"
   }
 }

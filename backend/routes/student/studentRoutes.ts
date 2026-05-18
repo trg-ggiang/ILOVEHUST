@@ -2,6 +2,7 @@ import express from "express";
 import prisma from "../../database.js";
 import authMiddleware from "../../middleware/authMiddleware.js";
 import toUserResponse from "../../utils/toUserResponse.js";
+import { ensureDueTaskNotifications } from "../../utils/notifications.js";
 
 const router = express.Router();
 const TASK_PRIORITIES = new Set(["high", "medium", "low", "normal"]);
@@ -105,18 +106,22 @@ function getGradeBucket(record) {
   }
 
   const letter = String(record.letterScore || "").trim().toUpperCase();
-  return letter || "F";
+  return letter || null;
 }
 
 function buildGradeDistribution(gradeRecords) {
   const counts = new Map(GRADE_BUCKETS.map((bucket) => [bucket.grade, 0]));
+  let total = 0;
 
   for (const record of gradeRecords) {
     const bucket = getGradeBucket(record);
+    if (!bucket) continue;
     counts.set(bucket, (counts.get(bucket) || 0) + 1);
+    total += 1;
   }
 
-  const total = gradeRecords.length || 1;
+  if (total === 0) return [];
+
   return GRADE_BUCKETS
     .map((bucket) => ({
       grade: bucket.grade,
@@ -132,56 +137,60 @@ function buildStudyTime(scheduleClasses) {
     const classHours = scheduleClasses
       .filter((item) => item.weekday === weekday)
       .reduce((sum, item) => sum + getClassHours(item.startTime, item.endTime), 0);
-    const selfStudyHours = weekday <= 5 ? (classHours > 0 ? 2.5 : 1.5) : (weekday === 6 ? 2 : 1.5);
 
     return {
       day,
       classHours: roundNumber(classHours, 1),
-      selfStudyHours,
-      hours: roundNumber(classHours + selfStudyHours, 1),
+      selfStudyHours: 0,
+      hours: roundNumber(classHours, 1),
     };
-  });
+  }).filter((item) => item.hours > 0);
 }
 
-function averageScorePercent(records, fallbackPercent) {
+function averageScorePercent(records) {
   const scores = records
     .map((item) => (item.score10 ? Number(item.score10) * 10 : null))
     .filter((value) => Number.isFinite(value));
 
-  if (!scores.length) return fallbackPercent;
+  if (!scores.length) return null;
   return Math.round(scores.reduce((sum, value) => sum + value, 0) / scores.length);
 }
 
 function buildSkillProgress(gradeRecords, forumContribution) {
+  if (!gradeRecords.length && forumContribution <= 0) return [];
+
   const normalizedRecords = gradeRecords.map((record) => ({
     ...record,
     normalizedName: normalizeText(`${record.course?.courseName || ""} ${record.course?.courseCode || ""}`),
   }));
-  const fallbackPercent = averageScorePercent(gradeRecords, 72);
+  const overallPercent = averageScorePercent(gradeRecords);
 
-  const gradeSkills = SKILL_RULES.map((rule) => {
+  const gradeSkills = SKILL_RULES.flatMap((rule) => {
     const matchingRecords = normalizedRecords.filter((record) =>
       rule.keywords.some((keyword) => record.normalizedName.includes(keyword))
     );
-    const current = clampNumber(averageScorePercent(matchingRecords, fallbackPercent), 45, 100);
+    const averagePercent = averageScorePercent(matchingRecords);
+    if (averagePercent === null && overallPercent === null) return [];
+    const current = clampNumber(averagePercent ?? overallPercent, 0, 100);
 
-    return {
+    return [{
       key: rule.skill,
       skill: rule.label,
       current,
       target: rule.target,
-    };
+    }];
   });
 
-  return [
-    ...gradeSkills,
-    {
+  const softSkill = forumContribution > 0
+    ? [{
       key: "Soft Skills",
       skill: "Soft Skills",
-      current: clampNumber(68 + Math.min(forumContribution * 3, 22), 45, 100),
+      current: clampNumber(Math.min(forumContribution * 10, 100), 0, 100),
       target: 85,
-    },
-  ];
+    }]
+    : [];
+
+  return [...gradeSkills, ...softSkill];
 }
 
 function buildCohortGpas(recordsByUser) {
@@ -203,6 +212,7 @@ function buildCohortGpas(recordsByUser) {
 }
 
 function getGradeRank(avgGPA) {
+  if (avgGPA === null || avgGPA === undefined) return "-";
   if (avgGPA >= 8.5) return "A+";
   if (avgGPA >= 7) return "A";
   if (avgGPA >= 5.5) return "B";
@@ -237,13 +247,15 @@ function buildGradeScoreDistribution(grades) {
     { key: "average", min: -Infinity, color: "#ef4444", count: 0 },
   ];
 
-  for (const grade of grades) {
-    const score = Number(grade.avg ?? 0);
+  const validGrades = grades.filter((grade) => typeof grade.avg === "number");
+
+  for (const grade of validGrades) {
+    const score = Number(grade.avg);
     const bucket = buckets.find((item) => score >= item.min);
     if (bucket) bucket.count += 1;
   }
 
-  const total = grades.length || 1;
+  const total = validGrades.length || 1;
   return buckets.map((bucket) => ({
     key: bucket.key,
     color: bucket.color,
@@ -259,11 +271,11 @@ function buildGradeStats(grades) {
     (sum, grade) => sum + ((grade.avg || 0) * (grade.credits || 0)),
     0
   );
-  const avgGPA = totalCredits > 0 ? roundNumber(weighted / totalCredits, 2) : 0;
+  const avgGPA = totalCredits > 0 ? roundNumber(weighted / totalCredits, 2) : null;
   const passedCourses = grades.filter((grade) => grade.statusKey === "passed").length;
 
   return {
-    avgGPA,
+    avgGPA: avgGPA ?? 0,
     totalCredits,
     totalCourses: grades.length,
     passedCourses,
@@ -283,6 +295,9 @@ function buildGradeSubjectStats(grades) {
 }
 
 function buildGradeSkillData(grades, avgGPA) {
+  const validGrades = grades.filter((item) => typeof item.avg === "number");
+  if (!validGrades.length) return [];
+
   const skillBuckets = [
     { key: "Programming", keywords: ["lap trinh", "program", "web"], values: [] },
     { key: "Algorithms", keywords: ["giai thuat", "algorithm", "cau truc"], values: [] },
@@ -292,7 +307,7 @@ function buildGradeSkillData(grades, avgGPA) {
     { key: "Systems", keywords: ["he dieu hanh", "system", "bao mat"], values: [] },
   ];
 
-  for (const grade of grades.filter((item) => typeof item.avg === "number")) {
+  for (const grade of validGrades) {
     const lowerName = normalizeText(`${grade.subject} ${grade.code}`);
     for (const bucket of skillBuckets) {
       if (bucket.keywords.some((keyword) => lowerName.includes(keyword))) {
@@ -301,12 +316,12 @@ function buildGradeSkillData(grades, avgGPA) {
     }
   }
 
-  return skillBuckets.map((bucket) => {
-    const score = bucket.values.length
-      ? Math.round(bucket.values.reduce((sum, value) => sum + value, 0) / bucket.values.length)
-      : Math.round(avgGPA * 10);
-    return { skill: bucket.key, score };
-  });
+  return skillBuckets
+    .filter((bucket) => bucket.values.length > 0)
+    .map((bucket) => {
+      const score = Math.round(bucket.values.reduce((sum, value) => sum + value, 0) / bucket.values.length);
+      return { skill: bucket.key, score };
+    });
 }
 
 function parseDateOnly(value) {
@@ -656,6 +671,7 @@ router.post("/me/tasks", authMiddleware, async (req, res) => {
         category,
       },
     });
+    await ensureDueTaskNotifications(prisma, req.user.id);
 
     return res.status(201).json({ task: toTaskResponse(task) });
   } catch (error) {
@@ -758,6 +774,7 @@ router.patch("/me/tasks/:taskId", authMiddleware, async (req, res) => {
       where: { id: taskId },
       data,
     });
+    await ensureDueTaskNotifications(prisma, req.user.id);
 
     return res.json({ task: toTaskResponse(task) });
   } catch (error) {
@@ -847,6 +864,9 @@ router.get("/me/statistics", authMiddleware, async (req, res) => {
     ]);
 
     const semesterGPA = buildSemesterStatistics(gradeRecords);
+    const hasAcademicData =
+      gradeRecords.length > 0 ||
+      (user.studentProfile?.gpa !== null && user.studentProfile?.gpa !== undefined);
     const currentGpa =
       user.studentProfile?.gpa !== null && user.studentProfile?.gpa !== undefined
         ? Number(user.studentProfile.gpa)
@@ -876,18 +896,74 @@ router.get("/me/statistics", authMiddleware, async (req, res) => {
             ) / skillProgress.length * 100
           )
         : 0;
-    const totalGoals = 12;
+    const totalGoals = skillProgress.length;
     const goalsAchieved = Math.round((targetRate / 100) * totalGoals);
     const cohortGpas = buildCohortGpas(cohortRecords);
-    const cohortAverageGpa = cohortGpas.length
+    const cohortAverageGpa = hasAcademicData && cohortGpas.length
       ? roundNumber(cohortGpas.reduce((sum, value) => sum + value, 0) / cohortGpas.length, 2)
-      : roundNumber(clampNumber(currentGpa - 0.6, 0, 4), 2);
-    const percentile = cohortGpas.length
+      : 0;
+    const percentile = hasAcademicData && cohortGpas.length
       ? Math.round((cohortGpas.filter((gpa) => gpa <= currentGpa).length / cohortGpas.length) * 100)
-      : currentGpa >= cohortAverageGpa ? 85 : 50;
+      : 0;
     const taskCompletionRate = tasks.length > 0
       ? Math.round((tasks.filter((task) => task.completed).length / tasks.length) * 100)
       : 0;
+    const achievements = [
+      ...(hasAcademicData
+        ? [{
+            key: "academic",
+            variant: currentGpa >= 3.6 ? "excellent" : "improving",
+            gpa: roundNumber(currentGpa, 2),
+            title: currentGpa >= 3.6 ? "Sinh viÃªn xuáº¥t sáº¯c" : "Tiáº¿n bá»™ há»c táº­p",
+            description:
+              currentGpa >= 3.6
+                ? `GPA ${roundNumber(currentGpa, 2)} vÃ  duy trÃ¬ phong Ä‘á»™ há»c táº­p tá»‘t`
+                : `GPA hiá»‡n táº¡i ${roundNumber(currentGpa, 2)}, tiáº¿p tá»¥c tá»‘i Æ°u cÃ¡c mÃ´n chuyÃªn ngÃ nh`,
+            tone: "gold",
+          }]
+        : []),
+      ...(forumContribution > 0
+        ? [{
+            key: "community",
+            contributionCount: forumContribution,
+            title: "Top Contributor",
+            description: `${forumContribution} Ä‘Ã³ng gÃ³p trÃªn diá»…n Ä‘Ã n há»c táº­p`,
+            tone: "blue",
+          }]
+        : []),
+      ...(tasks.length > 0
+        ? [{
+            key: "discipline",
+            taskCompletionRate,
+            title: "Ká»· luáº­t há»c táº­p",
+            description: `${taskCompletionRate}% cÃ´ng viá»‡c Ä‘Ã£ hoÃ n thÃ nh trong há»‡ thá»‘ng`,
+            tone: "green",
+          }]
+        : []),
+    ];
+    const goals = [
+      ...(hasAcademicData && currentGpa < 3.8
+        ? [{
+            key: "gpa",
+            title: "Äáº¡t GPA 3.8+",
+            description: "Táº­p trung vÃ o cÃ¡c mÃ´n chuyÃªn ngÃ nh vÃ  cáº£i thiá»‡n Ä‘iá»ƒm quÃ¡ trÃ¬nh",
+          }]
+        : []),
+      ...(gradeRecords.length > 0
+        ? [{
+            key: "projects",
+            title: "HoÃ n thÃ nh 2 dá»± Ã¡n cÃ¡ nhÃ¢n",
+            description: "Ãp dá»¥ng kiáº¿n thá»©c Ä‘Ã£ há»c vÃ o sáº£n pháº©m thá»±c táº¿",
+          }]
+        : []),
+      ...(totalCredits > 0
+        ? [{
+            key: "internship",
+            title: "Tham gia thá»±c táº­p",
+            description: "TÃ­ch lÅ©y kinh nghiá»‡m thá»±c táº¿ vÃ  má»Ÿ rá»™ng há»“ sÆ¡ nÄƒng lá»±c",
+          }]
+        : []),
+    ];
 
     return res.json({
       profile: {
@@ -911,55 +987,13 @@ router.get("/me/statistics", authMiddleware, async (req, res) => {
       gradeDistribution: buildGradeDistribution(gradeRecords),
       studyTime,
       skillProgress,
-      achievements: [
-        {
-          key: "academic",
-          variant: currentGpa >= 3.6 ? "excellent" : "improving",
-          gpa: roundNumber(currentGpa, 2),
-          title: currentGpa >= 3.6 ? "Sinh viên xuất sắc" : "Tiến bộ học tập",
-          description:
-            currentGpa >= 3.6
-              ? `GPA ${roundNumber(currentGpa, 2)} và duy trì phong độ học tập tốt`
-              : `GPA hiện tại ${roundNumber(currentGpa, 2)}, tiếp tục tối ưu các môn chuyên ngành`,
-          tone: "gold",
-        },
-        {
-          key: "community",
-          contributionCount: forumContribution,
-          title: "Top Contributor",
-          description: `${forumContribution} đóng góp trên diễn đàn học tập`,
-          tone: "blue",
-        },
-        {
-          key: "discipline",
-          taskCompletionRate,
-          title: "Kỷ luật học tập",
-          description: `${taskCompletionRate}% công việc đã hoàn thành trong hệ thống`,
-          tone: "green",
-        },
-      ],
       comparison: {
         studentGpa: roundNumber(currentGpa, 2),
         cohortAverageGpa,
         percentile,
       },
-      goals: [
-        {
-          key: "gpa",
-          title: "Đạt GPA 3.8+",
-          description: "Tập trung vào các môn chuyên ngành và cải thiện điểm quá trình",
-        },
-        {
-          key: "projects",
-          title: "Hoàn thành 2 dự án cá nhân",
-          description: "Áp dụng kiến thức đã học vào sản phẩm thực tế",
-        },
-        {
-          key: "internship",
-          title: "Tham gia thực tập",
-          description: "Tích lũy kinh nghiệm thực tế và mở rộng hồ sơ năng lực",
-        },
-      ],
+      achievements,
+      goals,
     });
   } catch (error) {
     console.error("STATISTICS ERROR:", error);

@@ -112,6 +112,8 @@ function ScoreDistributionChart({ distribution = [], labels, emptyLabel, ariaLab
 }
 
 function RadarChartBlock({ data, ariaLabel }) {
+  if (!data?.length) return null;
+
   const cx = 160;
   const cy = 140;
   const radius = 96;
@@ -293,7 +295,7 @@ export default function GradesPage() {
   );
 
   const grades = payload.grades || [];
-  const derivedStats = payload.stats || { avgGPA: 0, totalCredits: 0, totalCourses: 0, passedCourses: 0, rank: "C" };
+  const derivedStats = payload.stats || { avgGPA: 0, totalCredits: 0, totalCourses: 0, passedCourses: 0, rank: "-" };
   const localizedSkillData = useMemo(
     () => localizeSkillData(payload.skillData, t.skillLabels),
     [payload.skillData, t.skillLabels]
@@ -451,6 +453,7 @@ export default function GradesPage() {
                 <span className="chart-icon blue"><Zap size={19} /></span>
                 {t.skillChart}
               </h3>
+              {!localizedSkillData.length ? <p className="empty-text">{t.noData}</p> : null}
               <RadarChartBlock data={localizedSkillData} ariaLabel={t.skillChart} />
             </article>
           </div>
