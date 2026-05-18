@@ -9,6 +9,7 @@ import MessagesPage from "./pages/student/Messages";
 import SchedulePage from "./pages/student/Schedule";
 import StatisticsPage from "./pages/student/Statistics";
 import TasksPage from "./pages/student/Tasks";
+import SettingsPage from "./pages/student/Settings";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/schedule" element={<SchedulePage />} />
         <Route path="/statistics" element={<StatisticsPage />} />
         <Route path="/stats" element={<StatisticsPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
         <Route path="/complete-profile" element={<CompleteProfile />} />
       </Routes>
     </BrowserRouter>

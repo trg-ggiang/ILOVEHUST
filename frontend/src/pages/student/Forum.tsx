@@ -25,6 +25,7 @@ import { FORUM_TEXT, STUDENT_COMMON_TEXT } from "../../i18n/translations";
 import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
+import { useRealtimeRefresh } from "../../utils/useRealtimeRefresh";
 import "./Dashboard.css";
 import "./Forum.css";
 
@@ -142,6 +143,10 @@ export default function ForumPage() {
     });
     setPayload(response.data || { categories: [], posts: [], trendingTopics: [] });
   }
+
+  useRealtimeRefresh(async () => {
+    await reloadForum();
+  }, { intervalMs: 9000 });
 
   async function handleCreatePost(event) {
     event.preventDefault();

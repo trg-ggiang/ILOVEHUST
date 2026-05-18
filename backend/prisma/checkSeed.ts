@@ -43,6 +43,7 @@ async function main() {
     conversationCount,
     conversationMemberCount,
     messageCount,
+    userCount,
   ] = await Promise.all([
     prisma.major.count(),
     prisma.semester.count(),
@@ -58,24 +59,26 @@ async function main() {
     prisma.conversation.count(),
     prisma.conversationMember.count(),
     prisma.message.count(),
+    prisma.user.count(),
   ]);
 
   assertCheck(Boolean(admin), "Missing admin user: admin@ilovehust.local", errors);
   assertCheck(Boolean(student), "Missing student user: student@ilovehust.local", errors);
+  assertCheck(userCount >= 101, "Expected at least 100 students plus admin", errors);
   assertCheck(majorCount >= 1, "No major records found", errors);
   assertCheck(semesterCount >= 6, "Expected at least 6 semesters", errors);
   assertCheck(courseCount >= 12, "Expected at least 12 courses", errors);
-  assertCheck(gradeRecordCount >= 18, "Expected at least 18 grade records", errors);
-  assertCheck(taskCount >= 5, "Expected at least 5 student tasks", errors);
-  assertCheck(scheduleClassCount >= 7, "Expected at least 7 schedule classes", errors);
-  assertCheck(scheduleEventCount >= 3, "Expected at least 3 schedule events", errors);
+  assertCheck(gradeRecordCount >= 1200, "Expected at least 1200 grade records", errors);
+  assertCheck(taskCount >= 300, "Expected at least 300 student tasks", errors);
+  assertCheck(scheduleClassCount >= 300, "Expected at least 300 schedule classes", errors);
+  assertCheck(scheduleEventCount >= 100, "Expected at least 100 schedule events", errors);
   assertCheck(forumCategoryCount >= 3, "Expected at least 3 forum categories", errors);
-  assertCheck(forumPostCount >= 5, "Expected at least 5 forum posts", errors);
-  assertCheck(forumCommentCount >= 10, "Expected at least 10 forum comments", errors);
-  assertCheck(forumLikeCount >= 15, "Expected at least 15 forum post likes", errors);
-  assertCheck(conversationCount >= 5, "Expected at least 5 conversations", errors);
-  assertCheck(conversationMemberCount >= 12, "Expected at least 12 conversation members", errors);
-  assertCheck(messageCount >= 12, "Expected at least 12 chat messages", errors);
+  assertCheck(forumPostCount >= 100, "Expected at least 100 forum posts", errors);
+  assertCheck(forumCommentCount >= 300, "Expected at least 300 forum comments", errors);
+  assertCheck(forumLikeCount >= 800, "Expected at least 800 forum post likes", errors);
+  assertCheck(conversationCount >= 38, "Expected at least 38 conversations", errors);
+  assertCheck(conversationMemberCount >= 100, "Expected at least 100 conversation members", errors);
+  assertCheck(messageCount >= 380, "Expected at least 380 chat messages", errors);
 
   if (student) {
     const uniqueSemesters = new Set(
@@ -97,7 +100,7 @@ async function main() {
   }
 
   const report = {
-    users: await prisma.user.count(),
+    users: userCount,
     majors: majorCount,
     semesters: semesterCount,
     courses: courseCount,

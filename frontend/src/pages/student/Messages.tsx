@@ -24,6 +24,7 @@ import { MESSAGES_TEXT, STUDENT_COMMON_TEXT } from "../../i18n/translations";
 import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
+import { useRealtimeRefresh } from "../../utils/useRealtimeRefresh";
 import "./Dashboard.css";
 import "./Messages.css";
 
@@ -125,6 +126,10 @@ export default function MessagesPage() {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [messageInput, setMessageInput] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [newChatOpen, setNewChatOpen] = useState(false);
+  const [studentSearchText, setStudentSearchText] = useState("");
+  const [studentResults, setStudentResults] = useState([]);
+  const [studentSearchLoading, setStudentSearchLoading] = useState(false);
   const [chatSearchOpen, setChatSearchOpen] = useState(false);
   const [chatSearchText, setChatSearchText] = useState("");
   const [infoOpen, setInfoOpen] = useState(false);
@@ -183,6 +188,40 @@ export default function MessagesPage() {
 
   useEffect(() => {
     let mounted = true;
+    const query = studentSearchText.trim();
+
+    if (!newChatOpen || query.length < 2) {
+      setStudentResults([]);
+      setStudentSearchLoading(false);
+      return () => {
+        mounted = false;
+      };
+    }
+
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        setStudentSearchLoading(true);
+        const response = await api.get("/messages/students/search", {
+          params: { q: query },
+        });
+        if (!mounted) return;
+        setStudentResults(response.data?.students || []);
+      } catch {
+        if (!mounted) return;
+        setError(t.studentSearchFailed);
+      } finally {
+        if (mounted) setStudentSearchLoading(false);
+      }
+    }, 220);
+
+    return () => {
+      mounted = false;
+      window.clearTimeout(timeoutId);
+    };
+  }, [newChatOpen, studentSearchText, t.studentSearchFailed]);
+
+  useEffect(() => {
+    let mounted = true;
 
     if (!selectedChatId) {
       setSelectedConversation(null);
@@ -220,6 +259,32 @@ export default function MessagesPage() {
       window.clearTimeout(timeoutId);
     };
   }, [chatSearchOpen, chatSearchText, selectedChatId, t.detailFailed]);
+
+  useRealtimeRefresh(async () => {
+    const response = await api.get("/messages", { params: { search: searchText } });
+    const nextConversations = response.data?.conversations || [];
+    setConversations(nextConversations);
+    setSelectedChatId((current) => {
+      if (nextConversations.some((conversation) => conversation.id === current)) return current;
+      return nextConversations[0]?.id || null;
+    });
+  }, { intervalMs: 6000 });
+
+  useRealtimeRefresh(async () => {
+    if (!selectedChatId) return;
+
+    const response = await api.get(`/messages/${selectedChatId}`, {
+      params: {
+        search: chatSearchOpen ? chatSearchText : "",
+      },
+    });
+    setSelectedConversation(response.data?.conversation || null);
+    setConversations((current) =>
+      current.map((conversation) =>
+        conversation.id === selectedChatId ? { ...conversation, unread: 0 } : conversation
+      )
+    );
+  }, { enabled: Boolean(selectedChatId), intervalMs: 3500 });
 
   function handleMenuClick(key) {
     handleStudentMenuNavigation(key, navigate, "messages");
@@ -266,6 +331,22 @@ export default function MessagesPage() {
       setConversations(response.data?.conversations || conversations);
     } catch {
       setError(t.starFailed);
+    }
+  }
+
+  async function handleStartDirectChat(studentId) {
+    try {
+      setError("");
+      const response = await api.post("/messages/direct", { userId: studentId });
+      const conversation = response.data?.conversation;
+      setSelectedConversation(conversation || null);
+      setSelectedChatId(conversation?.id || null);
+      setConversations(response.data?.conversations || conversations);
+      setNewChatOpen(false);
+      setStudentSearchText("");
+      setStudentResults([]);
+    } catch {
+      setError(t.startChatFailed);
     }
   }
 
@@ -321,7 +402,12 @@ export default function MessagesPage() {
                     <MessageCircle size={20} />
                   </div>
                   <h1>{t.pageTitle}</h1>
-                  <button type="button" aria-label={t.newConversation}>
+                  <button
+                    type="button"
+                    aria-label={t.newConversation}
+                    className={newChatOpen ? "active" : ""}
+                    onClick={() => setNewChatOpen((current) => !current)}
+                  >
                     <Plus size={20} />
                   </button>
                 </div>
@@ -334,6 +420,50 @@ export default function MessagesPage() {
                     placeholder={t.searchPlaceholder}
                   />
                 </label>
+
+                {newChatOpen ? (
+                  <div className="new-chat-panel">
+                    <label className="new-chat-search">
+                      <Search size={17} />
+                      <input
+                        type="text"
+                        value={studentSearchText}
+                        onChange={(event) => setStudentSearchText(event.target.value)}
+                        placeholder={t.studentSearchPlaceholder}
+                        autoFocus
+                      />
+                    </label>
+
+                    <div className="student-search-results">
+                      {studentSearchText.trim().length < 2 ? (
+                        <p>{t.studentSearchHint}</p>
+                      ) : null}
+                      {studentSearchLoading ? <p>{t.studentSearching}</p> : null}
+                      {!studentSearchLoading && studentSearchText.trim().length >= 2 && studentResults.length === 0 ? (
+                        <p>{t.studentSearchEmpty}</p>
+                      ) : null}
+                      {studentResults.map((student) => (
+                        <button
+                          key={student.id}
+                          type="button"
+                          className="student-result-item"
+                          onClick={() => handleStartDirectChat(student.id)}
+                        >
+                          <span className="conversation-avatar direct">
+                            {student.avatarInitial}
+                            {student.online ? <i /> : null}
+                          </span>
+                          <span>
+                            <strong>{student.fullName}</strong>
+                            <small>
+                              {student.studentCode || t.noStudentCode} · {student.email}
+                            </small>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
               </div>
 
               <div className="conversation-list">

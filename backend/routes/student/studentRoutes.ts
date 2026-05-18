@@ -1,10 +1,37 @@
 import express from "express";
+import fs from "fs";
+import path from "path";
+import multer from "multer";
 import prisma from "../../database.js";
 import authMiddleware from "../../middleware/authMiddleware.js";
 import toUserResponse from "../../utils/toUserResponse.js";
 import { ensureDueTaskNotifications } from "../../utils/notifications.js";
 
 const router = express.Router();
+const avatarUploadDir = path.resolve("uploads/avatars");
+
+fs.mkdirSync(avatarUploadDir, { recursive: true });
+
+const avatarUpload = multer({
+  storage: multer.diskStorage({
+    destination: avatarUploadDir,
+    filename: (_req, file, cb) => {
+      const extension = path.extname(file.originalname || "").toLowerCase();
+      cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${extension}`);
+    },
+  }),
+  fileFilter: (_req, file, cb) => {
+    if (!file.mimetype.startsWith("image/")) {
+      cb(new Error("INVALID_IMAGE"));
+      return;
+    }
+    cb(null, true);
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+    files: 1,
+  },
+});
 const TASK_PRIORITIES = new Set(["high", "medium", "low", "normal"]);
 const PROGRAM_CREDIT_TARGET = 150;
 const STUDY_DAY_LABELS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
@@ -1070,7 +1097,7 @@ router.get("/me/grades", authMiddleware, async (req, res) => {
 
 router.put("/me/profile", authMiddleware, async (req, res) => {
   try {
-    const { fullName, studentCode, majorId, schoolYear, phone, bio } = req.body;
+    const { fullName, studentCode, majorId, schoolYear, phone, email, bio } = req.body;
 
     if (!fullName || !String(fullName).trim()) {
       return res.status(400).json({ message: "Họ tên không được để trống" });
@@ -1109,9 +1136,15 @@ router.put("/me/profile", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "Ngành học không tồn tại" });
     }
 
+    const nextEmail = email !== undefined ? String(email || "").trim().toLowerCase() : currentUser.email;
+    if (!nextEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nextEmail)) {
+      return res.status(400).json({ message: "Email khong hop le" });
+    }
+
     await prisma.user.update({
       where: { id: req.user.id },
       data: {
+        email: nextEmail,
         phone: phone?.trim() || null,
       },
     });
@@ -1159,6 +1192,70 @@ router.put("/me/profile", authMiddleware, async (req, res) => {
 
     console.error("COMPLETE PROFILE ERROR:", error);
     return res.status(500).json({ message: "Lỗi server khi cập nhật hồ sơ" });
+  }
+});
+
+router.post("/me/avatar", authMiddleware, avatarUpload.single("avatar"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Vui long chon anh dai dien" });
+    }
+
+    const currentUser = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      include: { studentProfile: true },
+    });
+
+    if (!currentUser) {
+      return res.status(404).json({ message: "Khong tim thay tai khoan" });
+    }
+
+    if (currentUser.role !== 1) {
+      return res.status(403).json({ message: "Chi sinh vien moi co the cap nhat anh dai dien" });
+    }
+
+    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+
+    await prisma.studentProfile.upsert({
+      where: { userId: req.user.id },
+      create: {
+        userId: req.user.id,
+        fullName: currentUser.email,
+        avatarUrl,
+        profileCompleted: false,
+      },
+      update: {
+        avatarUrl,
+      },
+    });
+
+    const updatedUser = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      include: {
+        studentProfile: {
+          include: {
+            major: true,
+          },
+        },
+      },
+    });
+
+    return res.json({
+      message: "Cap nhat anh dai dien thanh cong",
+      avatarUrl,
+      user: toUserResponse(updatedUser),
+    });
+  } catch (error) {
+    if (error?.message === "INVALID_IMAGE") {
+      return res.status(400).json({ message: "Tep tai len phai la hinh anh" });
+    }
+
+    if (error?.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({ message: "Anh dai dien khong duoc vuot qua 5MB" });
+    }
+
+    console.error("UPLOAD AVATAR ERROR:", error);
+    return res.status(500).json({ message: "Loi server khi cap nhat anh dai dien" });
   }
 });
 

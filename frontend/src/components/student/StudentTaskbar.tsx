@@ -80,11 +80,12 @@ export default function StudentTaskbar({
         <div className="taskbar-bottom">
           {SECONDARY_ITEMS.map((item) => {
             const Icon = item.icon;
+            const isActive = activeKey === item.key;
             return (
               <button
                 key={item.key}
                 type="button"
-                className="taskbar-item"
+                className={`taskbar-item ${isActive ? "active" : ""}`}
                 onClick={() => onMenuClick?.(item.key)}
               >
                 <Icon size={22} strokeWidth={2} />

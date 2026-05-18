@@ -6,6 +6,7 @@ export const STUDENT_ROUTE_BY_MENU_KEY = Object.freeze({
   tasks: "/tasks",
   schedule: "/schedule",
   stats: "/statistics",
+  settings: "/settings",
 });
 
 export function clearStudentSession() {

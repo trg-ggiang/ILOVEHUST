@@ -250,11 +250,7 @@ router.get("/students/search", authMiddleware, async (req, res) => {
         id: { not: req.user.id },
         role: 1,
         isActive: true,
-        studentProfile: {
-          is: {
-            profileCompleted: true,
-          },
-        },
+        studentProfile: { isNot: null },
         OR: [
           { email: { contains: query, mode: "insensitive" } },
           {
@@ -301,11 +297,6 @@ router.post("/direct", authMiddleware, async (req, res) => {
         id: targetUserId,
         role: 1,
         isActive: true,
-        studentProfile: {
-          is: {
-            profileCompleted: true,
-          },
-        },
       },
       select: { id: true },
     });
@@ -314,36 +305,39 @@ router.post("/direct", authMiddleware, async (req, res) => {
       return res.status(404).json({ message: "Không tìm thấy sinh viên" });
     }
 
-    const existing = await prisma.conversation.findFirst({
+    const directCandidates = await prisma.conversation.findMany({
       where: {
         type: "direct",
         AND: [
-          { members: { some: { userId: req.user.id, isArchived: false } } },
-          { members: { some: { userId: targetUserId, isArchived: false } } },
+          { members: { some: { userId: req.user.id } } },
+          { members: { some: { userId: targetUserId } } },
         ],
       },
       include: {
-        members: {
-          include: {
-            user: {
-              include: { studentProfile: true },
-            },
-          },
-        },
-        messages: {
-          orderBy: { createdAt: "asc" },
-          include: {
-            sender: {
-              include: { studentProfile: true },
-            },
-            attachments: true,
-          },
-        },
+        members: true,
       },
     });
+    const existing = directCandidates.find((conversation) => {
+      const memberIds = conversation.members.map((member) => member.userId).sort((a, b) => a - b);
+      return (
+        memberIds.length === 2 &&
+        memberIds[0] === Math.min(req.user.id, targetUserId) &&
+        memberIds[1] === Math.max(req.user.id, targetUserId)
+      );
+    });
+
+    if (existing) {
+      await prisma.conversationMember.updateMany({
+        where: {
+          conversationId: existing.id,
+          userId: { in: [req.user.id, targetUserId] },
+        },
+        data: { isArchived: false },
+      });
+    }
 
     const conversation =
-      existing ||
+      (existing ? await findConversationForUser(existing.id, req.user.id) : null) ||
       (await prisma.conversation.create({
         data: {
           type: "direct",

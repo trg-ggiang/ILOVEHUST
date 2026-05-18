@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { HEADER_TEXT } from "../../i18n/translations";
+import { useRealtimeRefresh } from "../../utils/useRealtimeRefresh";
 import "./StudentHeader.css";
 
 function formatNotificationTime(value, language, t) {
@@ -50,9 +51,9 @@ export default function StudentHeader({
 
   useEffect(() => {
     loadNotifications();
-    const timer = window.setInterval(loadNotifications, 30000);
-    return () => window.clearInterval(timer);
   }, []);
+
+  useRealtimeRefresh(loadNotifications, { intervalMs: 8000 });
 
   useEffect(() => {
     function handleClickOutside(event) {

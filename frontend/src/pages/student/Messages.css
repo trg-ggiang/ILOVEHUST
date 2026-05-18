@@ -70,6 +70,12 @@
   cursor: pointer;
 }
 
+.conversation-title-row button.active {
+  color: #dc2626;
+  background: #fee2e2;
+  box-shadow: 0 8px 16px rgba(220, 38, 38, 0.14);
+}
+
 .conversation-search {
   height: 48px;
   border: 2px solid #e5e7eb;
@@ -89,6 +95,110 @@
   background: transparent;
   color: #0f172a;
   font-size: 14px;
+}
+
+.new-chat-panel {
+  margin-top: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 10px;
+  background: #fff;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+}
+
+.new-chat-search {
+  height: 42px;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  background: #f8fafc;
+}
+
+.new-chat-search:focus-within {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  background: #fff;
+}
+
+.new-chat-search input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  color: #0f172a;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+}
+
+.student-search-results {
+  max-height: 250px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-top: 8px;
+}
+
+.student-search-results p {
+  margin: 6px 4px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.student-result-item {
+  width: 100%;
+  min-height: 68px;
+  border: none;
+  border-radius: 14px;
+  padding: 9px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  background: #fff;
+  cursor: pointer;
+}
+
+.student-result-item:hover {
+  background: #f8fafc;
+}
+
+.student-result-item .conversation-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  font-size: 14px;
+}
+
+.student-result-item .conversation-avatar i {
+  width: 11px;
+  height: 11px;
+}
+
+.student-result-item span:last-child {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.student-result-item strong {
+  overflow: hidden;
+  color: #0f172a;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.student-result-item small {
+  overflow: hidden;
+  color: #64748b;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
 }
 
 .conversation-list {
@@ -487,26 +597,29 @@
 }
 
 .message-input-row {
-  padding: 18px;
+  padding: 12px 16px;
   border-top: 1px solid #f1f5f9;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 10px;
   background: rgba(248, 250, 252, 0.65);
 }
 
 .message-input-row textarea {
   flex: 1;
+  height: 44px;
   min-height: 44px;
-  max-height: 120px;
+  max-height: 92px;
   border: 2px solid #e5e7eb;
   border-radius: 16px;
   outline: none;
   resize: none;
-  padding: 12px 14px;
+  padding: 10px 14px;
   background: #fff;
   color: #0f172a;
   font: inherit;
+  line-height: 20px;
+  overflow-y: auto;
 }
 
 .message-input-row .send-message-btn {

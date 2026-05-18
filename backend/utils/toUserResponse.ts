@@ -19,6 +19,7 @@ export default function toUserResponse(user) {
     gpa: user.studentProfile?.gpa ? Number(user.studentProfile.gpa) : null,
     cpa: user.studentProfile?.cpa ? Number(user.studentProfile.cpa) : null,
     cttConnected: user.studentProfile?.cttConnected ?? false,
+    avatarUrl: user.studentProfile?.avatarUrl || null,
     bio: user.studentProfile?.bio || null,
   };
 }
