@@ -1,5 +1,57 @@
+# Dependencies
 node_modules/
-backend/uploads/
+**/node_modules/
+
+# Build outputs
 dist/
-backend/dist/
-frontend/dist/
+**/dist/
+build/
+**/build/
+dist-ssr/
+coverage/
+
+# Environment variables and local secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Logs and debug output
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime uploads and generated files
+backend/uploads/
+backend/generated/
+backend/generated/prisma/
+
+# Temporary exports and local scratch files
+tmp/
+temp/
+*.tmp
+
+# Package manager caches
+.npm/
+.pnpm-store/
+
+# Framework/tool caches
+.vite/
+.turbo/
+.eslintcache
+*.tsbuildinfo
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
