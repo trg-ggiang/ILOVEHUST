@@ -401,6 +401,30 @@
   margin: 0;
 }
 
+.tasks-load-more {
+  justify-self: center;
+  min-height: 42px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 0 18px;
+  color: #475569;
+  background: #fff;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.07);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.tasks-load-more:hover {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+.tasks-load-more:disabled {
+  color: #94a3b8;
+  background: #f8fafc;
+  cursor: wait;
+}
+
 .tasks-progress-card {
   border-radius: 18px;
   padding: 22px;

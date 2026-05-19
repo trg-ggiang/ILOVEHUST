@@ -11,7 +11,7 @@ export function useRealtimeRefresh(
   callback: () => void | Promise<void>,
   {
     enabled = true,
-    intervalMs = 10000,
+    intervalMs = 30000,
     runOnFocus = true,
     runOnOnline = true,
   }: RealtimeRefreshOptions = {}

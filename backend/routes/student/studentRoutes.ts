@@ -617,6 +617,9 @@ router.get("/me/tasks", authMiddleware, async (req, res) => {
 
     const status = String(req.query?.status || "all").trim();
     const search = String(req.query?.search || "").trim();
+    const page = Math.max(1, Number(req.query?.page || 1));
+    const limit = Math.min(Math.max(Number(req.query?.limit || 20), 1), 50);
+    const skip = (page - 1) * limit;
     const where = {
       userId: req.user.id,
     };
@@ -635,7 +638,7 @@ router.get("/me/tasks", authMiddleware, async (req, res) => {
       ];
     }
 
-    const [tasks, allTasks] = await Promise.all([
+    const [tasks, filteredCount, allTasks] = await Promise.all([
       prisma.studentTask.findMany({
         where,
         orderBy: [
@@ -644,7 +647,10 @@ router.get("/me/tasks", authMiddleware, async (req, res) => {
           { priority: "asc" },
           { createdAt: "desc" },
         ],
+        skip,
+        take: limit,
       }),
+      prisma.studentTask.count({ where }),
       prisma.studentTask.findMany({
         where: {
           userId: req.user.id,
@@ -655,6 +661,12 @@ router.get("/me/tasks", authMiddleware, async (req, res) => {
     return res.json({
       tasks: tasks.map(toTaskResponse),
       stats: toTaskStats(allTasks),
+      pagination: {
+        page,
+        limit,
+        total: filteredCount,
+        hasMore: page * limit < filteredCount,
+      },
     });
   } catch (error) {
     console.error("LIST TASKS ERROR:", error);

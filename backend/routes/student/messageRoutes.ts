@@ -33,11 +33,6 @@ function getInitial(name) {
   return String(name || "?").trim().charAt(0).toUpperCase() || "?";
 }
 
-function isOnline(user) {
-  if (!user?.lastLoginAt) return false;
-  return Date.now() - new Date(user.lastLoginAt).getTime() < 60 * 60 * 1000;
-}
-
 function getConversationPeer(conversation, currentUserId) {
   return conversation.members.find((member) => member.userId !== currentUserId)?.user || null;
 }
@@ -70,9 +65,6 @@ function toConversationResponse(conversation, currentUserId) {
     lastMessageAt: lastMessage?.createdAt || conversation.updatedAt,
     unread: currentMember?.unreadCount || 0,
     isGroup,
-    online: isGroup
-      ? conversation.members.some((member) => member.userId !== currentUserId && isOnline(member.user))
-      : isOnline(peer),
     isStarred: currentMember?.isStarred || false,
   };
 }
@@ -98,12 +90,34 @@ function toStudentSearchResponse(user) {
     studentCode: profile?.studentCode || "",
     email: user.email,
     avatarInitial: getInitial(name),
-    online: isOnline(user),
   };
 }
 
-async function findConversationForUser(conversationId, userId) {
-  return prisma.conversation.findFirst({
+async function findConversationForUser(conversationId, userId, options = {}) {
+  const limit = Math.min(Math.max(Number(options.limit) || 20, 1), 50);
+  const beforeMessageId = Number(options.beforeMessageId) || null;
+  const search = String(options.search || "").trim();
+  const messageWhere = {
+    ...(beforeMessageId ? { id: { lt: beforeMessageId } } : {}),
+    ...(search
+      ? {
+          OR: [
+            { content: { contains: search, mode: "insensitive" } },
+            { attachments: { some: { fileName: { contains: search, mode: "insensitive" } } } },
+            {
+              sender: {
+                OR: [
+                  { email: { contains: search, mode: "insensitive" } },
+                  { studentProfile: { is: { fullName: { contains: search, mode: "insensitive" } } } },
+                ],
+              },
+            },
+          ],
+        }
+      : {}),
+  };
+
+  const conversation = await prisma.conversation.findFirst({
     where: {
       id: conversationId,
       members: {
@@ -119,7 +133,9 @@ async function findConversationForUser(conversationId, userId) {
         },
       },
       messages: {
-        orderBy: { createdAt: "asc" },
+        where: messageWhere,
+        orderBy: [{ id: "desc" }],
+        take: limit + 1,
         include: {
           sender: {
             include: { studentProfile: true },
@@ -129,6 +145,37 @@ async function findConversationForUser(conversationId, userId) {
       },
     },
   });
+
+  if (!conversation) return null;
+
+  const fetchedMessages = conversation.messages || [];
+  const hasMoreOlder = fetchedMessages.length > limit;
+  const pageMessages = fetchedMessages.slice(0, limit).reverse();
+  const [totalMessages, matchedMessages] = await Promise.all([
+    prisma.message.count({ where: { conversationId } }),
+    search
+      ? prisma.message.count({
+          where: {
+            conversationId,
+            ...messageWhere,
+          },
+        })
+      : prisma.message.count({ where: { conversationId } }),
+  ]);
+
+  return {
+    ...conversation,
+    messages: pageMessages,
+    messagePage: {
+      limit,
+      hasMoreOlder,
+      oldestMessageId: pageMessages[0]?.id || null,
+      newestMessageId: pageMessages[pageMessages.length - 1]?.id || null,
+      totalMessages,
+      matchedMessages,
+      search,
+    },
+  };
 }
 
 async function getConversationList(userId, search = "") {
@@ -201,7 +248,6 @@ function toConversationDetail(conversation, currentUserId, search = "") {
         name,
         initial: getInitial(name),
         role: member.role,
-        online: isOnline(member.user),
       };
     }),
     attachments: conversation.messages
@@ -211,8 +257,14 @@ function toConversationDetail(conversation, currentUserId, search = "") {
       .reverse(),
     messageSearch: {
       query: search,
-      total: conversation.messages.length,
-      matched: filteredMessages.length,
+      total: conversation.messagePage?.totalMessages ?? conversation.messages.length,
+      matched: conversation.messagePage?.matchedMessages ?? filteredMessages.length,
+    },
+    messagePage: {
+      hasMoreOlder: Boolean(conversation.messagePage?.hasMoreOlder),
+      oldestMessageId: conversation.messagePage?.oldestMessageId || null,
+      newestMessageId: conversation.messagePage?.newestMessageId || null,
+      limit: conversation.messagePage?.limit || filteredMessages.length,
     },
     messages: filteredMessages.map((message) => ({
       id: message.id,
@@ -385,11 +437,17 @@ router.get("/:conversationId", authMiddleware, async (req, res) => {
   try {
     const conversationId = Number(req.params.conversationId);
     const search = String(req.query?.search || "").trim();
+    const limit = Number(req.query?.limit || 20);
+    const beforeMessageId = Number(req.query?.before || 0) || null;
     if (!Number.isInteger(conversationId)) {
       return res.status(400).json({ message: "Cuộc trò chuyện không hợp lệ" });
     }
 
-    const conversation = await findConversationForUser(conversationId, req.user.id);
+    const conversation = await findConversationForUser(conversationId, req.user.id, {
+      search,
+      limit,
+      beforeMessageId,
+    });
     if (!conversation) {
       return res.status(404).json({ message: "Không tìm thấy cuộc trò chuyện" });
     }

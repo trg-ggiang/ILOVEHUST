@@ -461,6 +461,17 @@
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.72), #fff);
 }
 
+.load-older-messages {
+  align-self: center;
+  min-height: 34px;
+  padding: 8px 14px;
+  display: grid;
+  place-items: center;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .message-row {
   display: flex;
   justify-content: flex-start;

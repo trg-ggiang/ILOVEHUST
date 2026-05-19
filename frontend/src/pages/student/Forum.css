@@ -441,6 +441,30 @@
   cursor: pointer;
 }
 
+.forum-load-more {
+  justify-self: center;
+  min-height: 42px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 0 18px;
+  color: #475569;
+  background: #fff;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.07);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.forum-load-more:hover {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+.forum-load-more:disabled {
+  color: #94a3b8;
+  background: #f8fafc;
+  cursor: wait;
+}
+
 .forum-trending {
   position: sticky;
   top: 114px;

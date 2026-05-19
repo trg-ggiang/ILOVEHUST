@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Calendar,
@@ -88,6 +88,7 @@ function wait(ms) {
 
 export default function TasksPage() {
   const navigate = useNavigate();
+  const loadMoreRef = useRef(null);
   const [language, setLanguage] = useState(getStoredLanguage);
   const [sidebarOpen, setSidebarOpen] = useState(getStoredSidebarState);
   const [profile, setProfile] = useState({
@@ -102,6 +103,8 @@ export default function TasksPage() {
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, hasMore: false });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [completingTaskIds, setCompletingTaskIds] = useState(new Set());
@@ -129,15 +132,19 @@ export default function TasksPage() {
     setStoredSidebarState(sidebarOpen);
   }, [sidebarOpen]);
 
-  async function loadTasks(nextStatus = filterStatus, nextSearch = searchText) {
+  async function loadTasks(nextStatus = filterStatus, nextSearch = searchText, nextPage = 1, append = false) {
     const response = await api.get("/students/me/tasks", {
       params: {
         status: nextStatus,
         search: nextSearch,
+        page: nextPage,
+        limit: pagination.limit,
       },
     });
-    setTasks(response.data?.tasks || []);
+    const nextTasks = response.data?.tasks || [];
+    setTasks((current) => (append ? [...current, ...nextTasks] : nextTasks));
     setStats(response.data?.stats || DEFAULT_STATS);
+    setPagination(response.data?.pagination || { page: nextPage, limit: pagination.limit, total: nextTasks.length, hasMore: false });
   }
 
   useEffect(() => {
@@ -159,6 +166,8 @@ export default function TasksPage() {
             params: {
               status: "all",
               search: "",
+              page: 1,
+              limit: 20,
             },
           }),
         ]);
@@ -177,6 +186,7 @@ export default function TasksPage() {
         });
         setTasks(taskResponse.data?.tasks || []);
         setStats(taskResponse.data?.stats || DEFAULT_STATS);
+        setPagination(taskResponse.data?.pagination || { page: 1, limit: 20, total: 0, hasMore: false });
       } catch {
         if (!mounted) return;
         localStorage.removeItem("token");
@@ -204,11 +214,14 @@ export default function TasksPage() {
           params: {
             status: filterStatus,
             search: searchText,
+            page: 1,
+            limit: pagination.limit,
           },
         });
         if (!mounted) return;
         setTasks(response.data?.tasks || []);
         setStats(response.data?.stats || DEFAULT_STATS);
+        setPagination(response.data?.pagination || { page: 1, limit: pagination.limit, total: 0, hasMore: false });
       } catch {
         if (mounted) setError(t.loadFailed);
       }
@@ -218,7 +231,38 @@ export default function TasksPage() {
       mounted = false;
       window.clearTimeout(timeoutId);
     };
-  }, [filterStatus, searchText, loading, t.loadFailed]);
+  }, [filterStatus, searchText, loading, t.loadFailed, pagination.limit]);
+
+  async function handleLoadMoreTasks() {
+    if (!pagination.hasMore || loadingMore) return;
+
+    try {
+      setLoadingMore(true);
+      setError("");
+      await loadTasks(filterStatus, searchText, pagination.page + 1, true);
+    } catch {
+      setError(t.loadFailed);
+    } finally {
+      setLoadingMore(false);
+    }
+  }
+
+  useEffect(() => {
+    const target = loadMoreRef.current;
+    if (!target || !pagination.hasMore) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          handleLoadMoreTasks();
+        }
+      },
+      { rootMargin: "320px 0px" }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [pagination.hasMore, pagination.page, loadingMore, filterStatus, searchText]);
 
   function handleMenuClick(key) {
     handleStudentMenuNavigation(key, navigate, "tasks");
@@ -267,7 +311,7 @@ export default function TasksPage() {
       setShowTaskModal(false);
       setEditingTaskId(null);
       setForm(EMPTY_FORM);
-      await loadTasks();
+      await loadTasks(filterStatus, searchText, 1, false);
     } catch {
       setError(editingTaskId ? t.updateFailed : t.createFailed);
     } finally {
@@ -296,7 +340,7 @@ export default function TasksPage() {
       if (isCompleting) {
         await wait(TASK_COMPLETE_ANIMATION_MS);
       }
-      await loadTasks();
+      await loadTasks(filterStatus, searchText, 1, false);
     } catch {
       setTasks(previousTasks);
       setCompletingTaskIds((current) => {
@@ -323,7 +367,7 @@ export default function TasksPage() {
     try {
       setError("");
       await api.delete(`/students/me/tasks/${taskId}`);
-      await loadTasks();
+      await loadTasks(filterStatus, searchText, 1, false);
     } catch {
       setTasks(previousTasks);
       setError(t.deleteFailed);
@@ -464,6 +508,18 @@ export default function TasksPage() {
                 </div>
               </article>
             ))}
+
+            {pagination.hasMore ? (
+              <button
+                ref={loadMoreRef}
+                type="button"
+                className="tasks-load-more"
+                onClick={handleLoadMoreTasks}
+                disabled={loadingMore}
+              >
+                {loadingMore ? "Đang tải..." : "Tải thêm công việc"}
+              </button>
+            ) : null}
           </div>
 
           <section className="tasks-progress-card">

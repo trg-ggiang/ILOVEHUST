@@ -53,7 +53,7 @@ export default function StudentHeader({
     loadNotifications();
   }, []);
 
-  useRealtimeRefresh(loadNotifications, { intervalMs: 8000 });
+  useRealtimeRefresh(loadNotifications, { intervalMs: 30000 });
 
   useEffect(() => {
     function handleClickOutside(event) {

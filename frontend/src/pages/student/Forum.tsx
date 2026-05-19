@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   BarChart3,
@@ -64,14 +64,30 @@ function getCategoryName(category, text) {
   return text.categories[category.slug] || category.name;
 }
 
+function mergeForumPayload(current, next, append = false) {
+  if (!append) return next;
+
+  const postMap = new Map();
+  for (const post of current.posts || []) postMap.set(post.id, post);
+  for (const post of next.posts || []) postMap.set(post.id, post);
+
+  return {
+    ...next,
+    posts: [...postMap.values()],
+  };
+}
+
 export default function ForumPage() {
   const navigate = useNavigate();
+  const loadMoreRef = useRef(null);
   const [language, setLanguage] = useState(getStoredLanguage);
   const [sidebarOpen, setSidebarOpen] = useState(getStoredSidebarState);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchText, setSearchText] = useState("");
   const [payload, setPayload] = useState({ categories: [], posts: [], trendingTopics: [] });
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, hasMore: false });
   const [showPostForm, setShowPostForm] = useState(false);
   const [newPost, setNewPost] = useState({
     title: "",
@@ -114,10 +130,13 @@ export default function ForumPage() {
           params: {
             category: selectedCategory,
             search: searchText,
+            page: 1,
+            limit: pagination.limit,
           },
         });
         if (!mounted) return;
         setPayload(response.data || { categories: [], posts: [], trendingTopics: [] });
+        setPagination(response.data?.pagination || { page: 1, limit: pagination.limit, total: 0, hasMore: false });
       } catch {
         if (!mounted) return;
         setError(t.loadFailed);
@@ -131,7 +150,7 @@ export default function ForumPage() {
       mounted = false;
       window.clearTimeout(timeoutId);
     };
-  }, [navigate, searchText, selectedCategory, t.loadFailed]);
+  }, [navigate, searchText, selectedCategory, t.loadFailed, pagination.limit]);
 
   function handleMenuClick(key) {
     handleStudentMenuNavigation(key, navigate, "forum");
@@ -139,14 +158,67 @@ export default function ForumPage() {
 
   async function reloadForum() {
     const response = await api.get("/forum", {
-      params: { category: selectedCategory, search: searchText },
+      params: { category: selectedCategory, search: searchText, page: 1, limit: pagination.limit },
     });
     setPayload(response.data || { categories: [], posts: [], trendingTopics: [] });
+    setPagination(response.data?.pagination || { page: 1, limit: pagination.limit, total: 0, hasMore: false });
   }
 
   useRealtimeRefresh(async () => {
-    await reloadForum();
-  }, { intervalMs: 9000 });
+    const response = await api.get("/forum", {
+      params: { category: selectedCategory, search: searchText, page: 1, limit: pagination.limit },
+    });
+    const nextPayload = response.data || { categories: [], posts: [], trendingTopics: [] };
+    setPayload((current) => mergeForumPayload(current, nextPayload, current.posts.length > nextPayload.posts.length));
+    setPagination((current) => {
+      const nextPagination = response.data?.pagination || { page: 1, limit: pagination.limit, total: 0, hasMore: false };
+      if (current.page > 1) {
+        return { ...nextPagination, page: current.page, hasMore: current.page * current.limit < nextPagination.total };
+      }
+      return nextPagination;
+    });
+  }, { intervalMs: 30000 });
+
+  async function handleLoadMorePosts() {
+    if (!pagination.hasMore || loadingMore) return;
+
+    try {
+      setLoadingMore(true);
+      setError("");
+      const response = await api.get("/forum", {
+        params: {
+          category: selectedCategory,
+          search: searchText,
+          page: pagination.page + 1,
+          limit: pagination.limit,
+        },
+      });
+      const nextPayload = response.data || { categories: [], posts: [], trendingTopics: [] };
+      setPayload((current) => mergeForumPayload(current, nextPayload, true));
+      setPagination(response.data?.pagination || { ...pagination, hasMore: false });
+    } catch {
+      setError(t.loadFailed);
+    } finally {
+      setLoadingMore(false);
+    }
+  }
+
+  useEffect(() => {
+    const target = loadMoreRef.current;
+    if (!target || !pagination.hasMore) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          handleLoadMorePosts();
+        }
+      },
+      { rootMargin: "360px 0px" }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [pagination.hasMore, pagination.page, loadingMore, selectedCategory, searchText]);
 
   async function handleCreatePost(event) {
     event.preventDefault();
@@ -406,6 +478,18 @@ export default function ForumPage() {
                   ) : null}
                 </article>
               ))}
+
+              {pagination.hasMore ? (
+                <button
+                  ref={loadMoreRef}
+                  type="button"
+                  className="forum-load-more"
+                  onClick={handleLoadMorePosts}
+                  disabled={loadingMore}
+                >
+                  {loadingMore ? "Đang tải..." : "Tải thêm bài viết"}
+                </button>
+              ) : null}
             </div>
 
             <aside className="forum-trending">

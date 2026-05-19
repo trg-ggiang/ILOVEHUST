@@ -114,11 +114,69 @@ function formatConversationPreview(conversation, text) {
     .replace(/Đã gửi ([^:]+)$/g, (_match, fileName) => text.sentFile(fileName));
 }
 
+function sortMessages(messages) {
+  return [...messages].sort((a, b) => {
+    const aTime = new Date(a.time).getTime();
+    const bTime = new Date(b.time).getTime();
+    if (aTime !== bTime) return aTime - bTime;
+    return a.id - b.id;
+  });
+}
+
+function mergeUniqueMessages(...messageGroups) {
+  const map = new Map();
+  for (const group of messageGroups) {
+    for (const message of group || []) {
+      map.set(message.id, message);
+    }
+  }
+  return sortMessages([...map.values()]);
+}
+
+function mergeConversationMessages(current, next) {
+  if (!next) return current || null;
+  if (!current || current.id !== next.id) return next;
+
+  const messages = mergeUniqueMessages(current.messages, next.messages);
+  return {
+    ...next,
+    messages,
+    messagePage: {
+      ...next.messagePage,
+      hasMoreOlder: Boolean(current.messagePage?.hasMoreOlder || next.messagePage?.hasMoreOlder),
+      oldestMessageId: current.messagePage?.oldestMessageId || next.messagePage?.oldestMessageId || null,
+      newestMessageId: next.messagePage?.newestMessageId || current.messagePage?.newestMessageId || null,
+    },
+  };
+}
+
+function prependConversationMessages(current, older) {
+  if (!older) return current || null;
+  if (!current || current.id !== older.id) return older;
+
+  const messages = mergeUniqueMessages(older.messages, current.messages);
+  return {
+    ...current,
+    messages,
+    attachments: older.attachments?.length ? older.attachments : current.attachments,
+    messageSearch: older.messageSearch || current.messageSearch,
+    messagePage: {
+      ...current.messagePage,
+      hasMoreOlder: Boolean(older.messagePage?.hasMoreOlder),
+      oldestMessageId: older.messagePage?.oldestMessageId || current.messagePage?.oldestMessageId || null,
+      newestMessageId: current.messagePage?.newestMessageId || older.messagePage?.newestMessageId || null,
+    },
+  };
+}
+
 export default function MessagesPage() {
   const navigate = useNavigate();
   const imageInputRef = useRef(null);
   const fileInputRef = useRef(null);
   const messageInputRef = useRef(null);
+  const messageListRef = useRef(null);
+  const olderMessagesTriggerRef = useRef(null);
+  const shouldScrollToBottomRef = useRef(true);
   const [language, setLanguage] = useState(getStoredLanguage);
   const [sidebarOpen, setSidebarOpen] = useState(getStoredSidebarState);
   const [conversations, setConversations] = useState([]);
@@ -135,6 +193,7 @@ export default function MessagesPage() {
   const [infoOpen, setInfoOpen] = useState(false);
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [loadingOlderMessages, setLoadingOlderMessages] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const t = useMemo(() => MESSAGES_TEXT[language] || MESSAGES_TEXT.vi, [language]);
@@ -230,28 +289,26 @@ export default function MessagesPage() {
       };
     }
 
-    const timeoutId = window.setTimeout(() => {
-      async function loadConversationDetail() {
-        try {
-          const response = await api.get(`/messages/${selectedChatId}`, {
-            params: {
-              search: chatSearchOpen ? chatSearchText : "",
-            },
-          });
-          if (!mounted) return;
-          setSelectedConversation(response.data?.conversation || null);
-          setConversations((current) =>
-            current.map((conversation) =>
-              conversation.id === selectedChatId ? { ...conversation, unread: 0 } : conversation
-            )
-          );
-        } catch {
-          if (!mounted) return;
-          setError(t.detailFailed);
-        }
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        shouldScrollToBottomRef.current = true;
+        const response = await api.get(`/messages/${selectedChatId}`, {
+          params: {
+            search: chatSearchOpen ? chatSearchText : "",
+            limit: 20,
+          },
+        });
+        if (!mounted) return;
+        setSelectedConversation(response.data?.conversation || null);
+        setConversations((current) =>
+          current.map((conversation) =>
+            conversation.id === selectedChatId ? { ...conversation, unread: 0 } : conversation
+          )
+        );
+      } catch {
+        if (!mounted) return;
+        setError(t.detailFailed);
       }
-
-      loadConversationDetail();
     }, 160);
 
     return () => {
@@ -259,6 +316,17 @@ export default function MessagesPage() {
       window.clearTimeout(timeoutId);
     };
   }, [chatSearchOpen, chatSearchText, selectedChatId, t.detailFailed]);
+
+  useEffect(() => {
+    if (!shouldScrollToBottomRef.current) return;
+    const list = messageListRef.current;
+    if (!list) return;
+
+    window.requestAnimationFrame(() => {
+      list.scrollTop = list.scrollHeight;
+      shouldScrollToBottomRef.current = false;
+    });
+  }, [selectedConversation?.id, selectedConversation?.messages?.length]);
 
   useRealtimeRefresh(async () => {
     const response = await api.get("/messages", { params: { search: searchText } });
@@ -268,23 +336,93 @@ export default function MessagesPage() {
       if (nextConversations.some((conversation) => conversation.id === current)) return current;
       return nextConversations[0]?.id || null;
     });
-  }, { intervalMs: 6000 });
+  }, { intervalMs: 30000 });
 
   useRealtimeRefresh(async () => {
     if (!selectedChatId) return;
+    const list = messageListRef.current;
+    const isNearBottom = list ? list.scrollHeight - list.scrollTop - list.clientHeight < 96 : true;
+    shouldScrollToBottomRef.current = isNearBottom;
 
     const response = await api.get(`/messages/${selectedChatId}`, {
       params: {
         search: chatSearchOpen ? chatSearchText : "",
+        limit: 20,
       },
     });
-    setSelectedConversation(response.data?.conversation || null);
+    const nextConversation = response.data?.conversation || null;
+    setSelectedConversation((current) => mergeConversationMessages(current, nextConversation));
     setConversations((current) =>
       current.map((conversation) =>
         conversation.id === selectedChatId ? { ...conversation, unread: 0 } : conversation
       )
     );
-  }, { enabled: Boolean(selectedChatId), intervalMs: 3500 });
+  }, { enabled: Boolean(selectedChatId), intervalMs: 30000 });
+
+  async function handleLoadOlderMessages() {
+    const page = selectedConversation?.messagePage;
+    if (!selectedChatId || !page?.hasMoreOlder || !page.oldestMessageId || loadingOlderMessages) return;
+
+    const list = messageListRef.current;
+    const previousScrollHeight = list?.scrollHeight || 0;
+
+    try {
+      setLoadingOlderMessages(true);
+      shouldScrollToBottomRef.current = false;
+      const response = await api.get(`/messages/${selectedChatId}`, {
+        params: {
+          search: chatSearchOpen ? chatSearchText : "",
+          limit: 20,
+          before: page.oldestMessageId,
+        },
+      });
+      const olderConversation = response.data?.conversation;
+      setSelectedConversation((current) => prependConversationMessages(current, olderConversation));
+      window.requestAnimationFrame(() => {
+        const nextList = messageListRef.current;
+        if (!nextList) return;
+        nextList.scrollTop = nextList.scrollHeight - previousScrollHeight;
+      });
+    } catch {
+      setError(t.detailFailed);
+    } finally {
+      setLoadingOlderMessages(false);
+    }
+  }
+
+  function handleMessageListScroll(event) {
+    if (event.currentTarget.scrollTop <= 160) {
+      handleLoadOlderMessages();
+    }
+  }
+
+  useEffect(() => {
+    const root = messageListRef.current;
+    const target = olderMessagesTriggerRef.current;
+    if (!root || !target || !selectedConversation?.messagePage?.hasMoreOlder) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          handleLoadOlderMessages();
+        }
+      },
+      {
+        root,
+        rootMargin: "180px 0px 0px 0px",
+      }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [
+    selectedChatId,
+    selectedConversation?.messagePage?.hasMoreOlder,
+    selectedConversation?.messagePage?.oldestMessageId,
+    loadingOlderMessages,
+    chatSearchOpen,
+    chatSearchText,
+  ]);
 
   function handleMenuClick(key) {
     handleStudentMenuNavigation(key, navigate, "messages");
@@ -297,7 +435,8 @@ export default function MessagesPage() {
     try {
       setError("");
       const response = await api.post(`/messages/${selectedChatId}/messages`, { content });
-      setSelectedConversation(response.data?.conversation || selectedConversation);
+      shouldScrollToBottomRef.current = true;
+      setSelectedConversation((current) => mergeConversationMessages(current, response.data?.conversation || selectedConversation));
       setConversations(response.data?.conversations || conversations);
       setMessageInput("");
       setEmojiOpen(false);
@@ -327,7 +466,7 @@ export default function MessagesPage() {
     try {
       setError("");
       const response = await api.patch(`/messages/${selectedChatId}/star`);
-      setSelectedConversation(response.data?.conversation || selectedConversation);
+      setSelectedConversation((current) => mergeConversationMessages(current, response.data?.conversation || selectedConversation));
       setConversations(response.data?.conversations || conversations);
     } catch {
       setError(t.starFailed);
@@ -339,6 +478,7 @@ export default function MessagesPage() {
       setError("");
       const response = await api.post("/messages/direct", { userId: studentId });
       const conversation = response.data?.conversation;
+      shouldScrollToBottomRef.current = true;
       setSelectedConversation(conversation || null);
       setSelectedChatId(conversation?.id || null);
       setConversations(response.data?.conversations || conversations);
@@ -363,7 +503,8 @@ export default function MessagesPage() {
       setUploading(true);
       setError("");
       const response = await api.post(`/messages/${selectedChatId}/attachments`, formData);
-      setSelectedConversation(response.data?.conversation || selectedConversation);
+      shouldScrollToBottomRef.current = true;
+      setSelectedConversation((current) => mergeConversationMessages(current, response.data?.conversation || selectedConversation));
       setConversations(response.data?.conversations || conversations);
     } catch {
       setError(t.uploadFailed);
@@ -451,7 +592,6 @@ export default function MessagesPage() {
                         >
                           <span className="conversation-avatar direct">
                             {student.avatarInitial}
-                            {student.online ? <i /> : null}
                           </span>
                           <span>
                             <strong>{student.fullName}</strong>
@@ -478,7 +618,6 @@ export default function MessagesPage() {
                   >
                     <span className={`conversation-avatar ${conversation.isGroup ? "group" : "direct"}`}>
                       {conversation.avatarInitial}
-                      {conversation.online ? <i /> : null}
                     </span>
                     <span className="conversation-copy">
                       <span>
@@ -500,11 +639,10 @@ export default function MessagesPage() {
                     <div className="chat-title">
                       <span className={`conversation-avatar ${selectedConversation.isGroup ? "group" : "direct"}`}>
                         {selectedConversation.avatarInitial}
-                        {selectedConversation.online ? <i /> : null}
                       </span>
                       <div>
                         <h2>{selectedConversation.name}</h2>
-                        <p>{selectedConversation.online ? t.active : t.inactive}</p>
+                        <p>{selectedConversation.isGroup ? t.memberCount(selectedConversation.members?.length || 0) : t.directMessage}</p>
                       </div>
                     </div>
                     <div className="chat-actions">
@@ -564,7 +702,16 @@ export default function MessagesPage() {
 
                   <div className={`chat-body ${infoOpen ? "with-info" : ""}`}>
                     <div className="chat-stream">
-                      <div className="message-list">
+                      <div
+                        className="message-list"
+                        ref={messageListRef}
+                        onScroll={handleMessageListScroll}
+                      >
+                        {selectedConversation.messagePage?.hasMoreOlder ? (
+                          <div ref={olderMessagesTriggerRef} className="load-older-messages">
+                            {loadingOlderMessages ? "Đang tải tin nhắn cũ..." : ""}
+                          </div>
+                        ) : null}
                         {visibleMessages.map((message) => (
                           <div key={message.id} className={`message-row ${message.isSelf ? "self" : ""}`}>
                             <div className="message-bundle">
@@ -689,7 +836,7 @@ export default function MessagesPage() {
                               <span>{member.initial}</span>
                               <div>
                                 <strong>{member.name}</strong>
-                                <small>{member.online ? t.active : t.inactive}</small>
+                                <small>{member.role}</small>
                               </div>
                             </div>
                           ))}

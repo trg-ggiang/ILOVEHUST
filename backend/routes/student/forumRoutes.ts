@@ -25,7 +25,7 @@ function toPostResponse(post, currentUserId) {
     categorySlug: post.category?.slug || "",
     likes: post._count?.likes || post.likes?.length || 0,
     comments: post._count?.comments || post.comments?.length || 0,
-    commentItems: (post.comments || []).map((comment) => {
+    commentItems: [...(post.comments || [])].reverse().map((comment) => {
       const commentProfile = comment.author?.studentProfile;
       const authorName = commentProfile?.fullName || comment.author?.email || "Sinh viên";
 
@@ -76,6 +76,9 @@ function buildTrendingTopics(posts) {
 async function getForumPayload(req) {
   const category = String(req.query.category || "all");
   const search = String(req.query.search || "").trim();
+  const page = Math.max(1, Number(req.query.page || 1));
+  const limit = Math.min(Math.max(Number(req.query.limit || 20), 1), 50);
+  const skip = (page - 1) * limit;
 
   const categories = await prisma.forumCategory.findMany({
     where: { isActive: true },
@@ -105,6 +108,8 @@ async function getForumPayload(req) {
   const posts = await prisma.forumPost.findMany({
     where,
     orderBy: [{ isPinned: "desc" }, { isHot: "desc" }, { createdAt: "desc" }],
+    skip,
+    take: limit,
     include: {
       author: {
         include: { studentProfile: true },
@@ -115,7 +120,8 @@ async function getForumPayload(req) {
         select: { userId: true },
       },
       comments: {
-        orderBy: { createdAt: "asc" },
+        orderBy: { createdAt: "desc" },
+        take: 8,
         include: {
           author: {
             include: { studentProfile: true },
@@ -128,9 +134,10 @@ async function getForumPayload(req) {
     },
   });
 
-  const [totalCount, hotCount] = await Promise.all([
+  const [totalCount, hotCount, filteredCount] = await Promise.all([
     prisma.forumPost.count(),
     prisma.forumPost.count({ where: { isHot: true } }),
+    prisma.forumPost.count({ where }),
   ]);
 
   const postsForTrending = await prisma.forumPost.findMany({
@@ -158,6 +165,12 @@ async function getForumPayload(req) {
     ],
     posts: posts.map((post) => toPostResponse(post, req.user.id)),
     trendingTopics: buildTrendingTopics(postsForTrending),
+    pagination: {
+      page,
+      limit,
+      total: filteredCount,
+      hasMore: page * limit < filteredCount,
+    },
   };
 }
 
