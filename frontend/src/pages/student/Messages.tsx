@@ -25,8 +25,6 @@ import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
 import { useRealtimeRefresh } from "../../utils/useRealtimeRefresh";
-import "./Dashboard.css";
-import "./Messages.css";
 
 const EMOJI_OPTIONS = [
   "😀",
@@ -516,7 +514,7 @@ export default function MessagesPage() {
   }
 
   return (
-    <div className="student-layout messages-layout">
+    <div className={`student-layout messages-layout ${sidebarOpen ? "" : "sidebar-collapsed"}`}>
       <StudentTaskbar
         language={language}
         activeKey="messages"
@@ -525,15 +523,15 @@ export default function MessagesPage() {
         onClose={() => setSidebarOpen(false)}
       />
 
-      <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
-        <StudentHeader
-          fullName={localStorage.getItem("fullName") || commonText.fallbackName}
-          studentCode=""
-          language={language}
-          onLanguageChange={setLanguage}
-          onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
-        />
+      <StudentHeader
+        fullName={localStorage.getItem("fullName") || commonText.fallbackName}
+        studentCode=""
+        language={language}
+        onLanguageChange={setLanguage}
+        onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
+      />
 
+      <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
         <section className="student-main-content messages-content">
           <div className="messages-shell">
             <aside className="conversation-panel">

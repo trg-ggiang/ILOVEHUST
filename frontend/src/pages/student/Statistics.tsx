@@ -36,8 +36,6 @@ import { STATISTICS_TEXT, STUDENT_COMMON_TEXT } from "../../i18n/translations";
 import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
-import "./Dashboard.css";
-import "./Statistics.css";
 
 const DEFAULT_PAYLOAD = {
   profile: { fullName: "", studentCode: "" },
@@ -224,7 +222,7 @@ export default function StatisticsPage() {
   }
 
   return (
-    <div className="student-layout statistics-layout">
+    <div className={`student-layout statistics-layout ${sidebarOpen ? "" : "sidebar-collapsed"}`}>
       <StudentTaskbar
         language={language}
         activeKey="stats"
@@ -233,15 +231,15 @@ export default function StatisticsPage() {
         onClose={() => setSidebarOpen(false)}
       />
 
-      <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
-        <StudentHeader
-          fullName={payload.profile?.fullName || localStorage.getItem("fullName") || commonText.fallbackName}
-          studentCode={payload.profile?.studentCode || ""}
-          language={language}
-          onLanguageChange={setLanguage}
-          onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
-        />
+      <StudentHeader
+        fullName={payload.profile?.fullName || localStorage.getItem("fullName") || commonText.fallbackName}
+        studentCode={payload.profile?.studentCode || ""}
+        language={language}
+        onLanguageChange={setLanguage}
+        onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
+      />
 
+      <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
         <section className="student-main-content statistics-content">
           <div className="statistics-page-head">
             <div>
@@ -274,17 +272,11 @@ export default function StatisticsPage() {
                 {semesterGPA.length === 0 ? <p className="empty-text">{t.noGpa}</p> : null}
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={localizedSemesterGPA}>
-                    <defs>
-                      <linearGradient id="statisticsColorGPA" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#dc2626" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#dc2626" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#eef2f7" />
                     <XAxis dataKey="semester" tick={{ fontSize: 12, fill: "#64748b" }} />
                     <YAxis domain={[0, 4]} tick={{ fontSize: 12, fill: "#64748b" }} />
                     <Tooltip contentStyle={chartTooltipStyle()} />
-                    <Area type="monotone" dataKey="gpa" stroke="#dc2626" strokeWidth={3} fill="url(#statisticsColorGPA)" />
+                    <Area type="monotone" dataKey="gpa" stroke="#dc2626" strokeWidth={3} fill="#fee2e2" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -321,17 +313,11 @@ export default function StatisticsPage() {
                 {studyTime.length === 0 ? <p className="empty-text">{t.noStudyTime}</p> : null}
                 <ResponsiveContainer width="100%" height="100%">
                   <ReBarChart data={localizedStudyTime}>
-                    <defs>
-                      <linearGradient id="statisticsColorBar" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#9333ea" stopOpacity={0.9} />
-                        <stop offset="95%" stopColor="#9333ea" stopOpacity={0.58} />
-                      </linearGradient>
-                    </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#eef2f7" />
                     <XAxis dataKey="day" tick={{ fontSize: 12, fill: "#64748b" }} />
                     <YAxis tick={{ fontSize: 12, fill: "#64748b" }} />
                     <Tooltip contentStyle={chartTooltipStyle()} />
-                    <Bar dataKey="hours" fill="url(#statisticsColorBar)" radius={[8, 8, 0, 0]} />
+                    <Bar dataKey="hours" fill="#9333ea" radius={[8, 8, 0, 0]} />
                   </ReBarChart>
                 </ResponsiveContainer>
               </div>

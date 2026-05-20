@@ -1,29 +1,25 @@
 import {
   House,
   BookOpen,
-  MessageSquare,
   MessagesSquare,
   ListChecks,
   CalendarDays,
   BarChart3,
-  Bot,
+  BotMessageSquare,
   Users,
   Settings,
   LogOut,
   GraduationCap,
 } from "lucide-react";
 import { TASKBAR_TEXT } from "../../i18n/translations";
-import "./StudentTaskbar.css";
 
 const PRIMARY_ITEMS = [
   { key: "home", icon: House },
-  { key: "grades", icon: BookOpen },
-  { key: "forum", icon: MessageSquare },
+  { key: "forum", icon: Users },
   { key: "messages", icon: MessagesSquare },
   { key: "tasks", icon: ListChecks },
   { key: "schedule", icon: CalendarDays },
-  { key: "aiChat", icon: Bot },
-  { key: "senpaiChat", icon: Users },
+  { key: "grades", icon: BookOpen },
   { key: "stats", icon: BarChart3 },
 ];
 
@@ -97,6 +93,16 @@ export default function StudentTaskbar({
       </aside>
 
       {isOpen ? <button type="button" className="taskbar-overlay" aria-label={t.hideMenu} onClick={onClose} /> : null}
+
+      <button
+        type="button"
+        className="ai-floating-button"
+        aria-label={t.menu.aiChat}
+        title={t.menu.aiChat}
+        onClick={() => onMenuClick?.("aiChat")}
+      >
+        <BotMessageSquare size={24} strokeWidth={2.1} />
+      </button>
     </>
   );
 }

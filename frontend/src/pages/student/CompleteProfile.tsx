@@ -21,7 +21,6 @@ import {
 import api from "../../api";
 import { getStoredLanguage, setStoredLanguage } from "../../i18n/language";
 import { COMPLETE_PROFILE_TEXT } from "../../i18n/translations";
-import "./CompleteProfile.css";
 
 const I18N = COMPLETE_PROFILE_TEXT;
 

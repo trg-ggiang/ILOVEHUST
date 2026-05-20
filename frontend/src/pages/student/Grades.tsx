@@ -25,7 +25,6 @@ import { GRADES_TEXT } from "../../i18n/translations";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import StudentHeader from "../../components/student/StudentHeader";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
-import "./Grades.css";
 
 const ALL_SEMESTER_KEY = "__all__";
 
@@ -381,7 +380,7 @@ export default function GradesPage() {
   }
 
   return (
-    <div className="student-layout grades-layout">
+    <div className={`student-layout grades-layout ${sidebarOpen ? "" : "sidebar-collapsed"}`}>
       <StudentTaskbar
         language={language}
         activeKey={activeMenu}
@@ -390,15 +389,15 @@ export default function GradesPage() {
         onClose={() => setSidebarOpen(false)}
       />
 
-      <main className={`student-main ${sidebarOpen ? "" : "expanded"}`}>
-        <StudentHeader
-          fullName={profile.fullName}
-          studentCode={profile.studentCode}
-          language={language}
-          onLanguageChange={setLanguage}
-          onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
-        />
+      <StudentHeader
+        fullName={profile.fullName}
+        studentCode={profile.studentCode}
+        language={language}
+        onLanguageChange={setLanguage}
+        onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
+      />
 
+      <main className={`student-main ${sidebarOpen ? "" : "expanded"}`}>
         <section className="student-main-content grades-content">
           <div className="grades-page-head">
             <div>

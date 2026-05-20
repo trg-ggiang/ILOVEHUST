@@ -12,8 +12,6 @@ import { STUDENT_COMMON_TEXT } from "../../i18n/translations";
 import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
-import "./Dashboard.css";
-import "./Settings.css";
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -195,7 +193,7 @@ export default function SettingsPage() {
   const initial = form.fullName.trim().charAt(0).toUpperCase() || "?";
 
   return (
-    <div className="student-layout settings-layout">
+    <div className={`student-layout settings-layout ${sidebarOpen ? "" : "sidebar-collapsed"}`}>
       <StudentTaskbar
         language={language}
         activeKey="settings"
@@ -204,15 +202,15 @@ export default function SettingsPage() {
         onClose={() => setSidebarOpen(false)}
       />
 
-      <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
-        <StudentHeader
-          fullName={form.fullName || localStorage.getItem("fullName") || commonText.fallbackName}
-          studentCode={form.studentCode}
-          language={language}
-          onLanguageChange={setLanguage}
-          onToggleSidebar={() => setSidebarOpen((current) => !current)}
-        />
+      <StudentHeader
+        fullName={form.fullName || localStorage.getItem("fullName") || commonText.fallbackName}
+        studentCode={form.studentCode}
+        language={language}
+        onLanguageChange={setLanguage}
+        onToggleSidebar={() => setSidebarOpen((current) => !current)}
+      />
 
+      <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
         <section className="student-main-content settings-content">
           <div className="settings-head">
             <div>

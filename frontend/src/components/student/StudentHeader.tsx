@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { HEADER_TEXT } from "../../i18n/translations";
 import { useRealtimeRefresh } from "../../utils/useRealtimeRefresh";
-import "./StudentHeader.css";
 
 function formatNotificationTime(value, language, t) {
   if (!value) return "";

@@ -41,17 +41,22 @@ export async function createNotification(client, data) {
     return client.notification.create({ data: payload });
   }
 
+  const updateData = {
+    title: payload.title,
+    message: payload.message,
+    link: payload.link,
+    metadata: payload.metadata,
+  };
+
+  if (data.resetReadOnUpdate !== false) {
+    updateData.readAt = null;
+    updateData.createdAt = new Date();
+  }
+
   return client.notification.upsert({
     where: { dedupeKey: payload.dedupeKey },
     create: payload,
-    update: {
-      title: payload.title,
-      message: payload.message,
-      link: payload.link,
-      metadata: payload.metadata,
-      readAt: null,
-      createdAt: new Date(),
-    },
+    update: updateData,
   });
 }
 
@@ -146,6 +151,7 @@ export async function ensureDueTaskNotifications(client, userId) {
         entityType: "student_task",
         entityId: task.id,
         dedupeKey: `task-due:${task.id}:${formatDateKey(task.dueAt)}`,
+        resetReadOnUpdate: false,
       });
     })
   );

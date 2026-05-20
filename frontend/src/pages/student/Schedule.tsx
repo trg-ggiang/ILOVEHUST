@@ -21,8 +21,6 @@ import { SCHEDULE_TEXT, STUDENT_COMMON_TEXT } from "../../i18n/translations";
 import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
-import "./Dashboard.css";
-import "./Schedule.css";
 
 function toDateParam(date) {
   const year = date.getFullYear();
@@ -173,7 +171,7 @@ export default function SchedulePage() {
   );
 
   return (
-    <div className="student-layout schedule-layout">
+    <div className={`student-layout schedule-layout ${sidebarOpen ? "" : "sidebar-collapsed"}`}>
       <StudentTaskbar
         language={language}
         activeKey="schedule"
@@ -182,15 +180,15 @@ export default function SchedulePage() {
         onClose={() => setSidebarOpen(false)}
       />
 
-      <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
-        <StudentHeader
-          fullName={localStorage.getItem("fullName") || commonText.fallbackName}
-          studentCode=""
-          language={language}
-          onLanguageChange={setLanguage}
-          onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
-        />
+      <StudentHeader
+        fullName={localStorage.getItem("fullName") || commonText.fallbackName}
+        studentCode=""
+        language={language}
+        onLanguageChange={setLanguage}
+        onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
+      />
 
+      <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
         <section className="student-main-content schedule-content">
           <div className="schedule-page-head">
             <div>

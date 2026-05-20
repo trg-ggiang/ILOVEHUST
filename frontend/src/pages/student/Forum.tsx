@@ -26,8 +26,6 @@ import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
 import { useRealtimeRefresh } from "../../utils/useRealtimeRefresh";
-import "./Dashboard.css";
-import "./Forum.css";
 
 const CATEGORY_ICONS = {
   MessageSquare,
@@ -277,7 +275,7 @@ export default function ForumPage() {
   }
 
   return (
-    <div className="student-layout forum-layout">
+    <div className={`student-layout forum-layout ${sidebarOpen ? "" : "sidebar-collapsed"}`}>
       <StudentTaskbar
         language={language}
         activeKey="forum"
@@ -286,16 +284,16 @@ export default function ForumPage() {
         onClose={() => setSidebarOpen(false)}
       />
 
-      <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
-        <StudentHeader
-          fullName={localStorage.getItem("fullName") || commonText.fallbackName}
-          studentCode=""
-          language={language}
-          onLanguageChange={setLanguage}
-          onSearchChange={setSearchText}
-          onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
-        />
+      <StudentHeader
+        fullName={localStorage.getItem("fullName") || commonText.fallbackName}
+        studentCode=""
+        language={language}
+        onLanguageChange={setLanguage}
+        onSearchChange={setSearchText}
+        onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
+      />
 
+      <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
         <section className="student-main-content forum-content">
           <div className="forum-page-head">
             <div>

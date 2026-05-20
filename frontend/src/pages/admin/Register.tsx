@@ -14,7 +14,6 @@ import {
 import api from "../../api";
 import { getStoredLanguage, setStoredLanguage } from "../../i18n/language";
 import { REGISTER_TEXT } from "../../i18n/translations";
-import "./Login.css";
 
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);

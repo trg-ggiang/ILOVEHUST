@@ -22,8 +22,6 @@ import { STUDENT_COMMON_TEXT, TASKS_TEXT } from "../../i18n/translations";
 import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
-import "./Dashboard.css";
-import "./Tasks.css";
 
 const EMPTY_FORM = {
   title: "",
@@ -375,7 +373,7 @@ export default function TasksPage() {
   }
 
   return (
-    <div className="student-layout tasks-layout">
+    <div className={`student-layout tasks-layout ${sidebarOpen ? "" : "sidebar-collapsed"}`}>
       <StudentTaskbar
         language={language}
         activeKey="tasks"
@@ -384,15 +382,15 @@ export default function TasksPage() {
         onClose={() => setSidebarOpen(false)}
       />
 
-      <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
-        <StudentHeader
-          fullName={profile.fullName || commonText.fallbackName}
-          studentCode={profile.studentCode}
-          language={language}
-          onLanguageChange={setLanguage}
-          onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
-        />
+      <StudentHeader
+        fullName={profile.fullName || commonText.fallbackName}
+        studentCode={profile.studentCode}
+        language={language}
+        onLanguageChange={setLanguage}
+        onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
+      />
 
+      <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
         <section className="student-main-content tasks-content">
           <div className="tasks-page-head">
             <div>
