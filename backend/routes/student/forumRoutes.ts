@@ -2,6 +2,7 @@ import express from "express";
 import prisma from "../../database.js";
 import authMiddleware from "../../middleware/authMiddleware.js";
 import { createForumCommentNotification, createForumLikeNotification } from "../../utils/notifications.js";
+import { emitToAll, emitToUser } from "../../realtime.js";
 
 const router = express.Router();
 
@@ -213,6 +214,7 @@ router.post("/posts", authMiddleware, async (req, res) => {
         tags,
       },
     });
+    emitToAll("forum:changed", { action: "post_created" });
 
     return res.status(201).json(await getForumPayload(req));
   } catch (error) {
@@ -258,6 +260,16 @@ router.post("/posts/:postId/likes", authMiddleware, async (req, res) => {
         await createForumLikeNotification(tx, { post, actor });
       });
     }
+    emitToAll("forum:changed", { action: existing ? "like_removed" : "like_added", postId });
+    if (!existing) {
+      const likedPost = await prisma.forumPost.findUnique({
+        where: { id: postId },
+        select: { authorId: true },
+      });
+      if (likedPost?.authorId && likedPost.authorId !== req.user.id) {
+        emitToUser(likedPost.authorId, "notification:changed", { type: "forum_like" });
+      }
+    }
 
     return res.json(await getForumPayload(req));
   } catch (error) {
@@ -296,7 +308,11 @@ router.post("/posts/:postId/comments", authMiddleware, async (req, res) => {
         }),
       ]);
       await createForumCommentNotification(tx, { post, comment, actor });
+      if (post?.authorId && post.authorId !== req.user.id) {
+        emitToUser(post.authorId, "notification:changed", { type: "forum_comment" });
+      }
     });
+    emitToAll("forum:changed", { action: "comment_added", postId });
 
     return res.status(201).json(await getForumPayload(req));
   } catch (error) {

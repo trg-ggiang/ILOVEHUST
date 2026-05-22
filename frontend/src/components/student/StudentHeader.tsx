@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { HEADER_TEXT } from "../../i18n/translations";
-import { useRealtimeRefresh } from "../../utils/useRealtimeRefresh";
+import { useSocketEvent } from "../../realtime/useSocketEvent";
 
 function formatNotificationTime(value, language, t) {
   if (!value) return "";
@@ -24,6 +24,7 @@ function formatNotificationTime(value, language, t) {
 export default function StudentHeader({
   fullName,
   studentCode,
+  avatarUrl,
   onSearchChange,
   language = "vi",
   onLanguageChange,
@@ -34,6 +35,8 @@ export default function StudentHeader({
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [headerAvatarUrl, setHeaderAvatarUrl] = useState(avatarUrl || localStorage.getItem("avatarUrl") || "");
+  const [avatarFailed, setAvatarFailed] = useState(false);
   const initial = fullName?.trim()?.charAt(0)?.toUpperCase() || "?";
   const t = HEADER_TEXT[language] || HEADER_TEXT.vi;
 
@@ -52,7 +55,34 @@ export default function StudentHeader({
     loadNotifications();
   }, []);
 
-  useRealtimeRefresh(loadNotifications, { intervalMs: 30000 });
+  useSocketEvent("notification:changed", loadNotifications);
+
+  useEffect(() => {
+    const nextAvatarUrl = avatarUrl || localStorage.getItem("avatarUrl") || "";
+    setHeaderAvatarUrl(nextAvatarUrl);
+    setAvatarFailed(false);
+  }, [avatarUrl]);
+
+  useEffect(() => {
+    if (avatarUrl || headerAvatarUrl || !localStorage.getItem("token")) return;
+
+    let mounted = true;
+    api.get("/auth/me")
+      .then((response) => {
+        if (!mounted) return;
+        const nextAvatarUrl = response.data?.user?.avatarUrl || "";
+        if (nextAvatarUrl) {
+          localStorage.setItem("avatarUrl", nextAvatarUrl);
+          setHeaderAvatarUrl(nextAvatarUrl);
+          setAvatarFailed(false);
+        }
+      })
+      .catch(() => null);
+
+    return () => {
+      mounted = false;
+    };
+  }, [avatarUrl, headerAvatarUrl]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -71,7 +101,14 @@ export default function StudentHeader({
         current.map((item) => (item.id === notification.id ? { ...item, read: true } : item))
       );
       setUnreadCount((current) => Math.max(current - 1, 0));
-      await api.patch(`/notifications/${notification.id}/read`).catch(() => null);
+      try {
+        const response = await api.patch(`/notifications/${notification.id}/read`);
+        if (typeof response.data?.unreadCount === "number") {
+          setUnreadCount(response.data.unreadCount);
+        }
+      } catch {
+        loadNotifications();
+      }
     }
 
     setNotificationOpen(false);
@@ -83,7 +120,14 @@ export default function StudentHeader({
   async function handleReadAll() {
     setNotifications((current) => current.map((item) => ({ ...item, read: true })));
     setUnreadCount(0);
-    await api.patch("/notifications/read-all").catch(() => null);
+    try {
+      const response = await api.patch("/notifications/read-all");
+      if (typeof response.data?.unreadCount === "number") {
+        setUnreadCount(response.data.unreadCount);
+      }
+    } catch {
+      loadNotifications();
+    }
   }
 
   return (
@@ -182,7 +226,13 @@ export default function StudentHeader({
             <strong>{fullName || "-"}</strong>
             <span>{studentCode || "-"}</span>
           </div>
-          <div className="student-avatar">{initial}</div>
+          <div className="student-avatar">
+            {headerAvatarUrl && !avatarFailed ? (
+              <img src={headerAvatarUrl} alt={fullName || "Avatar"} onError={() => setAvatarFailed(true)} />
+            ) : (
+              initial
+            )}
+          </div>
         </div>
       </div>
     </header>

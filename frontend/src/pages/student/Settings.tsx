@@ -134,6 +134,9 @@ export default function SettingsPage() {
       const nextAvatarUrl = response.data?.avatarUrl || "";
       setAvatarUrl(nextAvatarUrl);
       setAvatarPreview(nextAvatarUrl);
+      if (nextAvatarUrl) {
+        localStorage.setItem("avatarUrl", nextAvatarUrl);
+      }
       setAvatarFile(null);
       return nextAvatarUrl;
     } finally {
@@ -179,6 +182,11 @@ export default function SettingsPage() {
       if (user?.fullName) {
         localStorage.setItem("fullName", user.fullName);
       }
+      if (user?.avatarUrl) {
+        localStorage.setItem("avatarUrl", user.avatarUrl);
+        setAvatarUrl(user.avatarUrl);
+        setAvatarPreview(user.avatarUrl);
+      }
 
       setMessageType("success");
       setMessage("Đã lưu thay đổi.");
@@ -205,6 +213,7 @@ export default function SettingsPage() {
       <StudentHeader
         fullName={form.fullName || localStorage.getItem("fullName") || commonText.fallbackName}
         studentCode={form.studentCode}
+        avatarUrl={avatarPreview || avatarUrl}
         language={language}
         onLanguageChange={setLanguage}
         onToggleSidebar={() => setSidebarOpen((current) => !current)}

@@ -5,6 +5,7 @@ import multer from "multer";
 import prisma from "../../database.js";
 import authMiddleware from "../../middleware/authMiddleware.js";
 import { createMessageNotifications } from "../../utils/notifications.js";
+import { emitToUsers } from "../../realtime.js";
 
 const router = express.Router();
 const uploadDir = path.resolve("uploads/messages");
@@ -33,6 +34,10 @@ function getInitial(name) {
   return String(name || "?").trim().charAt(0).toUpperCase() || "?";
 }
 
+function getAvatarUrl(user) {
+  return user?.studentProfile?.avatarUrl || null;
+}
+
 function getConversationPeer(conversation, currentUserId) {
   return conversation.members.find((member) => member.userId !== currentUserId)?.user || null;
 }
@@ -52,6 +57,7 @@ function toConversationResponse(conversation, currentUserId) {
     id: conversation.id,
     name,
     avatarInitial: getInitial(name),
+    avatarUrl: isGroup ? null : getAvatarUrl(peer),
     lastMessage: lastMessage ? `${lastSenderName}: ${lastContent}` : "Chưa có tin nhắn",
     lastMessagePreview: lastMessage
       ? {
@@ -90,6 +96,7 @@ function toStudentSearchResponse(user) {
     studentCode: profile?.studentCode || "",
     email: user.email,
     avatarInitial: getInitial(name),
+    avatarUrl: getAvatarUrl(user),
   };
 }
 
@@ -247,6 +254,7 @@ function toConversationDetail(conversation, currentUserId, search = "") {
         id: member.userId,
         name,
         initial: getInitial(name),
+        avatarUrl: getAvatarUrl(member.user),
         role: member.role,
       };
     }),
@@ -269,6 +277,7 @@ function toConversationDetail(conversation, currentUserId, search = "") {
     messages: filteredMessages.map((message) => ({
       id: message.id,
       sender: getDisplayName(message.sender),
+      senderAvatarUrl: getAvatarUrl(message.sender),
       content: message.content,
       messageType: message.messageType,
       time: message.createdAt,
@@ -422,6 +431,9 @@ router.post("/direct", authMiddleware, async (req, res) => {
       }));
 
     const conversations = await getConversationList(req.user.id);
+    emitToUsers(conversation.members.map((member) => member.userId), "message:changed", {
+      conversationId: conversation.id,
+    });
 
     return res.status(existing ? 200 : 201).json({
       conversation: toConversationDetail(conversation, req.user.id),
@@ -585,6 +597,9 @@ router.post("/:conversationId/messages", authMiddleware, async (req, res) => {
 
     const updatedConversation = await findConversationForUser(conversationId, req.user.id);
     const conversations = await getConversationList(req.user.id);
+    const memberIds = conversation.members.map((member) => member.userId);
+    emitToUsers(memberIds, "message:changed", { conversationId });
+    emitToUsers(memberIds.filter((userId) => userId !== req.user.id), "notification:changed", { type: "message" });
 
     return res.status(201).json({
       conversation: toConversationDetail(updatedConversation, req.user.id),
@@ -682,6 +697,9 @@ router.post("/:conversationId/attachments", authMiddleware, upload.array("files"
 
     const updatedConversation = await findConversationForUser(conversationId, req.user.id);
     const conversations = await getConversationList(req.user.id);
+    const memberIds = conversation.members.map((member) => member.userId);
+    emitToUsers(memberIds, "message:changed", { conversationId });
+    emitToUsers(memberIds.filter((userId) => userId !== req.user.id), "notification:changed", { type: "message" });
 
     return res.status(201).json({
       conversation: toConversationDetail(updatedConversation, req.user.id),

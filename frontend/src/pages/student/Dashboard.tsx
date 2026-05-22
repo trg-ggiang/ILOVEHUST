@@ -276,6 +276,7 @@ export default function Dashboard() {
   const gpa = dashboard?.gpa || { history: [] };
   const stats = dashboard?.stats || {};
   const recentGrades = dashboard?.recentGrades || [];
+  const visibleRecentGrades = recentGrades.slice(0, 4);
   const upcomingClasses = dashboard?.upcomingClasses || [];
   const todayTasks = dashboard?.todayTasks || [];
   const visibleTodayTasks = todayTasks.slice(0, 4);
@@ -436,7 +437,7 @@ export default function Dashboard() {
 
                 <div className="grade-list">
                   {recentGrades.length === 0 ? <p className="empty-text">{t.noData}</p> : null}
-                  {recentGrades.map((item) => {
+                  {visibleRecentGrades.map((item) => {
                     const tone = gradeColor(item.score10 || 0);
                     return (
                       <div key={item.id} className="grade-item">

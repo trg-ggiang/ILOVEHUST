@@ -7,6 +7,8 @@ import {
   ChevronRight,
   Clock,
   Filter,
+  Gamepad2,
+  ListChecks,
   MapPin,
   Plus,
 } from "lucide-react";
@@ -31,13 +33,19 @@ function toDateParam(date) {
 
 function fromDateParam(value) {
   const [year, month, day] = String(value).split("-").map(Number);
-  if (!year || !month || !day) return new Date(2026, 3, 28);
+  if (!year || !month || !day) return new Date();
   return new Date(year, month - 1, day);
 }
 
 function addDays(date, amount) {
   const next = new Date(date);
   next.setDate(next.getDate() + amount);
+  return next;
+}
+
+function addMonths(date, amount) {
+  const next = new Date(date);
+  next.setMonth(next.getMonth() + amount);
   return next;
 }
 
@@ -51,23 +59,53 @@ function formatDate(value, language) {
 }
 
 function getEventIcon(type) {
+  if (type === "task") return ListChecks;
+  if (type === "play") return Gamepad2;
+  if (type === "study") return BookOpen;
   if (type === "exam") return Calendar;
   if (type === "assignment") return BookOpen;
   return Clock;
+}
+
+function getEventTypeLabel(type, text) {
+  if (type === "task") return text.taskDue;
+  return text.eventTypes[type] || text.eventTypes.other;
+}
+
+const GOOGLE_HOUR_HEIGHT = 78;
+
+function getHourNumber(time) {
+  return Number(String(time || "00:00").slice(0, 2)) || 0;
+}
+
+function getCalendarEventStyle(item, firstHour) {
+  const startMinutes = Number.isFinite(Number(item.startMinutes))
+    ? Number(item.startMinutes)
+    : (Number(item.startHour) || firstHour) * 60;
+  const durationMinutes = Math.max(30, Number(item.durationMinutes) || 60);
+  const top = ((startMinutes - firstHour * 60) / 60) * GOOGLE_HOUR_HEIGHT + 6;
+  const height = Math.max(38, (durationMinutes / 60) * GOOGLE_HOUR_HEIGHT - 8);
+
+  return {
+    top: `${Math.max(6, top)}px`,
+    height: `${height}px`,
+  };
 }
 
 export default function SchedulePage() {
   const navigate = useNavigate();
   const [language, setLanguage] = useState(getStoredLanguage);
   const [sidebarOpen, setSidebarOpen] = useState(getStoredSidebarState);
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 3, 28));
+  const [currentDate, setCurrentDate] = useState(() => new Date());
   const [viewMode, setViewMode] = useState("week");
   const [payload, setPayload] = useState({
     days: [],
     visibleDays: [],
     timeSlots: [],
     classes: [],
+    calendarItems: [],
     selectedDayClasses: [],
+    selectedDayEvents: [],
     upcomingEvents: [],
     stats: {},
   });
@@ -75,8 +113,9 @@ export default function SchedulePage() {
   const [newEvent, setNewEvent] = useState({
     title: "",
     date: toDateParam(currentDate),
-    time: "08:00",
-    type: "assignment",
+    startTime: "08:00",
+    endTime: "09:00",
+    type: "study",
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -131,6 +170,24 @@ export default function SchedulePage() {
     handleStudentMenuNavigation(key, navigate, "schedule");
   }
 
+  function getDefaultEndTime(startTime) {
+    const date = new Date(`2000-01-01T${startTime || "08:00"}:00`);
+    if (Number.isNaN(date.getTime())) return "09:00";
+    date.setHours(date.getHours() + 1);
+    return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  }
+
+  function openEventForm(date, time = "08:00") {
+    setNewEvent((current) => ({
+      ...current,
+      date,
+      startTime: time,
+      endTime: getDefaultEndTime(time),
+    }));
+    setCurrentDate(fromDateParam(date));
+    setShowEventForm(true);
+  }
+
   async function handleCreateEvent(event) {
     event.preventDefault();
     const title = newEvent.title.trim();
@@ -142,14 +199,22 @@ export default function SchedulePage() {
     try {
       setSaving(true);
       setError("");
-      const response = await api.post("/schedule/events", {
+      await api.post("/schedule/events", {
         title,
         date: newEvent.date,
-        time: newEvent.time,
+        startTime: newEvent.startTime,
+        endTime: newEvent.endTime,
         type: newEvent.type,
       });
+      const nextDate = fromDateParam(newEvent.date);
+      const response = await api.get("/schedule", {
+        params: {
+          date: newEvent.date,
+          view: viewMode,
+        },
+      });
       setPayload(response.data || payload);
-      setCurrentDate(fromDateParam(newEvent.date));
+      setCurrentDate(nextDate);
       setNewEvent((current) => ({ ...current, title: "" }));
       setShowEventForm(false);
     } catch {
@@ -159,16 +224,20 @@ export default function SchedulePage() {
     }
   }
 
-  const gridStyle = {
-    gridTemplateColumns: `96px repeat(${Math.max(visibleDays.length, 1)}, minmax(160px, 1fr))`,
-  };
+  const timeSlots = payload.timeSlots || [];
+  const firstHour = getHourNumber(timeSlots[0] || "06:00");
+  const calendarHeight = Math.max(timeSlots.length, 1) * GOOGLE_HOUR_HEIGHT;
 
   const stats = payload.stats || {};
-  const selectedDateLabel = t.selectedDate(
+  const selectedDateLabel = viewMode === "month"
+    ? currentDate.toLocaleDateString(language === "ja" ? "ja-JP" : "vi-VN", { month: "long", year: "numeric" })
+    : t.selectedDate(
     getWeekOfMonth(currentDate),
     currentDate.getMonth() + 1,
     currentDate.getFullYear()
   );
+
+  const navigationStep = viewMode === "month" ? "month" : viewMode === "week" ? "week" : "day";
 
   return (
     <div className={`student-layout schedule-layout ${sidebarOpen ? "" : "sidebar-collapsed"}`}>
@@ -216,13 +285,26 @@ export default function SchedulePage() {
               />
               <input
                 type="time"
-                value={newEvent.time}
-                onChange={(event) => setNewEvent((current) => ({ ...current, time: event.target.value }))}
+                value={newEvent.startTime}
+                onChange={(event) =>
+                  setNewEvent((current) => ({
+                    ...current,
+                    startTime: event.target.value,
+                    endTime: current.endTime || getDefaultEndTime(event.target.value),
+                  }))
+                }
+              />
+              <input
+                type="time"
+                value={newEvent.endTime}
+                onChange={(event) => setNewEvent((current) => ({ ...current, endTime: event.target.value }))}
               />
               <select
                 value={newEvent.type}
                 onChange={(event) => setNewEvent((current) => ({ ...current, type: event.target.value }))}
               >
+                <option value="study">{t.eventTypes.study}</option>
+                <option value="play">{t.eventTypes.play}</option>
                 <option value="assignment">{t.eventTypes.assignment}</option>
                 <option value="exam">{t.eventTypes.exam}</option>
                 <option value="presentation">{t.eventTypes.presentation}</option>
@@ -261,11 +343,19 @@ export default function SchedulePage() {
 
           <div className="schedule-controls">
             <div className="schedule-date-switch">
-              <button type="button" onClick={() => setCurrentDate((date) => addDays(date, viewMode === "week" ? -7 : -1))} aria-label={t.prev}>
+              <button
+                type="button"
+                onClick={() => setCurrentDate((date) => navigationStep === "month" ? addMonths(date, -1) : addDays(date, navigationStep === "week" ? -7 : -1))}
+                aria-label={t.prev}
+              >
                 <ChevronLeft size={20} />
               </button>
-              <h2>{language === "ja" ? selectedDateLabel : `${t.weekPrefix} ${selectedDateLabel}`}</h2>
-              <button type="button" onClick={() => setCurrentDate((date) => addDays(date, viewMode === "week" ? 7 : 1))} aria-label={t.next}>
+              <h2>{viewMode === "month" || language === "ja" ? selectedDateLabel : `${t.weekPrefix} ${selectedDateLabel}`}</h2>
+              <button
+                type="button"
+                onClick={() => setCurrentDate((date) => navigationStep === "month" ? addMonths(date, 1) : addDays(date, navigationStep === "week" ? 7 : 1))}
+                aria-label={t.next}
+              >
                 <ChevronRight size={20} />
               </button>
             </div>
@@ -273,6 +363,9 @@ export default function SchedulePage() {
             <div className="schedule-view-actions">
               <button type="button" className={viewMode === "week" ? "active" : ""} onClick={() => setViewMode("week")}>
                 {t.week}
+              </button>
+              <button type="button" className={viewMode === "month" ? "active" : ""} onClick={() => setViewMode("month")}>
+                {t.month}
               </button>
               <button type="button" className={viewMode === "day" ? "active" : ""} onClick={() => setViewMode("day")}>
                 {t.day}
@@ -285,15 +378,46 @@ export default function SchedulePage() {
 
           <div className="schedule-grid-card">
             {loading ? <p className="empty-text">{t.loading}</p> : null}
-            <div className="schedule-grid-scroll">
-              <div className="schedule-grid">
-                <div className="schedule-grid-head-row" style={gridStyle}>
-                  <div className="schedule-grid-head time">{t.time}</div>
+            {viewMode === "month" ? (
+              <div className="schedule-month-grid">
+                {Object.entries(t.weekdayLabels).map(([weekday, label]) => (
+                  <div key={weekday} className="schedule-month-weekday">{label}</div>
+                ))}
+                {visibleDays.map((day) => {
+                  const items = (payload.calendarItems || [])
+                    .filter((item) => item.date === day.date)
+                    .sort((a, b) => `${a.time || "23:59"}-${a.title}`.localeCompare(`${b.time || "23:59"}-${b.title}`));
+
+                  return (
+                    <button
+                      type="button"
+                      key={day.date}
+                      className={`schedule-month-day ${day.isSelected ? "selected" : ""} ${day.isCurrentMonth ? "" : "muted"}`}
+                      onClick={() => openEventForm(day.date)}
+                    >
+                      <span>{day.dayNumber}</span>
+                      <div>
+                        {items.slice(0, 4).map((item) => (
+                          <em key={`${item.source}-${item.id}`} className={`schedule-month-event ${item.color} ${item.source}`}>
+                            {item.time ? `${item.time} ` : ""}{item.title || item.subject}
+                          </em>
+                        ))}
+                        {items.length > 4 ? <strong>{t.moreEvents(items.length - 4)}</strong> : null}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+            <div className="schedule-google-scroll">
+              <div className="schedule-google-calendar">
+                <div className="schedule-google-head" style={{ gridTemplateColumns: `76px repeat(${Math.max(visibleDays.length, 1)}, minmax(160px, 1fr))` }}>
+                  <div className="schedule-google-head-time">{t.time}</div>
                   {visibleDays.map((day) => (
                     <button
                       type="button"
-                      key={day.weekday}
-                      className={`schedule-grid-head ${day.isSelected ? "selected" : ""}`}
+                      key={day.date}
+                      className={`schedule-google-day-head ${day.isSelected ? "selected" : ""}`}
                       onClick={() => setCurrentDate(fromDateParam(day.date))}
                     >
                       <strong>{t.weekdayLabels[day.weekday] || day.label}</strong>
@@ -301,31 +425,63 @@ export default function SchedulePage() {
                     </button>
                   ))}
                 </div>
-                {payload.timeSlots.map((time) => (
-                  <div className="schedule-grid-row" key={time} style={gridStyle}>
-                    <div className="schedule-time-cell">{time}</div>
-                    {visibleDays.map((day) => {
-                      const classInSlot = payload.classes.find(
-                        (item) => item.day === day.weekday && item.startHour === Number(time.slice(0, 2))
-                      );
 
-                      return (
-                        <div key={`${day.weekday}-${time}`} className={`schedule-cell ${day.isSelected ? "selected" : ""}`}>
-                          {classInSlot ? (
-                            <div className={`schedule-class-card ${classInSlot.color}`}>
-                              <strong>{classInSlot.subject}</strong>
-                              <em>{t.classTypes[classInSlot.type] || classInSlot.type}</em>
-                              <span><Clock size={13} /> {classInSlot.time}</span>
-                              <span><MapPin size={13} /> {classInSlot.room}</span>
-                            </div>
-                          ) : null}
-                        </div>
-                      );
-                    })}
+                <div className="schedule-google-body" style={{ gridTemplateColumns: `76px repeat(${Math.max(visibleDays.length, 1)}, minmax(160px, 1fr))` }}>
+                  <div className="schedule-google-time-axis">
+                    {timeSlots.map((time) => (
+                      <div key={time}>{time}</div>
+                    ))}
                   </div>
-                ))}
+
+                  {visibleDays.map((day) => {
+                    const dayItems = (payload.calendarItems || [])
+                      .filter((item) => item.date === day.date)
+                      .sort((a, b) => (Number(a.startMinutes) || 0) - (Number(b.startMinutes) || 0));
+
+                    return (
+                      <div
+                        key={day.date}
+                        className={`schedule-google-day-column ${day.isSelected ? "selected" : ""}`}
+                        style={{ height: `${calendarHeight}px` }}
+                      >
+                        {timeSlots.map((time) => (
+                          <button
+                            type="button"
+                            key={`${day.date}-${time}`}
+                            className="schedule-google-hour"
+                            style={{ height: `${GOOGLE_HOUR_HEIGHT}px` }}
+                            onClick={() => openEventForm(day.date, time)}
+                            aria-label={`${day.displayDate} ${time}`}
+                          />
+                        ))}
+
+                        {dayItems.map((item) => (
+                          <button
+                            type="button"
+                            key={`${item.source}-${item.id}`}
+                            className={`schedule-google-event ${item.color} ${item.source}`}
+                            style={getCalendarEventStyle(item, firstHour)}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setCurrentDate(fromDateParam(day.date));
+                            }}
+                          >
+                            <strong>{item.title || item.subject}</strong>
+                            <span>
+                              {item.source === "class"
+                                ? t.classTypes[item.type] || item.type
+                                : getEventTypeLabel(item.type, t)}
+                            </span>
+                            <em>{item.time || t.allDay}{item.room ? ` · ${item.room}` : ""}</em>
+                          </button>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
+            )}
           </div>
 
           <div className="schedule-bottom-grid">
@@ -333,14 +489,14 @@ export default function SchedulePage() {
               <h3><Calendar size={20} /> {t.upcomingEvents}</h3>
               <div className="schedule-event-list">
                 {payload.upcomingEvents.length === 0 ? <p className="empty-text">{t.noUpcomingEvents}</p> : null}
-                {payload.upcomingEvents.map((event) => {
+                {(payload.upcomingEvents || []).map((event) => {
                   const Icon = getEventIcon(event.type);
                   return (
-                    <div key={event.id} className={`schedule-event-item ${event.color}`}>
+                    <div key={`${event.source || "event"}-${event.id}`} className={`schedule-event-item ${event.color}`}>
                       <span><Icon size={19} /></span>
                       <div>
                         <strong>{event.title}</strong>
-                        <p>{formatDate(event.date, language)} - {event.time || t.allDay}</p>
+                        <p>{getEventTypeLabel(event.type, t)} · {formatDate(event.date, language)} - {event.time || t.allDay}</p>
                       </div>
                     </div>
                   );
@@ -351,12 +507,15 @@ export default function SchedulePage() {
             <article className="schedule-today-panel">
               <h3><BookOpen size={20} /> {t.daySchedule}</h3>
               <div className="schedule-today-list">
-                {payload.selectedDayClasses.length === 0 ? <p>{t.noClassesToday}</p> : null}
-                {payload.selectedDayClasses.map((item) => (
-                  <div key={item.id}>
-                    <strong>{item.subject}</strong>
-                    <span><Clock size={15} /> {item.time}</span>
-                    <span><MapPin size={15} /> {item.room}</span>
+                {(payload.selectedDayEvents || []).length === 0 ? <p>{t.noClassesToday}</p> : null}
+                {(payload.selectedDayEvents || []).map((item) => (
+                  <div key={`${item.source}-${item.id}`}>
+                    <strong>{item.title || item.subject}</strong>
+                    <span><Clock size={15} /> {item.time || t.allDay}</span>
+                    <span>
+                      {item.source === "class" ? <MapPin size={15} /> : <Calendar size={15} />}
+                      {item.source === "class" ? item.room : getEventTypeLabel(item.type, t)}
+                    </span>
                   </div>
                 ))}
               </div>

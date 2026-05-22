@@ -176,6 +176,7 @@ model StudentScheduleEvent {
   title     String
   eventDate DateTime @map("event_date") @db.Date
   eventTime String?  @map("event_time") @db.VarChar(5)
+  endTime   String?  @map("end_time") @db.VarChar(5)
   eventType String   @default("assignment") @map("event_type")
   color     String   @default("purple")
   createdAt DateTime @default(now()) @map("created_at")

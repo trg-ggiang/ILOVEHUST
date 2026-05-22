@@ -2,6 +2,7 @@ import express from "express";
 import prisma from "../database.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import { ensureDueTaskNotifications, toNotificationResponse } from "../utils/notifications.js";
+import { emitToUser } from "../realtime.js";
 
 const router = express.Router();
 
@@ -45,27 +46,9 @@ router.patch("/:notificationId/read", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "Thông báo không hợp lệ" });
     }
 
-    await prisma.notification.updateMany({
+    const result = await prisma.notification.updateMany({
       where: {
         id: notificationId,
-        userId: req.user.id,
-      },
-      data: {
-        readAt: new Date(),
-      },
-    });
-
-    return res.status(204).send();
-  } catch (error) {
-    console.error("READ NOTIFICATION ERROR:", error);
-    return res.status(500).json({ message: "Lỗi server khi cập nhật thông báo" });
-  }
-});
-
-router.patch("/read-all", authMiddleware, async (req, res) => {
-  try {
-    await prisma.notification.updateMany({
-      where: {
         userId: req.user.id,
         readAt: null,
       },
@@ -74,7 +57,40 @@ router.patch("/read-all", authMiddleware, async (req, res) => {
       },
     });
 
-    return res.status(204).send();
+    const unreadCount = await prisma.notification.count({
+      where: {
+        userId: req.user.id,
+        readAt: null,
+      },
+    });
+
+    if (result.count > 0) {
+      emitToUser(req.user.id, "notification:changed", { type: "read", unreadCount });
+    }
+
+    return res.json({ unreadCount, updated: result.count });
+  } catch (error) {
+    console.error("READ NOTIFICATION ERROR:", error);
+    return res.status(500).json({ message: "Lỗi server khi cập nhật thông báo" });
+  }
+});
+
+router.patch("/read-all", authMiddleware, async (req, res) => {
+  try {
+    const result = await prisma.notification.updateMany({
+      where: {
+        userId: req.user.id,
+        readAt: null,
+      },
+      data: {
+        readAt: new Date(),
+      },
+    });
+    if (result.count > 0) {
+      emitToUser(req.user.id, "notification:changed", { type: "read_all", unreadCount: 0 });
+    }
+
+    return res.json({ unreadCount: 0, updated: result.count });
   } catch (error) {
     console.error("READ ALL NOTIFICATIONS ERROR:", error);
     return res.status(500).json({ message: "Lỗi server khi cập nhật thông báo" });

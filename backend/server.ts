@@ -1,4 +1,5 @@
 import "dotenv/config";
+import http from "http";
 import express from "express";
 import systemRoutes from "./routes/systemRoutes.js";
 import authRoutes from "./routes/admin/authRoutes.js";
@@ -8,9 +9,11 @@ import forumRoutes from "./routes/student/forumRoutes.js";
 import messageRoutes from "./routes/student/messageRoutes.js";
 import scheduleRoutes from "./routes/student/scheduleRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import { initRealtime } from "./realtime.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const server = http.createServer(app);
 
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
@@ -23,7 +26,9 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/schedule", scheduleRoutes);
 app.use("/api/notifications", notificationRoutes);
 
-app.listen(PORT, () => {
+initRealtime(server);
+
+server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
 

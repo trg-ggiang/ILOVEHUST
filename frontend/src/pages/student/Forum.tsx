@@ -25,7 +25,7 @@ import { FORUM_TEXT, STUDENT_COMMON_TEXT } from "../../i18n/translations";
 import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
-import { useRealtimeRefresh } from "../../utils/useRealtimeRefresh";
+import { useSocketEvent } from "../../realtime/useSocketEvent";
 
 const CATEGORY_ICONS = {
   MessageSquare,
@@ -162,7 +162,7 @@ export default function ForumPage() {
     setPagination(response.data?.pagination || { page: 1, limit: pagination.limit, total: 0, hasMore: false });
   }
 
-  useRealtimeRefresh(async () => {
+  useSocketEvent("forum:changed", async () => {
     const response = await api.get("/forum", {
       params: { category: selectedCategory, search: searchText, page: 1, limit: pagination.limit },
     });
@@ -175,7 +175,7 @@ export default function ForumPage() {
       }
       return nextPagination;
     });
-  }, { intervalMs: 30000 });
+  });
 
   async function handleLoadMorePosts() {
     if (!pagination.hasMore || loadingMore) return;

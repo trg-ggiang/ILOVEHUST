@@ -44,6 +44,7 @@ async function main() {
     conversationMemberCount,
     messageCount,
     userCount,
+    seededStudents,
   ] = await Promise.all([
     prisma.major.count(),
     prisma.semester.count(),
@@ -60,6 +61,21 @@ async function main() {
     prisma.conversationMember.count(),
     prisma.message.count(),
     prisma.user.count(),
+    prisma.user.findMany({
+      where: {
+        role: 1,
+        OR: [
+          { email: "student@ilovehust.local" },
+          { email: { startsWith: "sv" } },
+        ],
+      },
+      select: {
+        id: true,
+        email: true,
+        studentTasks: { select: { id: true } },
+        scheduleClasses: { select: { weekday: true } },
+      },
+    }),
   ]);
 
   assertCheck(Boolean(admin), "Missing admin user: admin@ilovehust.local", errors);
@@ -69,8 +85,8 @@ async function main() {
   assertCheck(semesterCount >= 6, "Expected at least 6 semesters", errors);
   assertCheck(courseCount >= 12, "Expected at least 12 courses", errors);
   assertCheck(gradeRecordCount >= 1200, "Expected at least 1200 grade records", errors);
-  assertCheck(taskCount >= 300, "Expected at least 300 student tasks", errors);
-  assertCheck(scheduleClassCount >= 300, "Expected at least 300 schedule classes", errors);
+  assertCheck(taskCount >= 500, "Expected at least 500 student tasks", errors);
+  assertCheck(scheduleClassCount >= 900, "Expected at least 900 schedule classes", errors);
   assertCheck(scheduleEventCount >= 100, "Expected at least 100 schedule events", errors);
   assertCheck(forumCategoryCount >= 3, "Expected at least 3 forum categories", errors);
   assertCheck(forumPostCount >= 100, "Expected at least 100 forum posts", errors);
@@ -79,6 +95,16 @@ async function main() {
   assertCheck(conversationCount >= 38, "Expected at least 38 conversations", errors);
   assertCheck(conversationMemberCount >= 100, "Expected at least 100 conversation members", errors);
   assertCheck(messageCount >= 380, "Expected at least 380 chat messages", errors);
+
+  for (const seededStudent of seededStudents) {
+    const weekdays = new Set(seededStudent.scheduleClasses.map((item) => item.weekday));
+    const hasWeekdaySchedule = [1, 2, 3, 4, 5].every((weekday) => weekdays.has(weekday));
+    const hasWeekendSchedule = seededStudent.scheduleClasses.some((item) => item.weekday < 1 || item.weekday > 5);
+
+    assertCheck(seededStudent.studentTasks.length >= 5, `${seededStudent.email} has fewer than 5 tasks`, errors);
+    assertCheck(hasWeekdaySchedule, `${seededStudent.email} is missing weekday schedule classes`, errors);
+    assertCheck(!hasWeekendSchedule, `${seededStudent.email} has schedule classes outside Monday-Friday`, errors);
+  }
 
   if (student) {
     const uniqueSemesters = new Set(

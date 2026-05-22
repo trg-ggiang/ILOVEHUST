@@ -24,7 +24,7 @@ import { MESSAGES_TEXT, STUDENT_COMMON_TEXT } from "../../i18n/translations";
 import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
-import { useRealtimeRefresh } from "../../utils/useRealtimeRefresh";
+import { useSocketEvent } from "../../realtime/useSocketEvent";
 
 const EMOJI_OPTIONS = [
   "😀",
@@ -165,6 +165,14 @@ function prependConversationMessages(current, older) {
       newestMessageId: current.messagePage?.newestMessageId || older.messagePage?.newestMessageId || null,
     },
   };
+}
+
+function ConversationAvatar({ className = "", avatarUrl, initial, name }) {
+  return (
+    <span className={`conversation-avatar ${className}`}>
+      {avatarUrl ? <img src={avatarUrl} alt={name || "Avatar"} /> : initial}
+    </span>
+  );
 }
 
 export default function MessagesPage() {
@@ -326,36 +334,35 @@ export default function MessagesPage() {
     });
   }, [selectedConversation?.id, selectedConversation?.messages?.length]);
 
-  useRealtimeRefresh(async () => {
-    const response = await api.get("/messages", { params: { search: searchText } });
-    const nextConversations = response.data?.conversations || [];
+  useSocketEvent("message:changed", async (payload) => {
+    const listResponse = await api.get("/messages", { params: { search: searchText } });
+    const nextConversations = listResponse.data?.conversations || [];
     setConversations(nextConversations);
     setSelectedChatId((current) => {
       if (nextConversations.some((conversation) => conversation.id === current)) return current;
       return nextConversations[0]?.id || null;
     });
-  }, { intervalMs: 30000 });
 
-  useRealtimeRefresh(async () => {
-    if (!selectedChatId) return;
+    if (!selectedChatId || payload?.conversationId !== selectedChatId) return;
+
     const list = messageListRef.current;
     const isNearBottom = list ? list.scrollHeight - list.scrollTop - list.clientHeight < 96 : true;
     shouldScrollToBottomRef.current = isNearBottom;
 
-    const response = await api.get(`/messages/${selectedChatId}`, {
+    const detailResponse = await api.get(`/messages/${selectedChatId}`, {
       params: {
         search: chatSearchOpen ? chatSearchText : "",
         limit: 20,
       },
     });
-    const nextConversation = response.data?.conversation || null;
+    const nextConversation = detailResponse.data?.conversation || null;
     setSelectedConversation((current) => mergeConversationMessages(current, nextConversation));
     setConversations((current) =>
       current.map((conversation) =>
         conversation.id === selectedChatId ? { ...conversation, unread: 0 } : conversation
       )
     );
-  }, { enabled: Boolean(selectedChatId), intervalMs: 30000 });
+  });
 
   async function handleLoadOlderMessages() {
     const page = selectedConversation?.messagePage;
@@ -588,9 +595,12 @@ export default function MessagesPage() {
                           className="student-result-item"
                           onClick={() => handleStartDirectChat(student.id)}
                         >
-                          <span className="conversation-avatar direct">
-                            {student.avatarInitial}
-                          </span>
+                          <ConversationAvatar
+                            className="direct"
+                            avatarUrl={student.avatarUrl}
+                            initial={student.avatarInitial}
+                            name={student.fullName}
+                          />
                           <span>
                             <strong>{student.fullName}</strong>
                             <small>
@@ -614,9 +624,12 @@ export default function MessagesPage() {
                     className={`conversation-item ${selectedChatId === conversation.id ? "active" : ""}`}
                     onClick={() => setSelectedChatId(conversation.id)}
                   >
-                    <span className={`conversation-avatar ${conversation.isGroup ? "group" : "direct"}`}>
-                      {conversation.avatarInitial}
-                    </span>
+                    <ConversationAvatar
+                      className={conversation.isGroup ? "group" : "direct"}
+                      avatarUrl={conversation.avatarUrl}
+                      initial={conversation.avatarInitial}
+                      name={conversation.name}
+                    />
                     <span className="conversation-copy">
                       <span>
                         <strong>{conversation.name}</strong>
@@ -635,9 +648,12 @@ export default function MessagesPage() {
                 <>
                   <div className="chat-head">
                     <div className="chat-title">
-                      <span className={`conversation-avatar ${selectedConversation.isGroup ? "group" : "direct"}`}>
-                        {selectedConversation.avatarInitial}
-                      </span>
+                      <ConversationAvatar
+                        className={selectedConversation.isGroup ? "group" : "direct"}
+                        avatarUrl={selectedConversation.avatarUrl}
+                        initial={selectedConversation.avatarInitial}
+                        name={selectedConversation.name}
+                      />
                       <div>
                         <h2>{selectedConversation.name}</h2>
                         <p>{selectedConversation.isGroup ? t.memberCount(selectedConversation.members?.length || 0) : t.directMessage}</p>
@@ -712,6 +728,14 @@ export default function MessagesPage() {
                         ) : null}
                         {visibleMessages.map((message) => (
                           <div key={message.id} className={`message-row ${message.isSelf ? "self" : ""}`}>
+                            {!message.isSelf ? (
+                              <ConversationAvatar
+                                className="direct message-avatar"
+                                avatarUrl={message.senderAvatarUrl}
+                                initial={String(message.sender || "?").charAt(0).toUpperCase()}
+                                name={message.sender}
+                              />
+                            ) : null}
                             <div className="message-bundle">
                               {!message.isSelf ? <strong>{message.sender}</strong> : null}
                               <div className="message-bubble">
@@ -816,9 +840,12 @@ export default function MessagesPage() {
                     {infoOpen ? (
                       <aside className="chat-info-panel">
                         <div className="chat-info-head">
-                          <span className={`conversation-avatar ${selectedConversation.isGroup ? "group" : "direct"}`}>
-                            {selectedConversation.avatarInitial}
-                          </span>
+                          <ConversationAvatar
+                            className={selectedConversation.isGroup ? "group" : "direct"}
+                            avatarUrl={selectedConversation.avatarUrl}
+                            initial={selectedConversation.avatarInitial}
+                            name={selectedConversation.name}
+                          />
                           <h3>{selectedConversation.name}</h3>
                           <p>
                             {selectedConversation.isGroup
@@ -831,7 +858,9 @@ export default function MessagesPage() {
                           <h4>{t.members}</h4>
                           {(selectedConversation.members || []).map((member) => (
                             <div key={member.id} className="chat-member-row">
-                              <span>{member.initial}</span>
+                              <span className="chat-member-avatar">
+                                {member.avatarUrl ? <img src={member.avatarUrl} alt={member.name || "Avatar"} /> : member.initial}
+                              </span>
                               <div>
                                 <strong>{member.name}</strong>
                                 <small>{member.role}</small>

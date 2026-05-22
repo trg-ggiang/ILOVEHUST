@@ -22,7 +22,6 @@
     "Helvetica Neue",
     Arial,
     sans-serif;
-
   font-family:
     var(--app-font-family);
   line-height: 1.5;
@@ -392,7 +391,7 @@ select {
 .main-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.18fr) minmax(360px, 0.82fr);
-  align-items: start;
+  align-items: stretch;
   gap: 20px;
 }
 
@@ -401,6 +400,14 @@ select {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  min-height: 0;
+}
+
+.main-left > .panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .main-right .panel {
@@ -443,6 +450,12 @@ select {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.main-left > .panel .grade-list {
+  flex: 1;
+  min-height: 0;
+  justify-content: space-between;
 }
 
 .stats-column > .panel .class-list {
@@ -1102,7 +1115,7 @@ select {
 
 .student-search:focus-within {
   border-color: #fca5a5;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+  box-shadow: none;
   background: #ffffff;
 }
 
@@ -1154,7 +1167,14 @@ select {
   border-color: #e70000;
   color: #ffffff;
   background: #ef4444;
-  box-shadow: 0 8px 14px rgba(220, 38, 38, 0.22);
+  box-shadow: none;
+}
+
+.student-header {
+  background: #ffffff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
 }
 
 .notification-wrap {
@@ -1397,12 +1417,21 @@ select {
   width: 60px;
   height: 60px;
   border-radius: 999px;
-  background: #ff2121;
+  background: #dc2626;
   color: #ffffff;
   display: grid;
   place-items: center;
   font-size: 26px;
   font-weight: 700;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.student-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 @keyframes pingDot {
@@ -1819,7 +1848,7 @@ select {
 
 .input-box input:focus {
   border-color: #ef4444;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+  box-shadow: none;
 }
 
 .login-options {
@@ -1873,7 +1902,7 @@ select {
   cursor: pointer;
   font-size: 16px;
   font-weight: 700;
-  box-shadow: 0 12px 24px rgba(220, 38, 38, 0.3);
+  box-shadow: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1882,7 +1911,7 @@ select {
 }
 
 .login-button:hover {
-  box-shadow: 0 16px 34px rgba(220, 38, 38, 0.38);
+  box-shadow: none;
 }
 
 .login-button:active {
@@ -2991,7 +3020,7 @@ select {
 .forum-create-row button {
   color: #fff;
   background: #dc2626;
-  box-shadow: 0 10px 20px rgba(220, 38, 38, 0.18);
+  box-shadow: none;
 }
 
 .forum-filter-btn {
@@ -3270,7 +3299,7 @@ select {
 .forum-post-actions .like-action.liked {
   color: #fff;
   background: #ef4444;
-  box-shadow: 0 10px 18px rgba(220, 38, 38, 0.18);
+  box-shadow: none;
 }
 
 .forum-post-actions .like-action.not-liked {
@@ -3545,7 +3574,7 @@ select {
   display: grid;
   place-items: center;
   color: #fff;
-  background: #ef4444;
+  background: #1d4ed8;
 }
 
 .conversation-head h1 {
@@ -3568,8 +3597,8 @@ select {
 }
 
 .conversation-title-row button.active {
-  color: #dc2626;
-  background: #fee2e2;
+  color: #1d4ed8;
+  background: #dbeafe;
 }
 
 .conversation-search {
@@ -3614,7 +3643,7 @@ select {
 }
 
 .new-chat-search:focus-within {
-  border-color: #ef4444;
+  border-color: #3b82f6;
   background: #fff;
 }
 
@@ -3701,12 +3730,13 @@ select {
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 8px;
+  background: #ffffff;
 }
 
 .conversation-item {
   width: 100%;
   min-height: 86px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 18px;
   padding: 14px;
   display: flex;
@@ -3723,8 +3753,9 @@ select {
 }
 
 .conversation-item.active {
-  background: #ffffff;
-  box-shadow: 0 10px 20px rgba(220, 38, 38, 0.08);
+  border-color: #dbeafe;
+  background: #f8fafc;
+  box-shadow: none;
 }
 
 .conversation-avatar {
@@ -3737,14 +3768,23 @@ select {
   flex-shrink: 0;
   color: #fff;
   font-weight: 900;
+  overflow: hidden;
+}
+
+.conversation-avatar img,
+.chat-member-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .conversation-avatar.direct {
-  background: #3b82f6;
+  background: #dc2626;
 }
 
 .conversation-avatar.group {
-  background: #8b5cf6;
+  background: #dc2626;
 }
 
 .conversation-avatar i {
@@ -3802,7 +3842,7 @@ select {
   place-items: center;
   flex-shrink: 0;
   color: #fff;
-  background: #dc2626;
+  background: #1d4ed8;
   font-size: 12px;
 }
 
@@ -3860,13 +3900,13 @@ select {
 .chat-actions button:hover,
 .message-input-row button:hover {
   background: #f1f5f9;
-  color: #dc2626;
+  color: #1d4ed8;
 }
 
 .chat-actions button.active {
-  color: #dc2626;
-  background: #fee2e2;
-  box-shadow: 0 8px 16px rgba(220, 38, 38, 0.14);
+  color: #1d4ed8;
+  background: #dbeafe;
+  box-shadow: none;
 }
 
 .chat-actions button.starred {
@@ -3899,8 +3939,8 @@ select {
 }
 
 .chat-search-panel input:focus {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
   background: #fff;
 }
 
@@ -3966,6 +4006,8 @@ select {
 .message-row {
   display: flex;
   justify-content: flex-start;
+  align-items: flex-end;
+  gap: 8px;
 }
 
 .message-row.self {
@@ -3974,6 +4016,13 @@ select {
 
 .message-bundle {
   max-width: min(70%, 620px);
+}
+
+.message-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  font-size: 13px;
 }
 
 .message-bundle strong {
@@ -4001,7 +4050,7 @@ select {
   border-radius: 18px 18px 5px 18px;
   color: #fff;
   border-color: transparent;
-  background: #ef4444;
+  background: #1d4ed8;
 }
 
 .message-attachments {
@@ -4124,17 +4173,18 @@ select {
 
 .message-input-row .send-message-btn {
   color: #fff;
-  background: #ef4444;
+  background: #1d4ed8;
 }
 
 .message-input-row .send-message-btn:hover {
   color: #fff;
-  background: #b91c1c;
+  background: #1e40af;
 }
 
 .message-input-row button.active {
-  color: #dc2626;
-  background: #fee2e2;
+  color: #1d4ed8;
+  background: #dbeafe;
+  box-shadow: none;
 }
 
 .message-input-row button:disabled {
@@ -4240,8 +4290,9 @@ select {
   place-items: center;
   flex-shrink: 0;
   color: #fff;
-  background: #3b82f6;
+  background: #dc2626;
   font-weight: 900;
+  overflow: hidden;
 }
 
 .chat-member-row div,
@@ -4272,7 +4323,7 @@ select {
 }
 
 .chat-file-row:hover strong {
-  color: #dc2626;
+  color: #1d4ed8;
 }
 
 .chat-info-empty {
@@ -4412,7 +4463,7 @@ select {
   gap: 8px;
   color: #fff;
   background: #dc2626;
-  box-shadow: 0 14px 24px rgba(220, 38, 38, 0.22);
+  box-shadow: none;
   cursor: pointer;
   font-weight: 800;
 }
@@ -4448,7 +4499,7 @@ select {
 .schedule-event-form input:focus,
 .schedule-event-form select:focus {
   border-color: #ef4444;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  box-shadow: none;
 }
 
 .schedule-event-form button {
@@ -4808,7 +4859,7 @@ button.schedule-grid-head {
   color: #fff;
   border-color: transparent;
   background: #dc2626;
-  box-shadow: 0 16px 30px rgba(220, 38, 38, 0.18);
+  box-shadow: none;
 }
 
 .schedule-today-panel h3 {
@@ -5320,7 +5371,7 @@ button.schedule-grid-head {
   gap: 8px;
   color: #fff;
   background: #dc2626;
-  box-shadow: 0 14px 24px rgba(220, 38, 38, 0.22);
+  box-shadow: none;
   cursor: pointer;
   font-weight: 800;
 }
@@ -5411,7 +5462,7 @@ button.schedule-grid-head {
 
 .tasks-search:focus-within {
   border-color: #ef4444;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  box-shadow: none;
 }
 
 .tasks-search input {
@@ -5829,7 +5880,7 @@ button.schedule-grid-head {
 .tasks-modal textarea:focus,
 .tasks-modal select:focus {
   border-color: #ef4444;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  box-shadow: none;
 }
 
 .tasks-form-grid {
@@ -5972,7 +6023,7 @@ button.schedule-grid-head {
   flex-shrink: 0;
   color: #fff;
   background: #ef4444;
-  box-shadow: 0 16px 28px rgba(220, 38, 38, 0.22);
+  box-shadow: none;
   font-size: 36px;
   font-weight: 900;
 }
@@ -6050,7 +6101,7 @@ button.schedule-grid-head {
 
 .settings-field > div:focus-within {
   border-color: #ef4444;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  box-shadow: none;
   background: #fff;
 }
 
@@ -6085,7 +6136,7 @@ button.schedule-grid-head {
 
 .settings-span-all textarea:focus {
   border-color: #ef4444;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  box-shadow: none;
   background: #fff;
 }
 
@@ -6120,7 +6171,7 @@ button.schedule-grid-head {
   padding: 0 18px;
   color: #fff;
   background: #ef4444;
-  box-shadow: 0 12px 20px rgba(220, 38, 38, 0.2);
+  box-shadow: none;
 }
 
 .settings-save-btn:disabled {
@@ -6142,3 +6193,307 @@ button.schedule-grid-head {
     grid-template-columns: 1fr;
   }
 }
+
+.schedule-month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(132px, 1fr));
+  min-width: 980px;
+}
+
+.schedule-month-weekday {
+  min-height: 48px;
+  border-right: 1px solid rgba(226, 232, 240, 0.9);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 14px;
+  color: #64748b;
+  background: rgba(248, 250, 252, 0.82);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.schedule-month-day {
+  min-height: 138px;
+  border: none;
+  border-right: 1px solid rgba(226, 232, 240, 0.9);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.58);
+  text-align: left;
+  cursor: pointer;
+}
+
+.schedule-month-day:hover {
+  background: rgba(239, 246, 255, 0.72);
+}
+
+.schedule-month-day.selected {
+  background: rgba(219, 234, 254, 0.72);
+}
+
+.schedule-month-day.muted {
+  color: #94a3b8;
+  background: rgba(248, 250, 252, 0.52);
+}
+
+.schedule-month-day > span {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+}
+
+.schedule-month-day.selected > span {
+  color: #fff;
+  background: #2563eb;
+}
+
+.schedule-month-day > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.schedule-month-event {
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 4px 7px;
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.88);
+  border-left: 4px solid #2563eb;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.schedule-month-event.green {
+  border-left-color: #16a34a;
+}
+
+.schedule-month-event.red {
+  border-left-color: #dc2626;
+}
+
+.schedule-month-event.orange {
+  border-left-color: #f97316;
+}
+
+.schedule-month-event.purple {
+  border-left-color: #7c3aed;
+}
+
+.schedule-month-event.class {
+  color: #fff;
+  background: #2563eb;
+  border-left-color: rgba(255, 255, 255, 0.82);
+}
+
+.schedule-month-day strong {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.schedule-google-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.schedule-google-calendar {
+  min-width: 1040px;
+}
+
+.schedule-google-head {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: grid;
+  background: rgba(248, 250, 252, 0.94);
+  backdrop-filter: blur(18px) saturate(1.18);
+  -webkit-backdrop-filter: blur(18px) saturate(1.18);
+}
+
+.schedule-google-head-time,
+.schedule-google-day-head {
+  min-height: 76px;
+  border: none;
+  border-right: 1px solid rgba(226, 232, 240, 0.9);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 12px 14px;
+  color: #0f172a;
+  background: transparent;
+  text-align: left;
+}
+
+.schedule-google-head-time {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.schedule-google-day-head {
+  cursor: pointer;
+}
+
+.schedule-google-day-head strong {
+  display: block;
+  font-size: 14px;
+}
+
+.schedule-google-day-head span {
+  display: block;
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.schedule-google-day-head.selected {
+  color: #1d4ed8;
+  background: rgba(219, 234, 254, 0.64);
+}
+
+.schedule-google-body {
+  display: grid;
+}
+
+.schedule-google-time-axis {
+  border-right: 1px solid rgba(226, 232, 240, 0.9);
+  background: rgba(248, 250, 252, 0.72);
+}
+
+.schedule-google-time-axis > div {
+  height: 78px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 7px 10px 0 0;
+  color: #64748b;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.schedule-google-day-column {
+  position: relative;
+  border-right: 1px solid rgba(226, 232, 240, 0.9);
+  background: rgba(255, 255, 255, 0.56);
+}
+
+.schedule-google-day-column.selected {
+  background: rgba(239, 246, 255, 0.52);
+}
+
+.schedule-google-hour {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  display: block;
+  background: transparent;
+  cursor: pointer;
+}
+
+.schedule-google-hour:hover {
+  background: rgba(219, 234, 254, 0.38);
+}
+
+.schedule-google-event {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  z-index: 4;
+  overflow: hidden;
+  border: none;
+  border-left: 4px solid rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  padding: 8px 9px;
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  color: #fff;
+  background: #2563eb;
+  text-align: left;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+  cursor: pointer;
+}
+
+.schedule-google-event strong,
+.schedule-google-event span,
+.schedule-google-event em {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.schedule-google-event strong {
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.schedule-google-event span,
+.schedule-google-event em {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 11px;
+  font-style: normal;
+}
+
+.schedule-google-event.purple {
+  background: #7c3aed;
+}
+
+.schedule-google-event.red {
+  background: #dc2626;
+}
+
+.schedule-google-event.green {
+  background: #16a34a;
+}
+
+.schedule-google-event.orange {
+  background: #f97316;
+}
+
+.schedule-google-event.event,
+.schedule-google-event.task {
+  color: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-left-width: 4px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+}
+
+.schedule-google-event.event span,
+.schedule-google-event.event em,
+.schedule-google-event.task span,
+.schedule-google-event.task em {
+  color: #64748b;
+}
+
+.schedule-google-event.event.blue,
+.schedule-google-event.task.blue {
+  border-left-color: #2563eb;
+}
+
+.schedule-google-event.event.green,
+.schedule-google-event.task.green {
+  border-left-color: #16a34a;
+}
+
+.schedule-google-event.event.red,
+.schedule-google-event.task.red {
+  border-left-color: #dc2626;
+}
+
+.schedule-google-event.event.orange {
+  border-left-color: #f97316;
+}
+
+.schedule-google-event.event.purple {
+  border-left-color: #7c3aed;
+}
+

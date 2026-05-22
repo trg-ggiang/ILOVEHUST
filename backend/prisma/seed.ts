@@ -76,6 +76,20 @@ const messageTemplates = [
   "Mai lên thư viện học tiếp nhé.",
 ];
 
+const taskTemplates = [
+  { title: "On tap giua ky", category: "Hoc tap", priority: "high" },
+  { title: "Hoan thanh bai tap lon", category: "Du an", priority: "high" },
+  { title: "Doc slide truoc buoi hoc", category: "Hoc tap", priority: "medium" },
+  { title: "Hop nhom project", category: "Du an", priority: "medium" },
+  { title: "Nop bao cao ca nhan", category: "Ca nhan", priority: "low" },
+];
+const weekdaySlots = [
+  { startTime: "08:00", endTime: "10:00", type: "Ly thuyet" },
+  { startTime: "10:15", endTime: "12:00", type: "Bai tap" },
+  { startTime: "14:00", endTime: "16:00", type: "Thuc hanh" },
+];
+const scheduleColors = ["blue", "purple", "green", "orange", "red"];
+
 function pad(value, length = 3) {
   return String(value).padStart(length, "0");
 }
@@ -292,34 +306,42 @@ async function main() {
       }
     }
 
-    for (let taskIndex = 0; taskIndex < 3; taskIndex += 1) {
-      const day = 18 + ((studentIndex + taskIndex) % 10);
+    for (let taskIndex = 0; taskIndex < taskTemplates.length; taskIndex += 1) {
+      const task = taskTemplates[taskIndex];
+      const day = 22 + ((studentIndex * 2 + taskIndex) % 28);
+      const dueAt = new Date(Date.UTC(2026, day <= 31 ? 4 : 5, day <= 31 ? day : day - 31, 23, 59, 0));
+      const dueLabel = dueAt.toISOString().slice(0, 10);
       taskRows.push({
         userId: user.id,
-        title: ["On tap giua ky", "Hoan thanh bai tap lon", "Hop nhom project"][taskIndex],
+        title: task.title,
         description: `Task demo cho sinh vien ${studentIndex + 1}`,
-        dueAt: new Date(`2026-05-${String(day).padStart(2, "0")}T00:00:00.000Z`),
-        dueLabel: `2026-05-${String(day).padStart(2, "0")}`,
-        completed: (studentIndex + taskIndex) % 4 === 0,
-        priority: ["high", "medium", "low"][(studentIndex + taskIndex) % 3],
-        category: ["Hoc tap", "Du an", "Ca nhan"][(studentIndex + taskIndex) % 3],
+        dueAt,
+        dueLabel,
+        completed: (studentIndex + taskIndex) % 5 === 0,
+        priority: task.priority,
+        category: task.category,
       });
     }
 
-    for (let classIndex = 0; classIndex < 3; classIndex += 1) {
-      const course = courseList[(studentIndex + classIndex * 3) % courseList.length];
-      scheduleClassRows.push({
-        userId: user.id,
-        courseId: course.id,
-        semesterId: semesters["2025-2"].id,
-        subject: course.courseName,
-        classType: classIndex % 2 === 0 ? "Ly thuyet" : "Thuc hanh",
-        weekday: 1 + ((studentIndex + classIndex) % 6),
-        startTime: ["08:00", "10:15", "14:00"][classIndex],
-        endTime: ["10:00", "12:00", "16:00"][classIndex],
-        room: `D${3 + (studentIndex % 7)}-${100 + studentIndex + classIndex}`,
-        color: ["blue", "purple", "green", "orange", "red"][studentIndex % 5],
-      });
+    for (let weekday = 1; weekday <= 5; weekday += 1) {
+      const dailyClassCount = 1 + ((studentIndex + weekday) % 3);
+      for (let classIndex = 0; classIndex < dailyClassCount; classIndex += 1) {
+        const slot = weekdaySlots[classIndex];
+        const courseIndex = (studentIndex * 7 + weekday * 3 + classIndex) % courseList.length;
+        const course = courseList[courseIndex];
+        scheduleClassRows.push({
+          userId: user.id,
+          courseId: course.id,
+          semesterId: semesters["2025-2"].id,
+          subject: course.courseName,
+          classType: slot.type,
+          weekday,
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          room: `D${3 + ((studentIndex + weekday) % 7)}-${100 + studentIndex + weekday * 10 + classIndex}`,
+          color: scheduleColors[(studentIndex + weekday + classIndex) % scheduleColors.length],
+        });
+      }
     }
 
     scheduleEventRows.push({
@@ -327,6 +349,7 @@ async function main() {
       title: "Kiem tra giua ky",
       eventDate: new Date(`2026-05-${String(20 + (studentIndex % 8)).padStart(2, "0")}T00:00:00.000Z`),
       eventTime: "08:00",
+      endTime: "09:30",
       eventType: "exam",
       color: "red",
     });
@@ -505,6 +528,9 @@ async function main() {
 
   console.log(JSON.stringify({
     students: studentUsers.length,
+    studentTasks: taskRows.length,
+    scheduleClasses: scheduleClassRows.length,
+    scheduleEvents: scheduleEventRows.length,
     forumPosts: createdPosts.length,
     conversations: conversations.length,
     messages: await prisma.message.count(),
