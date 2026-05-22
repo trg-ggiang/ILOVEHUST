@@ -7,7 +7,7 @@ export function getSocket() {
   if (!token) return null;
 
   if (!socket) {
-    socket = io("/", {
+    socket = io(import.meta.env.VITE_SOCKET_URL || "/", {
       path: "/socket.io",
       auth: { token },
       transports: ["websocket"],

@@ -5,6 +5,8 @@
   "main": "dist/server.js",
   "scripts": {
     "prisma:generate": "prisma generate",
+    "db:deploy": "prisma migrate deploy",
+    "seed": "tsx prisma/seed.ts",
     "seed:check": "tsx prisma/checkSeed.ts",
     "build": "tsc",
     "dev": "npm run prisma:generate && tsx watch server.ts",

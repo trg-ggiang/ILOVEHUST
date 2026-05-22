@@ -8,9 +8,14 @@ function getUserRoom(userId) {
 }
 
 export function initRealtime(server) {
+  const allowedOrigins = (process.env.FRONTEND_URL || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
   io = new Server(server, {
     cors: {
-      origin: true,
+      origin: allowedOrigins.length > 0 ? allowedOrigins : true,
       credentials: true,
     },
   });

@@ -1,6 +1,7 @@
 import "dotenv/config";
 import http from "http";
 import express from "express";
+import cors from "cors";
 import systemRoutes from "./routes/systemRoutes.js";
 import authRoutes from "./routes/admin/authRoutes.js";
 import majorRoutes from "./routes/major/majorRoutes.js";
@@ -14,7 +15,22 @@ import { initRealtime } from "./realtime.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
+const allowedOrigins = (process.env.FRONTEND_URL || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+}));
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use("/", systemRoutes);
