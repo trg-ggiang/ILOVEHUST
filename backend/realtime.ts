@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Server } from "socket.io";
+import { getJwtSecret } from "./config/env.js";
+import prisma from "./database.js";
 
 let io = null;
 
@@ -20,13 +22,35 @@ export function initRealtime(server) {
     },
   });
 
-  io.use((socket, next) => {
+  io.use(async (socket, next) => {
     try {
       const token = socket.handshake.auth?.token;
       if (!token) return next(new Error("Missing token"));
 
-      const user = jwt.verify(token, process.env.JWT_SECRET);
-      socket.data.user = user;
+      const payload = jwt.verify(token, getJwtSecret());
+      if (typeof payload === "string" || !Number.isInteger(Number(payload.id))) {
+        return next(new Error("Invalid token"));
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { id: Number(payload.id) },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          isActive: true,
+        },
+      });
+
+      if (!user?.isActive) {
+        return next(new Error("Inactive account"));
+      }
+
+      socket.data.user = {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      };
       socket.join(getUserRoom(user.id));
       return next();
     } catch {

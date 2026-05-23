@@ -11,10 +11,12 @@ import messageRoutes from "./routes/student/messageRoutes.js";
 import scheduleRoutes from "./routes/student/scheduleRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import { initRealtime } from "./realtime.js";
+import { assertRequiredEnv } from "./config/env.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
+assertRequiredEnv();
 const allowedOrigins = (process.env.FRONTEND_URL || "")
   .split(",")
   .map((origin) => origin.trim())

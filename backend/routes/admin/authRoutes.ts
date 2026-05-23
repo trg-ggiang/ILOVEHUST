@@ -4,8 +4,10 @@ import jwt from "jsonwebtoken";
 import prisma from "../../database.js";
 import authMiddleware from "../../middleware/authMiddleware.js";
 import toUserResponse from "../../utils/toUserResponse.js";
+import { getJwtSecret } from "../../config/env.js";
 
 const router = express.Router();
+const SUPPORTED_LANGUAGES = new Set(["vi", "ja"]);
 
 const messages = {
   vi: {
@@ -57,6 +59,16 @@ function tr(lang, key) {
   return messages[selected][key];
 }
 
+function normalizeLanguage(value) {
+  const language = String(value || "").trim();
+  return SUPPORTED_LANGUAGES.has(language) ? language : "vi";
+}
+
+function normalizeOptionalLanguage(value) {
+  const language = String(value || "").trim();
+  return SUPPORTED_LANGUAGES.has(language) ? language : null;
+}
+
 function signToken(user) {
   return jwt.sign(
     {
@@ -64,7 +76,7 @@ function signToken(user) {
       role: user.role,
       email: user.email,
     },
-    process.env.JWT_SECRET,
+    getJwtSecret(),
     { expiresIn: "7d" }
   );
 }
@@ -98,7 +110,7 @@ async function findUserByEmailOrPhone(email, phone) {
 }
 
 router.post("/register", async (req, res) => {
-  const lang = req.body?.preferredLanguage === "ja" ? "ja" : "vi";
+  const lang = normalizeLanguage(req.body?.preferredLanguage);
 
   try {
     const fullName = String(req.body?.fullName || "").trim();
@@ -172,9 +184,11 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const lang = req.body?.preferredLanguage === "ja" ? "ja" : "vi";
+  const lang = normalizeLanguage(req.body?.preferredLanguage);
   try {
-    const { email, password, preferredLanguage } = req.body;
+    const email = normalizeEmail(req.body?.email);
+    const password = String(req.body?.password || "");
+    const preferredLanguage = normalizeOptionalLanguage(req.body?.preferredLanguage);
 
     if (!email || !password) {
       return res.status(400).json({ message: tr(lang, "missingCredentials") });
