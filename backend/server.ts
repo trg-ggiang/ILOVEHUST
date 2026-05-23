@@ -16,6 +16,7 @@ import { assertRequiredEnv } from "./config/env.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
+const isVercel = process.env.VERCEL === "1";
 assertRequiredEnv();
 const allowedOrigins = (process.env.FRONTEND_URL || "")
   .split(",")
@@ -44,9 +45,14 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/schedule", scheduleRoutes);
 app.use("/api/notifications", notificationRoutes);
 
-initRealtime(server);
+if (!isVercel) {
+  initRealtime(server);
 
-server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+  server.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
+}
+
+export default app;
+export { app, server };
 

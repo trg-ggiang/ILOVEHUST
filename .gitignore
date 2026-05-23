@@ -34,6 +34,17 @@ tmp/
 temp/
 *.tmp
 
+# Local AI/Codex workspace files
+.codex/
+AGENTS.md
+docs/
+*.codex.md
+*.agents.md
+CLAUDE.md
+.claude/
+.cursor/
+.windsurf/
+
 # Package manager caches
 .npm/
 .pnpm-store/

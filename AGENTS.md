@@ -121,3 +121,17 @@ If local database credentials are unavailable, say so and still run checks that 
 - Keep documentation/config edits small and factual.
 - If a task requires production deploy credentials, ask for direction instead of inventing values.
 
+## End-of-session workflow
+
+At the end of each work session, Codex should update project documentation so future sessions can continue easily.
+
+Update or create these files:
+- `docs/WORK_LOG.md`
+- `docs/PROJECT_STATE.md`
+- `docs/NEXT_STEPS.md`
+- `docs/DECISIONS.md` if there are new technical decisions
+
+Rules:
+- Do not include secrets, tokens, passwords, real database URIs, or `.env` values.
+- Do not change application logic during documentation updates.
+- Clearly record changed files, completed work, unfinished work, known issues, testing steps, and next steps.
