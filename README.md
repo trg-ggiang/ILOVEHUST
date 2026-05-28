@@ -1,4 +1,4 @@
-![Vercel Deployment](https://vercelbadge.vercel.app/api/your-vercel-account/your-vercel-project)
+![Vercel](https://vercelbadge.vercel.app/api/trg-ggiang/ilovehust)
 
 # ILoveHust
 
