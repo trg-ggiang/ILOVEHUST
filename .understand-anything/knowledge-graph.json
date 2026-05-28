@@ -25,8 +25,8 @@
       "Vite"
     ],
     "description": "ILoveHust is a TypeScript full-stack student support web app for HUST students, covering profiles, grades, schedules, tasks, forum, messaging, and realtime notifications.",
-    "analyzedAt": "2026-05-24T12:53:19.077Z",
-    "gitCommitHash": "e08a26e68161aa585b25f653c4a58944e380769c"
+    "analyzedAt": "2026-05-28T06:41:02.837Z",
+    "gitCommitHash": "bd5fac327643f6805f9ae4e21aa06f89231284a9"
   },
   "nodes": [
     {
@@ -3051,6 +3051,20 @@
         "react"
       ],
       "complexity": "simple"
+    },
+    {
+      "id": "config:vercel.json",
+      "type": "config",
+      "name": "vercel.json",
+      "filePath": "vercel.json",
+      "summary": "Root Vercel configuration that defines experimental frontend and backend service roots, route prefixes, and the Vite framework mapping for the monorepo deployment.",
+      "tags": [
+        "configuration",
+        "deployment",
+        "vercel",
+        "monorepo"
+      ],
+      "complexity": "simple"
     }
   ],
   "edges": [
@@ -5461,6 +5475,27 @@
       "type": "related",
       "direction": "forward",
       "weight": 0.5
+    },
+    {
+      "source": "config:vercel.json",
+      "target": "config:frontend/vercel.json",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:vercel.json",
+      "target": "config:backend/vercel.json",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:vercel.json",
+      "target": "file:frontend/vite.config.ts",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
     }
   ],
   "layers": [
@@ -5567,6 +5602,7 @@
       "description": "Project manifests, TypeScript/Vite/Vercel settings, environment examples, and local tool configuration used to build and deploy the app.",
       "nodeIds": [
         "config:package.json",
+        "config:vercel.json",
         "config:backend/.env.example",
         "config:backend/package.json",
         "config:backend/tsconfig.json",

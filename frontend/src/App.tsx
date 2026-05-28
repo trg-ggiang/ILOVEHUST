@@ -1,6 +1,7 @@
 ﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/admin/Login";
 import Register from "./pages/admin/Register";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import Dashboard from "./pages/student/Dashboard";
 import CompleteProfile from "./pages/student/CompleteProfile";
 import GradesPage from "./pages/student/Grades";
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/grades" element={<GradesPage />} />
         <Route path="/forum" element={<ForumPage />} />

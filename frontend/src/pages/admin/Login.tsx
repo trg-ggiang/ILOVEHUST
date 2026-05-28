@@ -75,6 +75,11 @@ export default function Login() {
       localStorage.setItem("fullName", data.user.fullName || "");
       setStoredLanguage(data.user.preferredLanguage || language);
 
+      if (data.user.role === 0) {
+        navigate("/admin", { replace: true });
+        return;
+      }
+
       if (!isStudentProfileReady(data.user)) {
         navigate("/complete-profile", { replace: true });
       } else {

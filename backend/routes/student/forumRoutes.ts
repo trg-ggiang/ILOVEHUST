@@ -42,6 +42,7 @@ function toPostResponse(post, currentUserId) {
     tags: post.tags || [],
     isHot: post.isHot,
     isPinned: post.isPinned,
+    isLocked: post.isLocked,
     likedByCurrentUser,
   };
 }
@@ -289,6 +290,19 @@ router.post("/posts/:postId/comments", authMiddleware, async (req, res) => {
 
     if (!content) {
       return res.status(400).json({ message: "Nội dung bình luận không được để trống" });
+    }
+
+    const existingPost = await prisma.forumPost.findUnique({
+      where: { id: postId },
+      select: { isLocked: true },
+    });
+
+    if (!existingPost) {
+      return res.status(404).json({ message: "Bai viet khong ton tai" });
+    }
+
+    if (existingPost.isLocked) {
+      return res.status(403).json({ message: "Bai viet da bi khoa binh luan" });
     }
 
     await prisma.$transaction(async (tx) => {
