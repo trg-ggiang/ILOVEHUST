@@ -1,0 +1,3765 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "e08a26e68161aa585b25f653c4a58944e380769c",
+  "generatedAt": "2026-05-24T12:53:54.476Z",
+  "files": {
+    ".codex/config.toml": {
+      "filePath": ".codex/config.toml",
+      "contentHash": "f4fbe8dc6f4c7ee33a1e0c1582a6903fc597bc9187f91cb6e1b8c694c64fb7e2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/.understandignore": {
+      "filePath": ".understand-anything/.understandignore",
+      "contentHash": "93ac12df349aba0476e53cf9b80bd01165d14333f50ceac08a4aef3382b9e00d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 63,
+      "hasStructuralAnalysis": false
+    },
+    "AGENTS.md": {
+      "filePath": "AGENTS.md",
+      "contentHash": "43188bdc7aba7b1246fe73bc89ee6dffe0c2d23bbee3bd839f14c8d2531e1460",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 137,
+      "hasStructuralAnalysis": true
+    },
+    "backend/.env.example": {
+      "filePath": "backend/.env.example",
+      "contentHash": "e91fc677ad0ae4e540efb4a49c6175077d630e24ce090f2ee60f62ab90c32491",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": true
+    },
+    "backend/api/[...path].ts": {
+      "filePath": "backend/api/[...path].ts",
+      "contentHash": "7d58d359f41f2250780e86f407dbd4fd3004ac956ea38bb5cdd2474eeb5d749d",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../server.js",
+          "specifiers": [
+            "app"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "backend/config/env.ts": {
+      "filePath": "backend/config/env.ts",
+      "contentHash": "3d25e4578214f6ab9c140762a516dacb4ac95c903d8833e572ceada739f7eab0",
+      "functions": [
+        {
+          "name": "getJwtSecret",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "assertRequiredEnv",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "getJwtSecret",
+        "assertRequiredEnv"
+      ],
+      "totalLines": 13,
+      "hasStructuralAnalysis": true
+    },
+    "backend/database.ts": {
+      "filePath": "backend/database.ts",
+      "contentHash": "13c96cd7257e29d1fac45262cf3eec78522d3e5fe78a72919380f969d703ed1e",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "dotenv/config",
+          "specifiers": []
+        },
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "PrismaClient"
+          ]
+        },
+        {
+          "source": "@prisma/adapter-pg",
+          "specifiers": [
+            "PrismaPg"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": true
+    },
+    "backend/middleware/authMiddleware.ts": {
+      "filePath": "backend/middleware/authMiddleware.ts",
+      "contentHash": "3491a0b90828d131bedcb7ce12c519a45ffddd41b75d429c27ec15648ff6a3b8",
+      "functions": [
+        {
+          "name": "getTokenPayload",
+          "params": [
+            "token"
+          ],
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "authMiddleware",
+          "params": [
+            "req",
+            "res",
+            "next"
+          ],
+          "exported": true,
+          "lineCount": 39
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jsonwebtoken",
+          "specifiers": [
+            "jwt"
+          ]
+        },
+        {
+          "source": "../config/env.js",
+          "specifiers": [
+            "getJwtSecret"
+          ]
+        },
+        {
+          "source": "../database.js",
+          "specifiers": [
+            "prisma"
+          ]
+        }
+      ],
+      "exports": [
+        "authMiddleware"
+      ],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "backend/middleware/prismaMiddleware.ts": {
+      "filePath": "backend/middleware/prismaMiddleware.ts",
+      "contentHash": "373ea951d236f299b55366c3fb4608f366bebfa6c06a6ee993cc3147045a7088",
+      "functions": [
+        {
+          "name": "prismaMiddleware",
+          "params": [
+            "req",
+            "res",
+            "next"
+          ],
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../database.js",
+          "specifiers": [
+            "prisma"
+          ]
+        }
+      ],
+      "exports": [
+        "prismaMiddleware"
+      ],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
+    },
+    "backend/package.json": {
+      "filePath": "backend/package.json",
+      "contentHash": "bb576c093ae1565105b7ed8aab3ffc5e2527af7651734e1694357a4e8b5d0845",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma.config.ts": {
+      "filePath": "backend/prisma.config.ts",
+      "contentHash": "5b5a9e60ba8c38afeb35dbf7fe66093eafaee8fe6122b9c1678081599b629f67",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "dotenv/config",
+          "specifiers": []
+        },
+        {
+          "source": "prisma/config",
+          "specifiers": [
+            "defineConfig",
+            "env"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 14,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/checkSeed.ts": {
+      "filePath": "backend/prisma/checkSeed.ts",
+      "contentHash": "ca4f223ec926b66ee1e495734eff07516974f6f7b5bf6a2567af7112d9d6fa0b",
+      "functions": [
+        {
+          "name": "assertCheck",
+          "params": [
+            "condition",
+            "message",
+            "errors"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 144
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "dotenv/config",
+          "specifiers": []
+        },
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "PrismaClient"
+          ]
+        },
+        {
+          "source": "@prisma/adapter-pg",
+          "specifiers": [
+            "PrismaPg"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 168,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/migrations/20260402174147_init/migration.sql": {
+      "filePath": "backend/prisma/migrations/20260402174147_init/migration.sql",
+      "contentHash": "2dec294888d655031f29db5a312126f0452ffe97a551a3081d93915c6cdc2d2a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 130,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/migrations/20260428040000_add_preferred_language/migration.sql": {
+      "filePath": "backend/prisma/migrations/20260428040000_add_preferred_language/migration.sql",
+      "contentHash": "90689a8d018a505045a1f21cb604903b725cfd2330ec4e851f1486e700089041",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/migrations/20260502005750_add_forum_models/migration.sql": {
+      "filePath": "backend/prisma/migrations/20260502005750_add_forum_models/migration.sql",
+      "contentHash": "5a6d27986b3b672737ae8e3bd8625b9107bc25a7283f7a15e51d9db14f819c5f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 111,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/migrations/20260502010055_add_student_tasks/migration.sql": {
+      "filePath": "backend/prisma/migrations/20260502010055_add_student_tasks/migration.sql",
+      "contentHash": "004e5eb7f5210ded9484fe46cf91a9c90d8b8cd3b55f344db3a895a19730487f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/migrations/20260502013806_add_chat_models/migration.sql": {
+      "filePath": "backend/prisma/migrations/20260502013806_add_chat_models/migration.sql",
+      "contentHash": "52d5875cf4376b99759388ae831196067e111e2b63a12cfdd7bfa3302eee58d8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 69,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/migrations/20260502095714_add_message_attachments/migration.sql": {
+      "filePath": "backend/prisma/migrations/20260502095714_add_message_attachments/migration.sql",
+      "contentHash": "498c7de7e3c5abe2d18480f084b34f3425391cd6adf4e2d241414a3ce1edcf3a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/migrations/20260502103222_add_schedule_models/migration.sql": {
+      "filePath": "backend/prisma/migrations/20260502103222_add_schedule_models/migration.sql",
+      "contentHash": "f373974568b41174e4bf34b72140eb10a04be543874361a4d18431b544c07ff6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 56,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/migrations/20260504090000_extend_student_tasks/migration.sql": {
+      "filePath": "backend/prisma/migrations/20260504090000_extend_student_tasks/migration.sql",
+      "contentHash": "e695f86a43bd1ef9494cc19ac063f4ec61ab0d9c60ed152b7a77cd055e493c76",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/migrations/20260504100000_update_student_task_category_default/migration.sql": {
+      "filePath": "backend/prisma/migrations/20260504100000_update_student_task_category_default/migration.sql",
+      "contentHash": "8789bd2440a81dd6b3e909d7126c492d18ff7a9913e42938cc8566e381294e63",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/migrations/20260518120000_add_notifications/migration.sql": {
+      "filePath": "backend/prisma/migrations/20260518120000_add_notifications/migration.sql",
+      "contentHash": "733334463e864d14c99ec75357f07717a40cb1f95e448da75fabf923849e46b6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/migrations/20260521143000_add_schedule_event_end_time/migration.sql": {
+      "filePath": "backend/prisma/migrations/20260521143000_add_schedule_event_end_time/migration.sql",
+      "contentHash": "ee48b3183a3270bbd60df50280674bfeeba4af7554f8313e628dfbf640156847",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/migrations/migration_lock.toml": {
+      "filePath": "backend/prisma/migrations/migration_lock.toml",
+      "contentHash": "99836963713b4f5b269ad49af0ed3d7b0b2e336115c2f92dc9ac683d139d0900",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "backend/prisma/schema.prisma": {
+      "filePath": "backend/prisma/schema.prisma",
+      "contentHash": "591a7a553a956c00e3a49105169968869cdeb9d95454b0fab41129ed290641e1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 359,
+      "hasStructuralAnalysis": false
+    },
+    "backend/prisma/seed.ts": {
+      "filePath": "backend/prisma/seed.ts",
+      "contentHash": "6f6627582ab312cb8d2e4661a2b6985df657ddf4eb4c3dcfbe9c10c0e5313b9e",
+      "functions": [
+        {
+          "name": "pad",
+          "params": [
+            "value",
+            "length"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "score10For",
+          "params": [
+            "studentIndex",
+            "courseIndex",
+            "semesterIndex"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "score4From10",
+          "params": [
+            "score10"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "letterFrom10",
+          "params": [
+            "score10"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "createStudentSeed",
+          "params": [
+            "index"
+          ],
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "getRecentDate",
+          "params": [
+            "minutesAgo"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 391
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "dotenv/config",
+          "specifiers": []
+        },
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "PrismaClient"
+          ]
+        },
+        {
+          "source": "@prisma/adapter-pg",
+          "specifiers": [
+            "PrismaPg"
+          ]
+        },
+        {
+          "source": "bcryptjs",
+          "specifiers": [
+            "bcrypt"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 550,
+      "hasStructuralAnalysis": true
+    },
+    "backend/realtime.ts": {
+      "filePath": "backend/realtime.ts",
+      "contentHash": "e5e59cf19f5e84c7d63437a44c62538d1c3bf9b9c7480d16f7693e1720d1e8a4",
+      "functions": [
+        {
+          "name": "getUserRoom",
+          "params": [
+            "userId"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "initRealtime",
+          "params": [
+            "server"
+          ],
+          "exported": true,
+          "lineCount": 55
+        },
+        {
+          "name": "emitToUser",
+          "params": [
+            "userId",
+            "event",
+            "payload"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "emitToUsers",
+          "params": [
+            "userIds",
+            "event",
+            "payload"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "emitToAll",
+          "params": [
+            "event",
+            "payload"
+          ],
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jsonwebtoken",
+          "specifiers": [
+            "jwt"
+          ]
+        },
+        {
+          "source": "socket.io",
+          "specifiers": [
+            "Server"
+          ]
+        },
+        {
+          "source": "./config/env.js",
+          "specifiers": [
+            "getJwtSecret"
+          ]
+        },
+        {
+          "source": "./database.js",
+          "specifiers": [
+            "prisma"
+          ]
+        }
+      ],
+      "exports": [
+        "initRealtime",
+        "emitToUser",
+        "emitToUsers",
+        "emitToAll"
+      ],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "backend/routes/admin/authRoutes.ts": {
+      "filePath": "backend/routes/admin/authRoutes.ts",
+      "contentHash": "c66612cb5f1e8158309e9e76eecb5c8ea7a7bdee4598497dafe2b1f377569aec",
+      "functions": [
+        {
+          "name": "tr",
+          "params": [
+            "lang",
+            "key"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "normalizeLanguage",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "normalizeOptionalLanguage",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "signToken",
+          "params": [
+            "user"
+          ],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "normalizeEmail",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "normalizeOptionalText",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "isValidEmail",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "findUserByEmailOrPhone",
+          "params": [
+            "email",
+            "phone"
+          ],
+          "exported": false,
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "express"
+          ]
+        },
+        {
+          "source": "bcryptjs",
+          "specifiers": [
+            "bcrypt"
+          ]
+        },
+        {
+          "source": "jsonwebtoken",
+          "specifiers": [
+            "jwt"
+          ]
+        },
+        {
+          "source": "../../database.js",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../../middleware/authMiddleware.js",
+          "specifiers": [
+            "authMiddleware"
+          ]
+        },
+        {
+          "source": "../../utils/toUserResponse.js",
+          "specifiers": [
+            "toUserResponse"
+          ]
+        },
+        {
+          "source": "../../config/env.js",
+          "specifiers": [
+            "getJwtSecret"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 275,
+      "hasStructuralAnalysis": true
+    },
+    "backend/routes/major/majorRoutes.ts": {
+      "filePath": "backend/routes/major/majorRoutes.ts",
+      "contentHash": "dd8ca0f58e25c947368e0a83bb3552fc6443db59ff2eef74ee070493a8338c5f",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "express"
+          ]
+        },
+        {
+          "source": "../../database.js",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../../middleware/authMiddleware.js",
+          "specifiers": [
+            "authMiddleware"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": true
+    },
+    "backend/routes/notificationRoutes.ts": {
+      "filePath": "backend/routes/notificationRoutes.ts",
+      "contentHash": "04da8a7275ce792cdc02ec9b4811c542a60451232adf69cd83090eeb7415b3e7",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "express"
+          ]
+        },
+        {
+          "source": "../database.js",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../middleware/authMiddleware.js",
+          "specifiers": [
+            "authMiddleware"
+          ]
+        },
+        {
+          "source": "../utils/notifications.js",
+          "specifiers": [
+            "ensureDueTaskNotifications",
+            "toNotificationResponse"
+          ]
+        },
+        {
+          "source": "../realtime.js",
+          "specifiers": [
+            "emitToUser"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 101,
+      "hasStructuralAnalysis": true
+    },
+    "backend/routes/student/forumRoutes.ts": {
+      "filePath": "backend/routes/student/forumRoutes.ts",
+      "contentHash": "a0fe2d8ffec58d18dd86574e9e9d70d2ac904099e7999f1b16edad1036aef8aa",
+      "functions": [
+        {
+          "name": "toPostResponse",
+          "params": [
+            "post",
+            "currentUserId"
+          ],
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "buildTrendingTopics",
+          "params": [
+            "posts"
+          ],
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "getForumPayload",
+          "params": [
+            "req"
+          ],
+          "exported": false,
+          "lineCount": 100
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "express"
+          ]
+        },
+        {
+          "source": "../../database.js",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../../middleware/authMiddleware.js",
+          "specifiers": [
+            "authMiddleware"
+          ]
+        },
+        {
+          "source": "../../utils/notifications.js",
+          "specifiers": [
+            "createForumCommentNotification",
+            "createForumLikeNotification"
+          ]
+        },
+        {
+          "source": "../../realtime.js",
+          "specifiers": [
+            "emitToAll",
+            "emitToUser"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 325,
+      "hasStructuralAnalysis": true
+    },
+    "backend/routes/student/messageRoutes.ts": {
+      "filePath": "backend/routes/student/messageRoutes.ts",
+      "contentHash": "ddbd9a63142f1ca53c58122aa9d739c5a4bc2827752656416bda3e2f5830bc2a",
+      "functions": [
+        {
+          "name": "getDisplayName",
+          "params": [
+            "user"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getInitial",
+          "params": [
+            "name"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getAvatarUrl",
+          "params": [
+            "user"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getConversationPeer",
+          "params": [
+            "conversation",
+            "currentUserId"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "toConversationResponse",
+          "params": [
+            "conversation",
+            "currentUserId"
+          ],
+          "exported": false,
+          "lineCount": 32
+        },
+        {
+          "name": "toAttachmentResponse",
+          "params": [
+            "attachment"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "toStudentSearchResponse",
+          "params": [
+            "user"
+          ],
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "findConversationForUser",
+          "params": [
+            "conversationId",
+            "userId",
+            "options"
+          ],
+          "exported": false,
+          "lineCount": 84
+        },
+        {
+          "name": "getConversationList",
+          "params": [
+            "userId",
+            "search"
+          ],
+          "exported": false,
+          "lineCount": 34
+        },
+        {
+          "name": "messageMatchesSearch",
+          "params": [
+            "message",
+            "search"
+          ],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "toConversationDetail",
+          "params": [
+            "conversation",
+            "currentUserId",
+            "search"
+          ],
+          "exported": false,
+          "lineCount": 54
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "express"
+          ]
+        },
+        {
+          "source": "fs",
+          "specifiers": [
+            "fs"
+          ]
+        },
+        {
+          "source": "path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "multer",
+          "specifiers": [
+            "multer"
+          ]
+        },
+        {
+          "source": "../../database.js",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../../middleware/authMiddleware.js",
+          "specifiers": [
+            "authMiddleware"
+          ]
+        },
+        {
+          "source": "../../utils/notifications.js",
+          "specifiers": [
+            "createMessageNotifications"
+          ]
+        },
+        {
+          "source": "../../realtime.js",
+          "specifiers": [
+            "emitToUsers"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 715,
+      "hasStructuralAnalysis": true
+    },
+    "backend/routes/student/scheduleRoutes.ts": {
+      "filePath": "backend/routes/student/scheduleRoutes.ts",
+      "contentHash": "a851843ba6bccab7bb317001364528e6a0b4054f2bc95694737bf18abe15b937",
+      "functions": [
+        {
+          "name": "parseDateOnly",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "toDateOnly",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "addDays",
+          "params": [
+            "date",
+            "amount"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "getWeekday",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "getWeekStart",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getMonthStart",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getMonthEnd",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "daysDateForWeekday",
+          "params": [
+            "weekStart",
+            "weekday"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getClassHours",
+          "params": [
+            "item"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "getTimeHour",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "getTimeMinutes",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "mergeScheduleClasses",
+          "params": [
+            "classes"
+          ],
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "toClassResponse",
+          "params": [
+            "item"
+          ],
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "toEventResponse",
+          "params": [
+            "item"
+          ],
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "toTaskCalendarResponse",
+          "params": [
+            "task"
+          ],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "buildSchedulePayload",
+          "params": [
+            "userId",
+            "selectedDate",
+            "viewMode"
+          ],
+          "exported": false,
+          "lineCount": 135
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "express"
+          ]
+        },
+        {
+          "source": "../../database.js",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../../middleware/authMiddleware.js",
+          "specifiers": [
+            "authMiddleware"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 366,
+      "hasStructuralAnalysis": true
+    },
+    "backend/routes/student/studentRoutes.ts": {
+      "filePath": "backend/routes/student/studentRoutes.ts",
+      "contentHash": "cbe9d982131875e68a3f017cfbee068503430271dccd34738c86a99f041d020b",
+      "functions": [
+        {
+          "name": "formatSemesterLabel",
+          "params": [
+            "semesterCode",
+            "termNumber"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "getTodayWeekday",
+          "params": [],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "clampNumber",
+          "params": [
+            "value",
+            "min",
+            "max"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "roundNumber",
+          "params": [
+            "value",
+            "digits"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "normalizeText",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "getClassHours",
+          "params": [
+            "startTime",
+            "endTime"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "buildSemesterStatistics",
+          "params": [
+            "gradeRecords"
+          ],
+          "exported": false,
+          "lineCount": 36
+        },
+        {
+          "name": "getGradeBucket",
+          "params": [
+            "record"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "buildGradeDistribution",
+          "params": [
+            "gradeRecords"
+          ],
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "buildStudyTime",
+          "params": [
+            "scheduleClasses"
+          ],
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "averageScorePercent",
+          "params": [
+            "records"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "buildSkillProgress",
+          "params": [
+            "gradeRecords",
+            "forumContribution"
+          ],
+          "exported": false,
+          "lineCount": 36
+        },
+        {
+          "name": "buildCohortGpas",
+          "params": [
+            "recordsByUser"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "getGradeRank",
+          "params": [
+            "avgGPA"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "toGradeResponse",
+          "params": [
+            "item"
+          ],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "buildGradeScoreDistribution",
+          "params": [
+            "grades"
+          ],
+          "exported": false,
+          "lineCount": 24
+        },
+        {
+          "name": "buildGradeStats",
+          "params": [
+            "grades"
+          ],
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "buildGradeSubjectStats",
+          "params": [
+            "grades"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "buildGradeSkillData",
+          "params": [
+            "grades",
+            "avgGPA"
+          ],
+          "exported": false,
+          "lineCount": 29
+        },
+        {
+          "name": "parseDateOnly",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "toDateOnly",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "normalizeTaskPriority",
+          "params": [
+            "priority"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "normalizeTaskCategory",
+          "params": [
+            "category"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "buildDueLabel",
+          "params": [
+            "dueAt",
+            "fallback"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "toTaskResponse",
+          "params": [
+            "task"
+          ],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "requireStudent",
+          "params": [
+            "userId",
+            "res",
+            "forbiddenMessage"
+          ],
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "parseTaskId",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "toTaskStats",
+          "params": [
+            "tasks"
+          ],
+          "exported": false,
+          "lineCount": 17
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "express"
+          ]
+        },
+        {
+          "source": "fs",
+          "specifiers": [
+            "fs"
+          ]
+        },
+        {
+          "source": "path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "multer",
+          "specifiers": [
+            "multer"
+          ]
+        },
+        {
+          "source": "../../database.js",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../../middleware/authMiddleware.js",
+          "specifiers": [
+            "authMiddleware"
+          ]
+        },
+        {
+          "source": "../../utils/toUserResponse.js",
+          "specifiers": [
+            "toUserResponse"
+          ]
+        },
+        {
+          "source": "../../utils/notifications.js",
+          "specifiers": [
+            "ensureDueTaskNotifications"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 1275,
+      "hasStructuralAnalysis": true
+    },
+    "backend/routes/systemRoutes.ts": {
+      "filePath": "backend/routes/systemRoutes.ts",
+      "contentHash": "122286a6cd3005982f6d7b57137023cd7c17cf7c2b2b2d2e536e07c56df52eb9",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "express"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "backend/server.ts": {
+      "filePath": "backend/server.ts",
+      "contentHash": "15e099180c98231854cf419656bb2dcc13432d185bb471abb61d486a405d4740",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "dotenv/config",
+          "specifiers": []
+        },
+        {
+          "source": "http",
+          "specifiers": [
+            "http"
+          ]
+        },
+        {
+          "source": "express",
+          "specifiers": [
+            "express"
+          ]
+        },
+        {
+          "source": "cors",
+          "specifiers": [
+            "cors"
+          ]
+        },
+        {
+          "source": "./routes/systemRoutes.js",
+          "specifiers": [
+            "systemRoutes"
+          ]
+        },
+        {
+          "source": "./routes/admin/authRoutes.js",
+          "specifiers": [
+            "authRoutes"
+          ]
+        },
+        {
+          "source": "./routes/major/majorRoutes.js",
+          "specifiers": [
+            "majorRoutes"
+          ]
+        },
+        {
+          "source": "./routes/student/studentRoutes.js",
+          "specifiers": [
+            "studentRoutes"
+          ]
+        },
+        {
+          "source": "./routes/student/forumRoutes.js",
+          "specifiers": [
+            "forumRoutes"
+          ]
+        },
+        {
+          "source": "./routes/student/messageRoutes.js",
+          "specifiers": [
+            "messageRoutes"
+          ]
+        },
+        {
+          "source": "./routes/student/scheduleRoutes.js",
+          "specifiers": [
+            "scheduleRoutes"
+          ]
+        },
+        {
+          "source": "./routes/notificationRoutes.js",
+          "specifiers": [
+            "notificationRoutes"
+          ]
+        },
+        {
+          "source": "./realtime.js",
+          "specifiers": [
+            "initRealtime"
+          ]
+        },
+        {
+          "source": "./config/env.js",
+          "specifiers": [
+            "assertRequiredEnv"
+          ]
+        }
+      ],
+      "exports": [
+        "app",
+        "server"
+      ],
+      "totalLines": 59,
+      "hasStructuralAnalysis": true
+    },
+    "backend/tsconfig.json": {
+      "filePath": "backend/tsconfig.json",
+      "contentHash": "806b1a3e5c03a53a77e4c5e158f5ee555059a255283b59d3ae95dd60b7651eab",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 22,
+      "hasStructuralAnalysis": true
+    },
+    "backend/types/express.d.ts": {
+      "filePath": "backend/types/express.d.ts",
+      "contentHash": "593ed43c4937eafbf0f045c88d658e799699f7bd5e48f154e4e988cbc4bd6974",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16,
+      "hasStructuralAnalysis": true
+    },
+    "backend/utils/notifications.ts": {
+      "filePath": "backend/utils/notifications.ts",
+      "contentHash": "ef67dceabdca56c0dd928b21e6b7e01e091bd65475796eba9d4a1d3db43784ec",
+      "functions": [
+        {
+          "name": "startOfToday",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "endOfTomorrow",
+          "params": [],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "formatDateKey",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getActorName",
+          "params": [
+            "actor"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "createNotification",
+          "params": [
+            "client",
+            "data"
+          ],
+          "exported": true,
+          "lineCount": 38
+        },
+        {
+          "name": "createForumLikeNotification",
+          "params": [
+            "client",
+            "{ post, actor }"
+          ],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "createForumCommentNotification",
+          "params": [
+            "client",
+            "{ post, comment, actor }"
+          ],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "createMessageNotifications",
+          "params": [
+            "client",
+            "{ conversation, sender, message }"
+          ],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "ensureDueTaskNotifications",
+          "params": [
+            "client",
+            "userId"
+          ],
+          "exported": true,
+          "lineCount": 40
+        },
+        {
+          "name": "toNotificationResponse",
+          "params": [
+            "notification"
+          ],
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "createNotification",
+        "createForumLikeNotification",
+        "createForumCommentNotification",
+        "createMessageNotifications",
+        "ensureDueTaskNotifications",
+        "toNotificationResponse"
+      ],
+      "totalLines": 179,
+      "hasStructuralAnalysis": true
+    },
+    "backend/utils/toUserResponse.ts": {
+      "filePath": "backend/utils/toUserResponse.ts",
+      "contentHash": "2fa2b1f4cc98c35ef4207b2d02c536f5edd4fb53899c1ffbf379f47a9797660a",
+      "functions": [
+        {
+          "name": "toUserResponse",
+          "params": [
+            "user"
+          ],
+          "exported": true,
+          "lineCount": 25
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "toUserResponse"
+      ],
+      "totalLines": 26,
+      "hasStructuralAnalysis": true
+    },
+    "backend/vercel.json": {
+      "filePath": "backend/vercel.json",
+      "contentHash": "d0aa3093e4af075ad7a0476799bceec51d69d2a44264816c8aa5e6c4f2cb3da5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "docs/API.md": {
+      "filePath": "docs/API.md",
+      "contentHash": "c514d928cc0697ff150f9afde9947cc7e919444620959e2b9c7e044f27cfbd7f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 92,
+      "hasStructuralAnalysis": true
+    },
+    "docs/DATABASE.md": {
+      "filePath": "docs/DATABASE.md",
+      "contentHash": "46da7c7b6489bffb07558a7a7a0aea3f731f6897efacbd77cedceb744a7c0c27",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 62,
+      "hasStructuralAnalysis": true
+    },
+    "docs/UI_RULES.md": {
+      "filePath": "docs/UI_RULES.md",
+      "contentHash": "a145a9c508bd6d88cecb1255eaae86b4b3b92d32762a4bc6eb301e98e892de5b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/.env.example": {
+      "filePath": "frontend/.env.example",
+      "contentHash": "9c6c70c900c60e24a123dc283a123140b102e0bb97eaf55bad4a6ca29f7cd49b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/eslint.config.ts": {
+      "filePath": "frontend/eslint.config.ts",
+      "contentHash": "38659cd1d437ae1fb2f0ceaecb02b4701627700b560189304a5d3a8f12a6ae2b",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@eslint/js",
+          "specifiers": [
+            "js"
+          ]
+        },
+        {
+          "source": "globals",
+          "specifiers": [
+            "globals"
+          ]
+        },
+        {
+          "source": "eslint-plugin-react-hooks",
+          "specifiers": [
+            "reactHooks"
+          ]
+        },
+        {
+          "source": "eslint-plugin-react-refresh",
+          "specifiers": [
+            "reactRefresh"
+          ]
+        },
+        {
+          "source": "typescript-eslint",
+          "specifiers": [
+            "tseslint"
+          ]
+        },
+        {
+          "source": "eslint/config",
+          "specifiers": [
+            "defineConfig",
+            "globalIgnores"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 34,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/index.html": {
+      "filePath": "frontend/index.html",
+      "contentHash": "469d70dd50c91ed9f54e312c31c0fbb5209ad857bdf2c9fa60e7579737638579",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 14,
+      "hasStructuralAnalysis": false
+    },
+    "frontend/package.json": {
+      "filePath": "frontend/package.json",
+      "contentHash": "83849cc16c3b619e07d427c39814c9fd232d4983d90575e6ac15a3a639302c83",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/README.md": {
+      "filePath": "frontend/README.md",
+      "contentHash": "e20cbf415799dcfea27e1b7b015fddabb8077eaaf7bd6183efa836acf5d495ee",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/api.ts": {
+      "filePath": "frontend/src/api.ts",
+      "contentHash": "19fd5b3c31413c8802538874311b981839c4c475ed6e0ae255bfec4ae25e9611",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "axios",
+          "specifiers": [
+            "axios"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/App.tsx": {
+      "filePath": "frontend/src/App.tsx",
+      "contentHash": "d909b7f3d64c1bf429185bf9b6f54f2083b9b455909a77924affae954f2f0239",
+      "functions": [
+        {
+          "name": "App",
+          "params": [],
+          "exported": false,
+          "lineCount": 21
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "BrowserRouter",
+            "Routes",
+            "Route",
+            "Navigate"
+          ]
+        },
+        {
+          "source": "./pages/admin/Login",
+          "specifiers": [
+            "Login"
+          ]
+        },
+        {
+          "source": "./pages/admin/Register",
+          "specifiers": [
+            "Register"
+          ]
+        },
+        {
+          "source": "./pages/student/Dashboard",
+          "specifiers": [
+            "Dashboard"
+          ]
+        },
+        {
+          "source": "./pages/student/CompleteProfile",
+          "specifiers": [
+            "CompleteProfile"
+          ]
+        },
+        {
+          "source": "./pages/student/Grades",
+          "specifiers": [
+            "GradesPage"
+          ]
+        },
+        {
+          "source": "./pages/student/Forum",
+          "specifiers": [
+            "ForumPage"
+          ]
+        },
+        {
+          "source": "./pages/student/Messages",
+          "specifiers": [
+            "MessagesPage"
+          ]
+        },
+        {
+          "source": "./pages/student/Schedule",
+          "specifiers": [
+            "SchedulePage"
+          ]
+        },
+        {
+          "source": "./pages/student/Statistics",
+          "specifiers": [
+            "StatisticsPage"
+          ]
+        },
+        {
+          "source": "./pages/student/Tasks",
+          "specifiers": [
+            "TasksPage"
+          ]
+        },
+        {
+          "source": "./pages/student/Settings",
+          "specifiers": [
+            "SettingsPage"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/components/ProtectedRoute.tsx": {
+      "filePath": "frontend/src/components/ProtectedRoute.tsx",
+      "contentHash": "2068a6afeeeaea920a5a3efb5603eae07c55d5d8016605d18670ac2823e6f20a",
+      "functions": [
+        {
+          "name": "ProtectedRoute",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Navigate",
+            "Outlet"
+          ]
+        }
+      ],
+      "exports": [
+        "ProtectedRoute"
+      ],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/components/student/StudentHeader.tsx": {
+      "filePath": "frontend/src/components/student/StudentHeader.tsx",
+      "contentHash": "08cdf9b663647e58191e01b47820d22c707d83025643013058c7a09669ec6b7f",
+      "functions": [
+        {
+          "name": "formatNotificationTime",
+          "params": [
+            "value",
+            "language",
+            "t"
+          ],
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "StudentHeader",
+          "params": [
+            "{\n  fullName,\n  studentCode,\n  avatarUrl,\n  onSearchChange,\n  language = \"vi\",\n  onLanguageChange,\n  onToggleSidebar,\n}"
+          ],
+          "exported": true,
+          "lineCount": 217
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Bell",
+            "CheckCheck",
+            "Menu",
+            "Search"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../../api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "HEADER_TEXT"
+          ]
+        },
+        {
+          "source": "../../realtime/useSocketEvent",
+          "specifiers": [
+            "useSocketEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "StudentHeader"
+      ],
+      "totalLines": 241,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/components/student/StudentTaskbar.tsx": {
+      "filePath": "frontend/src/components/student/StudentTaskbar.tsx",
+      "contentHash": "9152e8d40b4eda41cd0fe5888371e4fdb0596df300c0fccd352c1595a3ca3648",
+      "functions": [
+        {
+          "name": "StudentTaskbar",
+          "params": [
+            "{\n  activeKey = \"home\",\n  onMenuClick,\n  language = \"vi\",\n  isOpen = true,\n  onClose,\n}"
+          ],
+          "exported": true,
+          "lineCount": 78
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "House",
+            "BookOpen",
+            "MessagesSquare",
+            "ListChecks",
+            "CalendarDays",
+            "BarChart3",
+            "BotMessageSquare",
+            "Users",
+            "Settings",
+            "LogOut",
+            "GraduationCap"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "TASKBAR_TEXT"
+          ]
+        }
+      ],
+      "exports": [
+        "StudentTaskbar"
+      ],
+      "totalLines": 109,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/i18n/language.ts": {
+      "filePath": "frontend/src/i18n/language.ts",
+      "contentHash": "333b372915cab9bc5bbab4ada4dafd6fb90dbb68757edb2ba7e7e4c24c8f632a",
+      "functions": [
+        {
+          "name": "normalizeLanguage",
+          "params": [
+            "language"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "getStoredLanguage",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "setStoredLanguage",
+          "params": [
+            "language"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "getStoredSidebarState",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "setStoredSidebarState",
+          "params": [
+            "isOpen"
+          ],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "LANGUAGE_STORAGE_KEY",
+        "SIDEBAR_STORAGE_KEY",
+        "DEFAULT_LANGUAGE",
+        "normalizeLanguage",
+        "getStoredLanguage",
+        "setStoredLanguage",
+        "getStoredSidebarState",
+        "setStoredSidebarState"
+      ],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/i18n/translations.ts": {
+      "filePath": "frontend/src/i18n/translations.ts",
+      "contentHash": "a27fa56bc2548c05a178600f6143c8c0a72f9c30fcc96cf033612dc89833db51",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "TASKBAR_TEXT",
+        "HEADER_TEXT",
+        "DASHBOARD_TEXT",
+        "GRADES_TEXT",
+        "LOGIN_TEXT",
+        "REGISTER_TEXT",
+        "COMPLETE_PROFILE_TEXT",
+        "STUDENT_COMMON_TEXT",
+        "TASKS_TEXT",
+        "STATISTICS_TEXT",
+        "SCHEDULE_TEXT",
+        "FORUM_TEXT",
+        "MESSAGES_TEXT"
+      ],
+      "totalLines": 1071,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/main.tsx": {
+      "filePath": "frontend/src/main.tsx",
+      "contentHash": "1cb174021e46d158922577b282fc175fcb08502a635c147b920714d330787cbe",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "StrictMode"
+          ]
+        },
+        {
+          "source": "react-dom/client",
+          "specifiers": [
+            "createRoot"
+          ]
+        },
+        {
+          "source": "./styles.css",
+          "specifiers": []
+        },
+        {
+          "source": "./App",
+          "specifiers": [
+            "App"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/admin/Login.tsx": {
+      "filePath": "frontend/src/pages/admin/Login.tsx",
+      "contentHash": "74808c993b36d79ee4d4705f2a2dd27f09ffe465c9f916b033f44894af84ba60",
+      "functions": [
+        {
+          "name": "Login",
+          "params": [],
+          "exported": true,
+          "lineCount": 231
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "GraduationCap",
+            "Mail",
+            "Lock",
+            "ChevronRight",
+            "Sparkles",
+            "Shield",
+            "Users"
+          ]
+        },
+        {
+          "source": "../../api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../i18n/language",
+          "specifiers": [
+            "getStoredLanguage",
+            "setStoredLanguage"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "LOGIN_TEXT"
+          ]
+        }
+      ],
+      "exports": [
+        "Login"
+      ],
+      "totalLines": 247,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/admin/Register.tsx": {
+      "filePath": "frontend/src/pages/admin/Register.tsx",
+      "contentHash": "af8fb3ddddb3fb3690ba499f0cd94e7778c0eab8825463c1c179696d76d3f1a9",
+      "functions": [
+        {
+          "name": "isValidEmail",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "Register",
+          "params": [],
+          "exported": true,
+          "lineCount": 279
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ChevronRight",
+            "GraduationCap",
+            "Lock",
+            "Mail",
+            "Phone",
+            "Shield",
+            "Sparkles",
+            "User",
+            "Users"
+          ]
+        },
+        {
+          "source": "../../api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../i18n/language",
+          "specifiers": [
+            "getStoredLanguage",
+            "setStoredLanguage"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "REGISTER_TEXT"
+          ]
+        }
+      ],
+      "exports": [
+        "Register"
+      ],
+      "totalLines": 301,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/student/CompleteProfile.tsx": {
+      "filePath": "frontend/src/pages/student/CompleteProfile.tsx",
+      "contentHash": "1727d73231e751b24b8c2b8585a6820464a6c09d9da55e8b4884284e41290899",
+      "functions": [
+        {
+          "name": "getSchoolYearFromAdmissionYear",
+          "params": [
+            "admissionYear"
+          ],
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "formatValue",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "getGenderLabel",
+          "params": [
+            "value",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "CompleteProfile",
+          "params": [],
+          "exported": true,
+          "lineCount": 647
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "GraduationCap",
+            "User",
+            "IdCard",
+            "Mail",
+            "Phone",
+            "Calendar",
+            "MapPin",
+            "School",
+            "BookOpen",
+            "Layers",
+            "Users",
+            "Check",
+            "Camera",
+            "ChevronDown",
+            "ChevronRight",
+            "AlertCircle"
+          ]
+        },
+        {
+          "source": "../../api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../i18n/language",
+          "specifiers": [
+            "getStoredLanguage",
+            "setStoredLanguage"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "COMPLETE_PROFILE_TEXT"
+          ]
+        }
+      ],
+      "exports": [
+        "CompleteProfile"
+      ],
+      "totalLines": 710,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/student/Dashboard.tsx": {
+      "filePath": "frontend/src/pages/student/Dashboard.tsx",
+      "contentHash": "bffeeccc04c09f50e1ae8a98eb31dedb13b2062982b0e8a50cbf58e8fa209c96",
+      "functions": [
+        {
+          "name": "gradeColor",
+          "params": [
+            "grade"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "buildLinePath",
+          "params": [
+            "points"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "wait",
+          "params": [
+            "ms"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "formatTaskTime",
+          "params": [
+            "task",
+            "language",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "semesterSortValue",
+          "params": [
+            "label"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "GpaAreaChart",
+          "params": [
+            "{ data, emptyLabel, chartLabel }"
+          ],
+          "exported": false,
+          "lineCount": 77
+        },
+        {
+          "name": "Dashboard",
+          "params": [],
+          "exported": true,
+          "lineCount": 354
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "TrendingUp",
+            "Award",
+            "BookOpen",
+            "Target",
+            "Calendar",
+            "Clock",
+            "BarChart3",
+            "CheckSquare",
+            "Plus",
+            "Sigma"
+          ]
+        },
+        {
+          "source": "../../api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../i18n/language",
+          "specifiers": [
+            "getStoredLanguage",
+            "setStoredLanguage",
+            "getStoredSidebarState",
+            "setStoredSidebarState"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "DASHBOARD_TEXT"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentTaskbar",
+          "specifiers": [
+            "StudentTaskbar"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentHeader",
+          "specifiers": [
+            "StudentHeader"
+          ]
+        },
+        {
+          "source": "../../utils/studentNavigation",
+          "specifiers": [
+            "handleStudentMenuNavigation"
+          ]
+        }
+      ],
+      "exports": [
+        "Dashboard"
+      ],
+      "totalLines": 501,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/student/Forum.tsx": {
+      "filePath": "frontend/src/pages/student/Forum.tsx",
+      "contentHash": "6590fa427ed6596dc648e4c28e188214108dc560d0bcf1a8144d84dc689113e8",
+      "functions": [
+        {
+          "name": "formatRelativeTime",
+          "params": [
+            "value",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "getCategoryName",
+          "params": [
+            "category",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "mergeForumPayload",
+          "params": [
+            "current",
+            "next",
+            "append"
+          ],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "ForumPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 439
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "BarChart3",
+            "Clock",
+            "Filter",
+            "Flame",
+            "MessageCircle",
+            "MessageSquare",
+            "Plus",
+            "Search",
+            "Send",
+            "Star",
+            "ThumbsUp",
+            "TrendingUp"
+          ]
+        },
+        {
+          "source": "../../api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../i18n/language",
+          "specifiers": [
+            "getStoredLanguage",
+            "getStoredSidebarState",
+            "setStoredLanguage",
+            "setStoredSidebarState"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "FORUM_TEXT",
+            "STUDENT_COMMON_TEXT"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentHeader",
+          "specifiers": [
+            "StudentHeader"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentTaskbar",
+          "specifiers": [
+            "StudentTaskbar"
+          ]
+        },
+        {
+          "source": "../../utils/studentNavigation",
+          "specifiers": [
+            "handleStudentMenuNavigation"
+          ]
+        },
+        {
+          "source": "../../realtime/useSocketEvent",
+          "specifiers": [
+            "useSocketEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "ForumPage"
+      ],
+      "totalLines": 517,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/student/Grades.tsx": {
+      "filePath": "frontend/src/pages/student/Grades.tsx",
+      "contentHash": "d957e565912800c0d00bca402a0718b861e7bab3b1228fae6182fb244da717fe",
+      "functions": [
+        {
+          "name": "normalizePdfText",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "polarToCartesian",
+          "params": [
+            "cx",
+            "cy",
+            "radius",
+            "angle"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "createPiePath",
+          "params": [
+            "cx",
+            "cy",
+            "radius",
+            "startAngle",
+            "endAngle"
+          ],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "ScoreDistributionChart",
+          "params": [
+            "{ distribution = [], labels, emptyLabel, ariaLabel }"
+          ],
+          "exported": false,
+          "lineCount": 52
+        },
+        {
+          "name": "RadarChartBlock",
+          "params": [
+            "{ data, ariaLabel }"
+          ],
+          "exported": false,
+          "lineCount": 62
+        },
+        {
+          "name": "localizeSkillData",
+          "params": [
+            "data",
+            "labels"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "GradesPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 351
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "BookOpen",
+            "TrendingUp",
+            "Award",
+            "Download",
+            "Filter",
+            "Search",
+            "Star",
+            "ChevronDown",
+            "Target",
+            "Zap"
+          ]
+        },
+        {
+          "source": "jspdf",
+          "specifiers": [
+            "jsPDF"
+          ]
+        },
+        {
+          "source": "jspdf-autotable",
+          "specifiers": [
+            "autoTable"
+          ]
+        },
+        {
+          "source": "../../api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../i18n/language",
+          "specifiers": [
+            "getStoredLanguage",
+            "setStoredLanguage",
+            "getStoredSidebarState",
+            "setStoredSidebarState"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "GRADES_TEXT"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentTaskbar",
+          "specifiers": [
+            "StudentTaskbar"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentHeader",
+          "specifiers": [
+            "StudentHeader"
+          ]
+        },
+        {
+          "source": "../../utils/studentNavigation",
+          "specifiers": [
+            "handleStudentMenuNavigation"
+          ]
+        }
+      ],
+      "exports": [
+        "GradesPage"
+      ],
+      "totalLines": 534,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/student/Messages.tsx": {
+      "filePath": "frontend/src/pages/student/Messages.tsx",
+      "contentHash": "fef587ca046268e6580cb22b41c20ed8ac006e76fd4e79f88bdaf0d9ae45ec46",
+      "functions": [
+        {
+          "name": "formatTime",
+          "params": [
+            "value",
+            "language",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "formatFileSize",
+          "params": [
+            "size"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "formatAttachmentContent",
+          "params": [
+            "content",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "formatMessageContent",
+          "params": [
+            "message",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "formatConversationPreview",
+          "params": [
+            "conversation",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "sortMessages",
+          "params": [
+            "messages"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "mergeUniqueMessages",
+          "params": [
+            "...messageGroups"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "mergeConversationMessages",
+          "params": [
+            "current",
+            "next"
+          ],
+          "exported": false,
+          "lineCount": 16
+        },
+        {
+          "name": "prependConversationMessages",
+          "params": [
+            "current",
+            "older"
+          ],
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "ConversationAvatar",
+          "params": [
+            "{ className = \"\", avatarUrl, initial, name }"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "MessagesPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 727
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "FileText",
+            "Image",
+            "Info",
+            "MessageCircle",
+            "Paperclip",
+            "Plus",
+            "Search",
+            "Send",
+            "Smile",
+            "Star",
+            "X"
+          ]
+        },
+        {
+          "source": "../../api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../i18n/language",
+          "specifiers": [
+            "getStoredLanguage",
+            "getStoredSidebarState",
+            "setStoredLanguage",
+            "setStoredSidebarState"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "MESSAGES_TEXT",
+            "STUDENT_COMMON_TEXT"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentHeader",
+          "specifiers": [
+            "StudentHeader"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentTaskbar",
+          "specifiers": [
+            "StudentTaskbar"
+          ]
+        },
+        {
+          "source": "../../utils/studentNavigation",
+          "specifiers": [
+            "handleStudentMenuNavigation"
+          ]
+        },
+        {
+          "source": "../../realtime/useSocketEvent",
+          "specifiers": [
+            "useSocketEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "MessagesPage"
+      ],
+      "totalLines": 905,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/student/Schedule.tsx": {
+      "filePath": "frontend/src/pages/student/Schedule.tsx",
+      "contentHash": "5d047004ec3fda3f04b685358abac8630e1f40837b093178ceca99cc8d6dc776",
+      "functions": [
+        {
+          "name": "toDateParam",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "fromDateParam",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "addDays",
+          "params": [
+            "date",
+            "amount"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "addMonths",
+          "params": [
+            "date",
+            "amount"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "getWeekOfMonth",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "formatDate",
+          "params": [
+            "value",
+            "language"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "getEventIcon",
+          "params": [
+            "type"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "getEventTypeLabel",
+          "params": [
+            "type",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "getHourNumber",
+          "params": [
+            "time"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getCalendarEventStyle",
+          "params": [
+            "item",
+            "firstHour"
+          ],
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "SchedulePage",
+          "params": [],
+          "exported": true,
+          "lineCount": 434
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "BookOpen",
+            "Calendar",
+            "ChevronLeft",
+            "ChevronRight",
+            "Clock",
+            "Filter",
+            "Gamepad2",
+            "ListChecks",
+            "MapPin",
+            "Plus"
+          ]
+        },
+        {
+          "source": "../../api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../i18n/language",
+          "specifiers": [
+            "getStoredLanguage",
+            "getStoredSidebarState",
+            "setStoredLanguage",
+            "setStoredSidebarState"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "SCHEDULE_TEXT",
+            "STUDENT_COMMON_TEXT"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentHeader",
+          "specifiers": [
+            "StudentHeader"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentTaskbar",
+          "specifiers": [
+            "StudentTaskbar"
+          ]
+        },
+        {
+          "source": "../../utils/studentNavigation",
+          "specifiers": [
+            "handleStudentMenuNavigation"
+          ]
+        }
+      ],
+      "exports": [
+        "SchedulePage"
+      ],
+      "totalLines": 529,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/student/Settings.tsx": {
+      "filePath": "frontend/src/pages/student/Settings.tsx",
+      "contentHash": "66f621275366d3a3a088abf0814d86d84acb899ec2f3bd280fb3ecafbda775e0",
+      "functions": [
+        {
+          "name": "SettingsPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 332
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Camera",
+            "Check",
+            "IdCard",
+            "Mail",
+            "Phone",
+            "Save",
+            "User"
+          ]
+        },
+        {
+          "source": "../../api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../i18n/language",
+          "specifiers": [
+            "getStoredLanguage",
+            "getStoredSidebarState",
+            "setStoredLanguage",
+            "setStoredSidebarState"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "STUDENT_COMMON_TEXT"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentHeader",
+          "specifiers": [
+            "StudentHeader"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentTaskbar",
+          "specifiers": [
+            "StudentTaskbar"
+          ]
+        },
+        {
+          "source": "../../utils/studentNavigation",
+          "specifiers": [
+            "handleStudentMenuNavigation"
+          ]
+        }
+      ],
+      "exports": [
+        "SettingsPage"
+      ],
+      "totalLines": 348,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/student/Statistics.tsx": {
+      "filePath": "frontend/src/pages/student/Statistics.tsx",
+      "contentHash": "287caaeb2f9adede460f11898c56829e61207f2c45a4da0550ceaef1acd41372",
+      "functions": [
+        {
+          "name": "formatDelta",
+          "params": [
+            "value",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "chartTooltipStyle",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "StatisticsPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 327
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Award",
+            "BarChart3",
+            "BookOpen",
+            "CheckCircle2",
+            "Clock",
+            "PieChart",
+            "Star",
+            "Target",
+            "TrendingUp"
+          ]
+        },
+        {
+          "source": "recharts",
+          "specifiers": [
+            "Area",
+            "AreaChart",
+            "Bar",
+            "ReBarChart",
+            "CartesianGrid",
+            "Cell",
+            "Pie",
+            "RePieChart",
+            "ResponsiveContainer",
+            "Tooltip",
+            "XAxis",
+            "YAxis"
+          ]
+        },
+        {
+          "source": "../../api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../i18n/language",
+          "specifiers": [
+            "getStoredLanguage",
+            "getStoredSidebarState",
+            "setStoredLanguage",
+            "setStoredSidebarState"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "STATISTICS_TEXT",
+            "STUDENT_COMMON_TEXT"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentHeader",
+          "specifiers": [
+            "StudentHeader"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentTaskbar",
+          "specifiers": [
+            "StudentTaskbar"
+          ]
+        },
+        {
+          "source": "../../utils/studentNavigation",
+          "specifiers": [
+            "handleStudentMenuNavigation"
+          ]
+        }
+      ],
+      "exports": [
+        "StatisticsPage"
+      ],
+      "totalLines": 418,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/student/Tasks.tsx": {
+      "filePath": "frontend/src/pages/student/Tasks.tsx",
+      "contentHash": "d2656370bdab67e27b10cc1092918793be76c4159c356f191d46032c8427b4e5",
+      "functions": [
+        {
+          "name": "formatDate",
+          "params": [
+            "value",
+            "language",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "getPriorityText",
+          "params": [
+            "priority",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "getCategoryLabel",
+          "params": [
+            "category",
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "getTaskForm",
+          "params": [
+            "task"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "wait",
+          "params": [
+            "ms"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "TasksPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 532
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Calendar",
+            "CheckSquare",
+            "Clock",
+            "Edit",
+            "Flag",
+            "Plus",
+            "Search",
+            "Trash2",
+            "X"
+          ]
+        },
+        {
+          "source": "../../api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../i18n/language",
+          "specifiers": [
+            "getStoredLanguage",
+            "getStoredSidebarState",
+            "setStoredLanguage",
+            "setStoredSidebarState"
+          ]
+        },
+        {
+          "source": "../../i18n/translations",
+          "specifiers": [
+            "STUDENT_COMMON_TEXT",
+            "TASKS_TEXT"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentHeader",
+          "specifiers": [
+            "StudentHeader"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentTaskbar",
+          "specifiers": [
+            "StudentTaskbar"
+          ]
+        },
+        {
+          "source": "../../utils/studentNavigation",
+          "specifiers": [
+            "handleStudentMenuNavigation"
+          ]
+        }
+      ],
+      "exports": [
+        "TasksPage"
+      ],
+      "totalLines": 619,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/realtime/socket.ts": {
+      "filePath": "frontend/src/realtime/socket.ts",
+      "contentHash": "34c93d06ca964ac1a608c8865d6d145e3ca7107c2119141a8030bab046cc6411",
+      "functions": [
+        {
+          "name": "getSocket",
+          "params": [],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "disconnectSocket",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "socket.io-client",
+          "specifiers": [
+            "io"
+          ]
+        }
+      ],
+      "exports": [
+        "getSocket",
+        "disconnectSocket"
+      ],
+      "totalLines": 32,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/realtime/useSocketEvent.ts": {
+      "filePath": "frontend/src/realtime/useSocketEvent.ts",
+      "contentHash": "41df6a9dbdcb89e4747c953f5c935f26f71c1cfa590f6233937d9bdf858f9806",
+      "functions": [
+        {
+          "name": "useSocketEvent",
+          "params": [
+            "eventName",
+            "handler",
+            "enabled"
+          ],
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef"
+          ]
+        },
+        {
+          "source": "./socket",
+          "specifiers": [
+            "getSocket"
+          ]
+        }
+      ],
+      "exports": [
+        "useSocketEvent"
+      ],
+      "totalLines": 27,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/styles.css": {
+      "filePath": "frontend/src/styles.css",
+      "contentHash": "6a27557655d02691120f65782b9f92c075366d2320ee4d4bd0ba45bd8f48e578",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6500,
+      "hasStructuralAnalysis": false
+    },
+    "frontend/src/utils/studentNavigation.ts": {
+      "filePath": "frontend/src/utils/studentNavigation.ts",
+      "contentHash": "3d95d1f6bcda4e05213e712d57d0af36a3c5b591df150f36ae1c47edba731922",
+      "functions": [
+        {
+          "name": "clearStudentSession",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "handleStudentMenuNavigation",
+          "params": [
+            "key",
+            "navigate",
+            "currentKey"
+          ],
+          "exported": true,
+          "lineCount": 16
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../realtime/socket",
+          "specifiers": [
+            "disconnectSocket"
+          ]
+        }
+      ],
+      "exports": [
+        "STUDENT_ROUTE_BY_MENU_KEY",
+        "clearStudentSession",
+        "handleStudentMenuNavigation"
+      ],
+      "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/vite-env.d.ts": {
+      "filePath": "frontend/src/vite-env.d.ts",
+      "contentHash": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/tsconfig.app.json": {
+      "filePath": "frontend/tsconfig.app.json",
+      "contentHash": "06979eb19b8aa1dd73625b7450d77ce94ae2dc32589c150ac3e18fa38d7d4e64",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 23,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/tsconfig.json": {
+      "filePath": "frontend/tsconfig.json",
+      "contentHash": "770b4140bbb581e2dfd9ea9946ffc9c75a1d86ba7d2db5f77c83e37cbdf9d808",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/tsconfig.node.json": {
+      "filePath": "frontend/tsconfig.node.json",
+      "contentHash": "f2bfe99a6cb8d8a92d325a0514000d6de7e50e47548ea1872c82ab326383e8d4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/vercel.json": {
+      "filePath": "frontend/vercel.json",
+      "contentHash": "0ecff71cc2ad5da02ba9cdae5333431044f59c4b7f9376e50356e856fec2e20a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/vite.config.ts": {
+      "filePath": "frontend/vite.config.ts",
+      "contentHash": "d80893e9271964e8c09d3da60604012eaa5de3e3cf31a943ee42958235fa48e0",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vite",
+          "specifiers": [
+            "defineConfig"
+          ]
+        },
+        {
+          "source": "@vitejs/plugin-react",
+          "specifiers": [
+            "react"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "package.json": {
+      "filePath": "package.json",
+      "contentHash": "a0ff7cfc39a599ee1fc5fa2692ce1eb81e16a9d1b49bbb8ced5ec56e0962b10b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16,
+      "hasStructuralAnalysis": true
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "89d6ef0061a8545cd2840cb0f30495b9bceac502022a575ad86e176dda77182c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 184,
+      "hasStructuralAnalysis": true
+    }
+  }
+}
