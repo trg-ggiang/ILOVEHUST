@@ -1,183 +1,59 @@
+![Vercel Deployment](https://vercelbadge.vercel.app/api/your-vercel-account/your-vercel-project)
+
 # ILoveHust
 
-## 1. Mục đích tạo dự án
+## 1. Project Overview
 
-ILoveHust là một ứng dụng web hỗ trợ sinh viên HUST quản lý thông tin học tập cá nhân trong một hệ thống thống nhất.
+**ILoveHust** is a comprehensive, modern web application designed exclusively for students at Hanoi University of Science and Technology (HUST). The primary goal of this project is to consolidate fragmented academic tools into a single, unified, and highly interactive platform. 
 
-Dự án tập trung vào các nhu cầu chính của sinh viên như hồ sơ cá nhân, điểm số, lịch học, task, forum, tin nhắn và thông báo realtime.
+Instead of jumping between different portals to check grades, schedules, or connect with peers, ILoveHust provides a centralized hub with the following core features:
 
-## 2. Công nghệ sử dụng
+* **Student Dashboard:** A personalized overview of the student's current semester, upcoming deadlines, and academic standing.
+* **Academic Management:** Easy tracking of course schedules, credits, and GPA/grades.
+* **Task & Time Management:** Built-in tools to help students manage assignments, projects, and personal study plans efficiently.
+* **Community Forum:** A dedicated space for HUST students to ask questions, share study materials, and discuss course-specific topics.
+* **Real-time Interaction:** Integrated messaging and a live notification system (powered by WebSockets) so students never miss an important update or message from their peers.
+
+## 2. Tech Stack
+
+This project is built using a modern Full-stack JavaScript/TypeScript ecosystem to ensure high performance and scalability.
 
 ### Frontend
+* **Framework:** React with TypeScript & Vite
+* **Routing & State:** React Router
+* **Networking:** Axios
+* **Real-time:** Socket.IO Client
 
-- React
-- TypeScript
-- Vite
-- React Router
-- Axios
-- Socket.IO Client
-- CSS
+### Backend & Database
+* **Runtime & Framework:** Node.js, Express, TypeScript
+* **Database:** PostgreSQL
+* **ORM:** Prisma
+* **Real-time & Security:** Socket.IO, JWT Authentication
+* **Live Infrastructure:** Supabase (Database), Render (Backend Host)
 
-### Backend
+---
 
-- Node.js
-- Express
-- TypeScript
-- Prisma ORM
-- PostgreSQL
-- Socket.IO
-- JWT
+## 3. Live Demo & Usage Guide
 
-### Database và deploy
+The application is fully deployed and ready to use. You do not need to install or run anything locally to experience ILoveHust. 
 
-- PostgreSQL local khi phát triển
-- Supabase PostgreSQL khi demo/deploy
-- Vercel cho frontend
-- Backend cần deploy riêng trên một dịch vụ Node.js có hỗ trợ WebSocket như Render, Railway hoặc Fly.io
+### Access the Application
+🌐 **Live Website:** [Insert your Vercel URL here, e.g., https://ilovehust.vercel.app]
 
-## 3. Setup local
+### How to test the app
+Since the database is pre-seeded with sample data, you can log in immediately using the provided test accounts below to explore different roles and features.
 
-### Cài dependencies
+**1. Test as an Admin**
+* **Email:** `admin@ilovehust.local`
+* **Password:** `admin123`
+* *Use this account to explore administrative features, global management, and system oversight.*
 
-```bash
-npm install
+**2. Test as a Student**
+* **Email:** `student@ilovehust.local`
+* **Password:** `student123`
+* *Use this account to experience the core user flow: viewing schedules, checking grades, managing tasks, and using the chat/forum.*
 
-cd backend
-npm install
-
-cd ../frontend
-npm install
-```
-
-### Cấu hình backend
-
-Tạo file `backend/.env`:
-
-```env
-PORT=5000
-DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/ilovehust?schema=public"
-JWT_SECRET="your-secret-key"
-FRONTEND_URL="http://localhost:5173"
-```
-
-### Khởi tạo database local
-
-```bash
-cd backend
-npm run prisma:generate
-npx prisma migrate dev
-npm run seed
-npm run seed:check
-```
-
-### Chạy app
-
-Terminal backend:
-
-```bash
-cd backend
-npm run dev
-```
-
-Terminal frontend:
-
-```bash
-cd frontend
-npm run dev
-```
-
-Frontend chạy tại `http://localhost:5173`, backend chạy tại `http://localhost:5000`.
-
-## 4. Dùng Supabase để demo dữ liệu thật
-
-### Bước 1: Tạo database Supabase
-
-Tạo một project Supabase, sau đó lấy connection string PostgreSQL trong phần database connection.
-
-Nên dùng connection string dạng direct connection hoặc session pooler. Cuối URL thêm:
-
-```txt
-?schema=public&sslmode=require&uselibpqcompat=true
-```
-
-Ví dụ biến môi trường backend:
-
-```env
-DATABASE_URL="postgresql://postgres:[PASSWORD]@db.[PROJECT_REF].supabase.co:5432/postgres?schema=public&sslmode=require&uselibpqcompat=true"
-JWT_SECRET="your-production-secret"
-FRONTEND_URL="https://your-vercel-app.vercel.app"
-```
-
-### Bước 2: Đẩy schema và seed lên Supabase
-
-Đứng trong thư mục `backend`, dùng chính `DATABASE_URL` Supabase:
-
-```bash
-npm run prisma:generate
-npm run db:deploy
-npm run seed
-npm run seed:check
-```
-
-Sau bước này Supabase sẽ có đủ bảng và dữ liệu demo.
-
-### Bước 3: Deploy backend
-
-Deploy thư mục `backend` lên một host Node.js có hỗ trợ WebSocket.
-
-Biến môi trường backend cần có:
-
-```env
-DATABASE_URL="connection-string-supabase"
-JWT_SECRET="your-production-secret"
-FRONTEND_URL="https://your-vercel-app.vercel.app"
-```
-
-Build command:
-
-```bash
-npm install && npm run build
-```
-
-Start command:
-
-```bash
-npm start
-```
-
-### Bước 4: Deploy frontend lên Vercel
-
-Trong Vercel, project frontend cần trỏ root directory là `frontend`.
-
-Biến môi trường frontend:
-
-```env
-VITE_API_BASE_URL="https://your-backend-domain.com/api"
-VITE_SOCKET_URL="https://your-backend-domain.com"
-```
-
-Build command:
-
-```bash
-npm run build
-```
-
-Output directory:
-
-```txt
-dist
-```
-
-Sau khi deploy xong, mở link Vercel là app sẽ gọi backend public, backend dùng dữ liệu từ Supabase nên không cần clone project về local để demo nữa.
-
-## 5. Tài khoản seed mẫu
-
-```txt
-Admin:
-email: admin@ilovehust.local
-password: admin123
-
-Student:
-email: student@ilovehust.local
-password: student123
-```
+### Things to try out:
+* Open two different browser windows (or one incognito mode).
+* Log in to the Student account on one window and the Admin account on the other.
+* Try sending a message or triggering a notification to see the **Real-time WebSocket** feature in action without refreshing the page!
