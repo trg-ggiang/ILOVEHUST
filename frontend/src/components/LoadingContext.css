@@ -1,0 +1,201 @@
+.bk-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at top, rgba(59, 130, 246, 0.18), transparent 35%),
+    rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(7px);
+}
+
+.bk-loader-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.bk-pixel-stage {
+  position: relative;
+  width: 340px;
+  height: 150px;
+  overflow: hidden;
+  border: 4px solid rgba(255, 255, 255, 0.18);
+  border-radius: 22px;
+  background:
+    linear-gradient(to bottom, rgba(96, 165, 250, 0.25), rgba(15, 23, 42, 0.95)),
+    #0f172a;
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.42),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.04);
+}
+
+.bk-pixel-stage::before {
+  content: "";
+  position: absolute;
+  left: 22px;
+  top: 24px;
+  width: 10px;
+  height: 10px;
+  background: #dbeafe;
+  box-shadow:
+    34px 8px 0 #dbeafe,
+    82px -4px 0 #bfdbfe,
+    130px 10px 0 #dbeafe,
+    210px 2px 0 #bfdbfe,
+    266px 12px 0 #dbeafe;
+  opacity: 0.55;
+}
+
+.bk-crosswalk {
+  position: absolute;
+  left: -80px;
+  right: -80px;
+  bottom: 18px;
+  height: 34px;
+  background: repeating-linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.9) 0 34px,
+    rgba(255, 255, 255, 0.18) 34px 58px
+  );
+  transform: skewX(-18deg);
+  animation: bkCrosswalkMove 0.75s linear infinite;
+}
+
+.bk-student-runner {
+  position: absolute;
+  left: -120px;
+  bottom: 25px;
+  width: 120px;
+  height: 120px;
+  animation: bkWalkAcross 2.8s linear infinite;
+}
+
+.bk-student-sprite {
+  width: 120px;
+  height: 120px;
+  image-rendering: pixelated;
+  animation: bkBodyBounce 0.42s steps(2) infinite;
+  filter: drop-shadow(0 12px 10px rgba(0, 0, 0, 0.28));
+}
+
+.bk-leg-front,
+.bk-leg-back,
+.bk-arm-front,
+.bk-arm-back {
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+
+.bk-leg-front {
+  animation: bkLegFront 0.42s steps(2) infinite;
+}
+
+.bk-leg-back {
+  animation: bkLegBack 0.42s steps(2) infinite;
+}
+
+.bk-arm-front {
+  animation: bkArmFront 0.42s steps(2) infinite;
+}
+
+.bk-arm-back {
+  animation: bkArmBack 0.42s steps(2) infinite;
+}
+
+.bk-loading-text {
+  margin: 0;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
+  animation: bkTextPulse 1s ease-in-out infinite;
+}
+
+@keyframes bkWalkAcross {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(460px);
+  }
+}
+
+@keyframes bkBodyBounce {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes bkCrosswalkMove {
+  from {
+    transform: translateX(0) skewX(-18deg);
+  }
+
+  to {
+    transform: translateX(-58px) skewX(-18deg);
+  }
+}
+
+@keyframes bkLegFront {
+  0% {
+    transform: rotate(19deg) translateY(0);
+  }
+
+  100% {
+    transform: rotate(-22deg) translateY(2px);
+  }
+}
+
+@keyframes bkLegBack {
+  0% {
+    transform: rotate(-22deg) translateY(2px);
+  }
+
+  100% {
+    transform: rotate(19deg) translateY(0);
+  }
+}
+
+@keyframes bkArmFront {
+  0% {
+    transform: rotate(-18deg);
+  }
+
+  100% {
+    transform: rotate(20deg);
+  }
+}
+
+@keyframes bkArmBack {
+  0% {
+    transform: rotate(20deg);
+  }
+
+  100% {
+    transform: rotate(-18deg);
+  }
+}
+
+@keyframes bkTextPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+}

@@ -9,7 +9,7 @@ import {
   Shield,
   Users,
 } from "lucide-react";
-import api from "../../api";
+import api from "../../services/api";
 import { getStoredLanguage, setStoredLanguage } from "../../i18n/language";
 import { LOGIN_TEXT } from "../../i18n/translations";
 

@@ -12,7 +12,7 @@ import {
   MapPin,
   Plus,
 } from "lucide-react";
-import api from "../../api";
+import api from "../../services/api";
 import {
   getStoredLanguage,
   getStoredSidebarState,

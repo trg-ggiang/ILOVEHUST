@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Camera, Check, IdCard, Mail, Phone, Save, User } from "lucide-react";
-import api from "../../api";
+import api from "../../services/api";
 import {
   getStoredLanguage,
   getStoredSidebarState,

@@ -30,7 +30,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import api from "../../api";
+import api from "../../services/api";
 
 const numberFormat = new Intl.NumberFormat("vi-VN");
 const dateFormat = new Intl.DateTimeFormat("vi-VN", {

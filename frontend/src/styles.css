@@ -6297,7 +6297,98 @@ button.schedule-grid-head {
 
 .schedule-month-day strong {
   color: #64748b;
-  font-size: 12px;
+}
+
+/* ==========================================================================
+   Loading Overlay
+   ========================================================================== */
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.pixel-student-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.pixel-student {
+  width: 64px;
+  height: 96px;
+  background-image: 
+    /* Head */
+    linear-gradient(90deg, transparent 20%, #ffc19e 20%, #ffc19e 80%, transparent 80%),
+    /* Eyes */
+    linear-gradient(90deg, transparent 28%, #000 28%, #000 35%, transparent 35%, transparent 48%, #000 48%, #000 55%, transparent 55%),
+    /* Body red shirt */
+    linear-gradient(90deg, transparent 15%, #dc2626 15%, #dc2626 85%, transparent 85%),
+    /* Arms */
+    linear-gradient(90deg, transparent 10%, #ffc19e 10%, #ffc19e 15%, transparent 15%, transparent 85%, #ffc19e 85%, #ffc19e 90%, transparent 90%),
+    /* Legs animation */
+    linear-gradient(90deg, transparent 25%, #333 25%, #333 40%, transparent 40%, transparent 60%, #333 60%, #333 75%, transparent 75%);
+  background-size: 
+    100% 10px,
+    100% 8px,
+    100% 30px,
+    100% 20px,
+    100% 30px;
+  background-position: 
+    0 0,
+    0 12px,
+    0 20px,
+    0 18px,
+    0 55%;
+  background-repeat: no-repeat;
+  animation: walking 1.2s ease-in-out infinite;
+  image-rendering: pixelated;
+}
+
+@keyframes walking {
+  0% {
+    background-position: 
+      0 0,
+      0 12px,
+      0 20px,
+      0 18px,
+      0 55%;
+  }
+  50% {
+    transform: translateX(-8px);
+    background-position: 
+      0 0,
+      0 12px,
+      0 20px,
+      0 18px,
+      0 58%;
+  }
+  100% {
+    transform: translateX(8px);
+    background-position: 
+      0 0,
+      0 12px,
+      0 20px,
+      0 18px,
+      0 55%;
+  }
+}
+
+.loading-text {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 1px;
 }
 
 .schedule-google-scroll {

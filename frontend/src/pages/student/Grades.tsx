@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import api from "../../api";
+import api from "../../services/api";
 import {
   getStoredLanguage,
   setStoredLanguage,

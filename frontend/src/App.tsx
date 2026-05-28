@@ -14,8 +14,8 @@ import SettingsPage from "./pages/student/Settings";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
+      <BrowserRouter>
+        <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -31,7 +31,7 @@ function App() {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/complete-profile" element={<CompleteProfile />} />
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
   );
 }
 

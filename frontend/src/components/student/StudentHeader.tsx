@@ -1,7 +1,7 @@
 import { Bell, CheckCheck, Menu, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../api";
+import api from "../../services/api";
 import { HEADER_TEXT } from "../../i18n/translations";
 import { useSocketEvent } from "../../realtime/useSocketEvent";
 

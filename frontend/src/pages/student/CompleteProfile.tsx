@@ -18,7 +18,7 @@ import {
   ChevronRight,
   AlertCircle,
 } from "lucide-react";
-import api from "../../api";
+import api from "../../services/api";
 import { getStoredLanguage, setStoredLanguage } from "../../i18n/language";
 import { COMPLETE_PROFILE_TEXT } from "../../i18n/translations";
 
