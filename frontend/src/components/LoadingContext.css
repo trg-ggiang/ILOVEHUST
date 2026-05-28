@@ -199,3 +199,39 @@
     transform: translateY(-1px);
   }
 }
+.bk-pixel-penguin {
+  position: absolute;
+  right: 18px;
+  bottom: 30px;
+  width: 58px;
+  height: 58px;
+  image-rendering: pixelated;
+  opacity: 0;
+  transform: translateY(8px) scale(0.9);
+  animation:
+    penguinShow 0.35s steps(4) forwards,
+    penguinBounce 0.7s steps(2) infinite 0.35s;
+  filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.28));
+}
+
+@keyframes penguinShow {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes penguinBounce {
+  0% {
+    transform: translateY(0) rotate(-2deg);
+  }
+
+  100% {
+    transform: translateY(-5px) rotate(2deg);
+  }
+}
