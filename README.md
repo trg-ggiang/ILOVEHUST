@@ -38,7 +38,7 @@ This project is built using a modern Full-stack JavaScript/TypeScript ecosystem 
 The application is fully deployed and ready to use. You do not need to install or run anything locally to experience ILoveHust. 
 
 ### Access the Application
-🌐 **Live Website:** [Insert your Vercel URL here, e.g., https://ilovehust.vercel.app]
+🌐 **Live Website:** [https://ilovehust.vercel.app]
 
 ### How to test the app
 Since the database is pre-seeded with sample data, you can log in immediately using the provided test accounts below to explore different roles and features.
