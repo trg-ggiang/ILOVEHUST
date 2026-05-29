@@ -11,6 +11,7 @@ import SchedulePage from "./pages/student/Schedule";
 import StatisticsPage from "./pages/student/Statistics";
 import TasksPage from "./pages/student/Tasks";
 import SettingsPage from "./pages/student/Settings";
+import VietnamMap from "./pages/student/VietnamMap";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/stats" element={<StatisticsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/complete-profile" element={<CompleteProfile />} />
+        <Route path="/vietnam-map" element={<VietnamMap />} />
       </Routes>
       </BrowserRouter>
   );

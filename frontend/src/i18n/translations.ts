@@ -4,6 +4,7 @@
     hideMenu: "メニューを閉じる",
     menu: {
       home: "ホーム",
+      "vietnam-map": "ベトナム地図",
       grades: "成績",
       forum: "フォーラム",
       messages: "メッセージ",
@@ -20,6 +21,7 @@
     hideMenu: "Ẩn menu",
     menu: {
       home: "Trang chủ",
+      "vietnam-map": "Bản đồ Việt Nam",
       grades: "Điểm số",
       forum: "Diễn đàn",
       messages: "Tin nhắn",

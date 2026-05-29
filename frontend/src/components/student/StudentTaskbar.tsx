@@ -10,11 +10,13 @@ import {
   Settings,
   LogOut,
   GraduationCap,
+  MapPinned,
 } from "lucide-react";
 import { TASKBAR_TEXT } from "../../i18n/translations";
 
 const PRIMARY_ITEMS = [
   { key: "home", icon: House },
+  { key: "vietnam-map", icon: MapPinned },
   { key: "forum", icon: Users },
   { key: "messages", icon: MessagesSquare },
   { key: "tasks", icon: ListChecks },

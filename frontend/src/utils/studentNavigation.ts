@@ -9,6 +9,7 @@ export const STUDENT_ROUTE_BY_MENU_KEY = Object.freeze({
   schedule: "/schedule",
   stats: "/statistics",
   settings: "/settings",
+  "vietnam-map": "/vietnam-map",
 });
 
 export function clearStudentSession() {
