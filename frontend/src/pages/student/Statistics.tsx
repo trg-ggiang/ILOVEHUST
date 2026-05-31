@@ -64,7 +64,7 @@ const DEFAULT_PAYLOAD = {
   goals: [],
 };
 
-const COLORS = ["#dc2626", "#ea580c", "#ca8a04", "#16a34a", "#2563eb", "#9333ea", "#64748b"];
+const COLORS = ["#ef4444", "#22d3ee", "#3b82f6", "#8b5cf6", "#f97316", "#10b981", "#94a3b8"];
 
 const ACHIEVEMENT_ICONS = {
   academic: Award,
@@ -80,10 +80,11 @@ function formatDelta(value, text) {
 
 function chartTooltipStyle() {
   return {
-    backgroundColor: "#ffffff",
+    backgroundColor: "rgba(255, 255, 255, 0.98)",
     border: "1px solid #e5e7eb",
-    borderRadius: "12px",
-    boxShadow: "0 12px 28px rgba(15, 23, 42, 0.12)",
+    borderRadius: "14px",
+    boxShadow: "0 18px 40px rgba(15, 23, 42, 0.12)",
+    color: "#0f172a",
     padding: "10px 12px",
   };
 }
@@ -272,11 +273,18 @@ export default function StatisticsPage() {
                 {semesterGPA.length === 0 ? <p className="empty-text">{t.noGpa}</p> : null}
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={localizedSemesterGPA}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#eef2f7" />
-                    <XAxis dataKey="semester" tick={{ fontSize: 12, fill: "#64748b" }} />
-                    <YAxis domain={[0, 4]} tick={{ fontSize: 12, fill: "#64748b" }} />
+                    <defs>
+                      <linearGradient id="statsGpaFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#dc2626" stopOpacity={0.22} />
+                        <stop offset="55%" stopColor="#2563eb" stopOpacity={0.08} />
+                        <stop offset="100%" stopColor="#ffffff" stopOpacity={0.02} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 7" stroke="rgba(148, 163, 184, 0.24)" />
+                    <XAxis dataKey="semester" tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                    <YAxis domain={[0, 4]} tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
                     <Tooltip contentStyle={chartTooltipStyle()} />
-                    <Area type="monotone" dataKey="gpa" stroke="#dc2626" strokeWidth={3} fill="#fee2e2" />
+                    <Area type="monotone" dataKey="gpa" stroke="#dc2626" strokeWidth={3} fill="url(#statsGpaFill)" dot={{ fill: "#ffffff", stroke: "#dc2626", strokeWidth: 2, r: 4 }} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -293,8 +301,10 @@ export default function StatisticsPage() {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({ grade, value }) => `${grade} (${value}%)`}
+                      label={({ grade, value }) => `${grade} ${value}%`}
                       outerRadius={100}
+                      innerRadius={56}
+                      paddingAngle={3}
                       dataKey="value"
                     >
                       {gradeDistribution.map((entry, index) => (
@@ -313,11 +323,17 @@ export default function StatisticsPage() {
                 {studyTime.length === 0 ? <p className="empty-text">{t.noStudyTime}</p> : null}
                 <ResponsiveContainer width="100%" height="100%">
                   <ReBarChart data={localizedStudyTime}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#eef2f7" />
-                    <XAxis dataKey="day" tick={{ fontSize: 12, fill: "#64748b" }} />
-                    <YAxis tick={{ fontSize: 12, fill: "#64748b" }} />
+                    <defs>
+                      <linearGradient id="statsBarFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#ef4444" />
+                        <stop offset="100%" stopColor="#dc2626" />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 7" stroke="rgba(148, 163, 184, 0.24)" />
+                    <XAxis dataKey="day" tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
                     <Tooltip contentStyle={chartTooltipStyle()} />
-                    <Bar dataKey="hours" fill="#9333ea" radius={[8, 8, 0, 0]} />
+                    <Bar dataKey="hours" fill="url(#statsBarFill)" radius={[10, 10, 4, 4]} />
                   </ReBarChart>
                 </ResponsiveContainer>
               </div>

@@ -528,6 +528,7 @@ export default function MessagesPage() {
         onMenuClick={handleMenuClick}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        showAiChat={false}
       />
 
       <StudentHeader

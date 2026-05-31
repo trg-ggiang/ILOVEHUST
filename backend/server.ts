@@ -11,6 +11,7 @@ import forumRoutes from "./routes/student/forumRoutes.js";
 import messageRoutes from "./routes/student/messageRoutes.js";
 import scheduleRoutes from "./routes/student/scheduleRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 import { initRealtime } from "./realtime.js";
 import { assertRequiredEnv } from "./config/env.js";
 
@@ -46,6 +47,7 @@ app.use("/api/forum", forumRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/schedule", scheduleRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/ai", aiRoutes);
 
 if (!isVercel) {
   initRealtime(server);

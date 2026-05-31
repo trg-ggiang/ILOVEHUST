@@ -1,18 +1,8 @@
 {
   "version": "1.0.0",
-  "gitCommitHash": "bd5fac327643f6805f9ae4e21aa06f89231284a9",
-  "generatedAt": "2026-05-28T06:41:38.523Z",
+  "gitCommitHash": "0b00977d3a69ca4ccd595173c226aebac0e5310a",
+  "generatedAt": "2026-05-31T06:55:54.362Z",
   "files": {
-    ".codex/config.toml": {
-      "filePath": ".codex/config.toml",
-      "contentHash": "f4fbe8dc6f4c7ee33a1e0c1582a6903fc597bc9187f91cb6e1b8c694c64fb7e2",
-      "functions": [],
-      "classes": [],
-      "imports": [],
-      "exports": [],
-      "totalLines": 38,
-      "hasStructuralAnalysis": true
-    },
     ".understand-anything/.understandignore": {
       "filePath": ".understand-anything/.understandignore",
       "contentHash": "93ac12df349aba0476e53cf9b80bd01165d14333f50ceac08a4aef3382b9e00d",
@@ -23,14 +13,34 @@
       "totalLines": 63,
       "hasStructuralAnalysis": false
     },
-    "AGENTS.md": {
-      "filePath": "AGENTS.md",
-      "contentHash": "43188bdc7aba7b1246fe73bc89ee6dffe0c2d23bbee3bd839f14c8d2531e1460",
+    ".understand-anything/fingerprints.json": {
+      "filePath": ".understand-anything/fingerprints.json",
+      "contentHash": "26191e54dae6fc0519bfbd0fa731c721a61144969c1e18dd975113f3f67c5104",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 137,
+      "totalLines": 3775,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/knowledge-graph.json": {
+      "filePath": ".understand-anything/knowledge-graph.json",
+      "contentHash": "5a9b384a45ef4bf42a5616d1e9db7aed40485552b115e0164d9bb69f8396db87",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2270,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/meta.json": {
+      "filePath": ".understand-anything/meta.json",
+      "contentHash": "075a8060c6088d0a6dcaa28ae183b3a23eab8cc1151c34a2407b6187f7461e24",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 7,
       "hasStructuralAnalysis": true
     },
     "backend/.env.example": {
@@ -576,6 +586,133 @@
       "totalLines": 83,
       "hasStructuralAnalysis": true
     },
+    "backend/routes/admin/adminRoutes.ts": {
+      "filePath": "backend/routes/admin/adminRoutes.ts",
+      "contentHash": "f97dbc34516b74da107d8a926f91e79293c04d8e60a2b58b069ee9c1676ede5f",
+      "functions": [
+        {
+          "name": "requireAdmin",
+          "params": [
+            "req",
+            "res",
+            "next"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "startOfDay",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "daysAgo",
+          "params": [
+            "days"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "monthKey",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "monthLabel",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "buildLastMonthBuckets",
+          "params": [
+            "monthCount"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "buildRecentYearBuckets",
+          "params": [
+            "yearCount",
+            "endYear"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "normalizeSchoolYear",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "buildHotTopics",
+          "params": [
+            "posts"
+          ],
+          "exported": false,
+          "lineCount": 31
+        },
+        {
+          "name": "toAdminUser",
+          "params": [
+            "user"
+          ],
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "toAdminPost",
+          "params": [
+            "post"
+          ],
+          "exported": false,
+          "lineCount": 30
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "express"
+          ]
+        },
+        {
+          "source": "../../database.js",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "../../middleware/authMiddleware.js",
+          "specifiers": [
+            "authMiddleware"
+          ]
+        },
+        {
+          "source": "../../realtime.js",
+          "specifiers": [
+            "emitToAll"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 547,
+      "hasStructuralAnalysis": true
+    },
     "backend/routes/admin/authRoutes.ts": {
       "filePath": "backend/routes/admin/authRoutes.ts",
       "contentHash": "c66612cb5f1e8158309e9e76eecb5c8ea7a7bdee4598497dafe2b1f377569aec",
@@ -769,7 +906,7 @@
     },
     "backend/routes/student/forumRoutes.ts": {
       "filePath": "backend/routes/student/forumRoutes.ts",
-      "contentHash": "a0fe2d8ffec58d18dd86574e9e9d70d2ac904099e7999f1b16edad1036aef8aa",
+      "contentHash": "45bb06c892fde0dc5b2d120d0b22391e4e3ce9b8de19b674f10a09f5b3114de2",
       "functions": [
         {
           "name": "toPostResponse",
@@ -778,7 +915,7 @@
             "currentUserId"
           ],
           "exported": false,
-          "lineCount": 33
+          "lineCount": 34
         },
         {
           "name": "buildTrendingTopics",
@@ -833,7 +970,7 @@
         }
       ],
       "exports": [],
-      "totalLines": 325,
+      "totalLines": 339,
       "hasStructuralAnalysis": true
     },
     "backend/routes/student/messageRoutes.ts": {
@@ -1465,7 +1602,7 @@
     },
     "backend/server.ts": {
       "filePath": "backend/server.ts",
-      "contentHash": "15e099180c98231854cf419656bb2dcc13432d185bb471abb61d486a405d4740",
+      "contentHash": "7e4531b238cc582dbfe7647da7175fa2f29a9750325d0a34e4567e844cd2736e",
       "functions": [],
       "classes": [],
       "imports": [
@@ -1501,6 +1638,12 @@
           "source": "./routes/admin/authRoutes.js",
           "specifiers": [
             "authRoutes"
+          ]
+        },
+        {
+          "source": "./routes/admin/adminRoutes.js",
+          "specifiers": [
+            "adminRoutes"
           ]
         },
         {
@@ -1556,7 +1699,7 @@
         "app",
         "server"
       ],
-      "totalLines": 59,
+      "totalLines": 61,
       "hasStructuralAnalysis": true
     },
     "backend/tsconfig.json": {
@@ -1709,36 +1852,6 @@
       "totalLines": 11,
       "hasStructuralAnalysis": true
     },
-    "docs/API.md": {
-      "filePath": "docs/API.md",
-      "contentHash": "c514d928cc0697ff150f9afde9947cc7e919444620959e2b9c7e044f27cfbd7f",
-      "functions": [],
-      "classes": [],
-      "imports": [],
-      "exports": [],
-      "totalLines": 92,
-      "hasStructuralAnalysis": true
-    },
-    "docs/DATABASE.md": {
-      "filePath": "docs/DATABASE.md",
-      "contentHash": "46da7c7b6489bffb07558a7a7a0aea3f731f6897efacbd77cedceb744a7c0c27",
-      "functions": [],
-      "classes": [],
-      "imports": [],
-      "exports": [],
-      "totalLines": 62,
-      "hasStructuralAnalysis": true
-    },
-    "docs/UI_RULES.md": {
-      "filePath": "docs/UI_RULES.md",
-      "contentHash": "a145a9c508bd6d88cecb1255eaae86b4b3b92d32762a4bc6eb301e98e892de5b",
-      "functions": [],
-      "classes": [],
-      "imports": [],
-      "exports": [],
-      "totalLines": 46,
-      "hasStructuralAnalysis": true
-    },
     "frontend/.env.example": {
       "filePath": "frontend/.env.example",
       "contentHash": "9c6c70c900c60e24a123dc283a123140b102e0bb97eaf55bad4a6ca29f7cd49b",
@@ -1809,12 +1922,12 @@
     },
     "frontend/package.json": {
       "filePath": "frontend/package.json",
-      "contentHash": "83849cc16c3b619e07d427c39814c9fd232d4983d90575e6ac15a3a639302c83",
+      "contentHash": "03fc4522ead98e118864bf99ea7570e104dec017348ad471eb8503f01c83eea8",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 39,
+      "totalLines": 43,
       "hasStructuralAnalysis": true
     },
     "frontend/README.md": {
@@ -1827,32 +1940,15 @@
       "totalLines": 19,
       "hasStructuralAnalysis": true
     },
-    "frontend/src/api.ts": {
-      "filePath": "frontend/src/api.ts",
-      "contentHash": "19fd5b3c31413c8802538874311b981839c4c475ed6e0ae255bfec4ae25e9611",
-      "functions": [],
-      "classes": [],
-      "imports": [
-        {
-          "source": "axios",
-          "specifiers": [
-            "axios"
-          ]
-        }
-      ],
-      "exports": [],
-      "totalLines": 18,
-      "hasStructuralAnalysis": true
-    },
     "frontend/src/App.tsx": {
       "filePath": "frontend/src/App.tsx",
-      "contentHash": "d909b7f3d64c1bf429185bf9b6f54f2083b9b455909a77924affae954f2f0239",
+      "contentHash": "c359de85b9c21ba57b0ada09065b921754feade03bcc4140fd407f3cbd0c79ba",
       "functions": [
         {
           "name": "App",
           "params": [],
           "exported": false,
-          "lineCount": 21
+          "lineCount": 23
         }
       ],
       "classes": [],
@@ -1876,6 +1972,12 @@
           "source": "./pages/admin/Register",
           "specifiers": [
             "Register"
+          ]
+        },
+        {
+          "source": "./pages/admin/AdminDashboard",
+          "specifiers": [
+            "AdminDashboard"
           ]
         },
         {
@@ -1931,10 +2033,116 @@
           "specifiers": [
             "SettingsPage"
           ]
+        },
+        {
+          "source": "./pages/student/VietnamMap",
+          "specifiers": [
+            "VietnamMap"
+          ]
         }
       ],
       "exports": [],
+      "totalLines": 42,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/components/AxiosLoadingHandler.tsx": {
+      "filePath": "frontend/src/components/AxiosLoadingHandler.tsx",
+      "contentHash": "76a93115d48460bde8ddfebeb485fdccb35b68181c0ae75a6dee1315f5f93f48",
+      "functions": [
+        {
+          "name": "AxiosLoadingHandler",
+          "params": [],
+          "exported": true,
+          "lineCount": 34
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect"
+          ]
+        },
+        {
+          "source": "../services/api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "./LoadingContext",
+          "specifiers": [
+            "useLoading"
+          ]
+        }
+      ],
+      "exports": [
+        "AxiosLoadingHandler"
+      ],
       "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/components/LoadingContext.css": {
+      "filePath": "frontend/src/components/LoadingContext.css",
+      "contentHash": "466cb6bbf18c19060b948ef22fdbee5c0c4c0b9a107dfb9d629872a912bd6135",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 237,
+      "hasStructuralAnalysis": false
+    },
+    "frontend/src/components/LoadingContext.tsx": {
+      "filePath": "frontend/src/components/LoadingContext.tsx",
+      "contentHash": "55e3c316e84427a59f26b073d6d16624c4bb6806cb297a276c9f0384f1e530b6",
+      "functions": [
+        {
+          "name": "LoadingProvider",
+          "params": [
+            "{ children }"
+          ],
+          "exported": true,
+          "lineCount": 36
+        },
+        {
+          "name": "useLoading",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "LoadingOverlay",
+          "params": [],
+          "exported": true,
+          "lineCount": 135
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "createContext",
+            "useCallback",
+            "useContext",
+            "useRef",
+            "useState",
+            "useEffect",
+            "ReactNode"
+          ]
+        },
+        {
+          "source": "./LoadingContext.css",
+          "specifiers": []
+        }
+      ],
+      "exports": [
+        "LoadingProvider",
+        "useLoading",
+        "LoadingOverlay"
+      ],
+      "totalLines": 203,
       "hasStructuralAnalysis": true
     },
     "frontend/src/components/ProtectedRoute.tsx": {
@@ -1966,7 +2174,7 @@
     },
     "frontend/src/components/student/StudentHeader.tsx": {
       "filePath": "frontend/src/components/student/StudentHeader.tsx",
-      "contentHash": "08cdf9b663647e58191e01b47820d22c707d83025643013058c7a09669ec6b7f",
+      "contentHash": "1fdbfb08005a12895f7f6a49f942b1999bc9d2448da8fe0903b889396819e01d",
       "functions": [
         {
           "name": "formatNotificationTime",
@@ -2013,7 +2221,7 @@
           ]
         },
         {
-          "source": "../../api",
+          "source": "../../services/api",
           "specifiers": [
             "api"
           ]
@@ -2039,7 +2247,7 @@
     },
     "frontend/src/components/student/StudentTaskbar.tsx": {
       "filePath": "frontend/src/components/student/StudentTaskbar.tsx",
-      "contentHash": "9152e8d40b4eda41cd0fe5888371e4fdb0596df300c0fccd352c1595a3ca3648",
+      "contentHash": "43f686aefb0e7163631ac8433ff48f924f9383706a8c50a954b6a8afc34cbc49",
       "functions": [
         {
           "name": "StudentTaskbar",
@@ -2065,7 +2273,8 @@
             "Users",
             "Settings",
             "LogOut",
-            "GraduationCap"
+            "GraduationCap",
+            "MapPinned"
           ]
         },
         {
@@ -2078,7 +2287,7 @@
       "exports": [
         "StudentTaskbar"
       ],
-      "totalLines": 109,
+      "totalLines": 111,
       "hasStructuralAnalysis": true
     },
     "frontend/src/i18n/language.ts": {
@@ -2139,7 +2348,7 @@
     },
     "frontend/src/i18n/translations.ts": {
       "filePath": "frontend/src/i18n/translations.ts",
-      "contentHash": "a27fa56bc2548c05a178600f6143c8c0a72f9c30fcc96cf033612dc89833db51",
+      "contentHash": "832bda9ce8d06cf472fd28bdae47a7dcdbecd46567ca32ad570496a950d91d29",
       "functions": [],
       "classes": [],
       "imports": [],
@@ -2158,12 +2367,12 @@
         "FORUM_TEXT",
         "MESSAGES_TEXT"
       ],
-      "totalLines": 1071,
+      "totalLines": 1073,
       "hasStructuralAnalysis": true
     },
     "frontend/src/main.tsx": {
       "filePath": "frontend/src/main.tsx",
-      "contentHash": "1cb174021e46d158922577b282fc175fcb08502a635c147b920714d330787cbe",
+      "contentHash": "e81d29284a7fcaf7f593c1fff7817e1e8993983bc50ea8c4ecccb8944bb8d3cd",
       "functions": [],
       "classes": [],
       "imports": [
@@ -2188,21 +2397,149 @@
           "specifiers": [
             "App"
           ]
+        },
+        {
+          "source": "./components/LoadingContext",
+          "specifiers": [
+            "LoadingProvider"
+          ]
+        },
+        {
+          "source": "./components/AxiosLoadingHandler",
+          "specifiers": [
+            "AxiosLoadingHandler"
+          ]
         }
       ],
       "exports": [],
-      "totalLines": 11,
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/admin/AdminDashboard.tsx": {
+      "filePath": "frontend/src/pages/admin/AdminDashboard.tsx",
+      "contentHash": "0deed19b71b9cacf9b38d724543ef7a449c5c83f386094f1543c2030d8392ae3",
+      "functions": [
+        {
+          "name": "formatNumber",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "formatDate",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "getInitials",
+          "params": [
+            "name"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "AdminChartPanel",
+          "params": [
+            "{ title, subtitle, children }"
+          ],
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "ForumActivityPanel",
+          "params": [
+            "{ data }"
+          ],
+          "exported": false,
+          "lineCount": 69
+        },
+        {
+          "name": "AdminDashboard",
+          "params": [],
+          "exported": true,
+          "lineCount": 537
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "BarChart3",
+            "Flame",
+            "Lock",
+            "LogOut",
+            "MessageSquareText",
+            "Pin",
+            "Search",
+            "ShieldCheck",
+            "Trash2",
+            "UserCheck",
+            "UserPlus",
+            "Users"
+          ]
+        },
+        {
+          "source": "recharts",
+          "specifiers": [
+            "Bar",
+            "ReBarChart",
+            "CartesianGrid",
+            "Cell",
+            "ComposedChart",
+            "Legend",
+            "Line",
+            "ReLineChart",
+            "Pie",
+            "RePieChart",
+            "ResponsiveContainer",
+            "Tooltip",
+            "XAxis",
+            "YAxis"
+          ]
+        },
+        {
+          "source": "../../services/api",
+          "specifiers": [
+            "api"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminDashboard"
+      ],
+      "totalLines": 713,
       "hasStructuralAnalysis": true
     },
     "frontend/src/pages/admin/Login.tsx": {
       "filePath": "frontend/src/pages/admin/Login.tsx",
-      "contentHash": "74808c993b36d79ee4d4705f2a2dd27f09ffe465c9f916b033f44894af84ba60",
+      "contentHash": "c9e61bfe47bc364ffce1fcbe4d25641317ab558a595b960065ac046469e8f5ee",
       "functions": [
         {
           "name": "Login",
           "params": [],
           "exported": true,
-          "lineCount": 231
+          "lineCount": 236
         }
       ],
       "classes": [],
@@ -2234,7 +2571,7 @@
           ]
         },
         {
-          "source": "../../api",
+          "source": "../../services/api",
           "specifiers": [
             "api"
           ]
@@ -2256,12 +2593,12 @@
       "exports": [
         "Login"
       ],
-      "totalLines": 247,
+      "totalLines": 252,
       "hasStructuralAnalysis": true
     },
     "frontend/src/pages/admin/Register.tsx": {
       "filePath": "frontend/src/pages/admin/Register.tsx",
-      "contentHash": "af8fb3ddddb3fb3690ba499f0cd94e7778c0eab8825463c1c179696d76d3f1a9",
+      "contentHash": "219dce882d383fb5b3989a07c8d884bd2ec2a69e5320b5693dea763608a9f4a2",
       "functions": [
         {
           "name": "isValidEmail",
@@ -2309,7 +2646,7 @@
           ]
         },
         {
-          "source": "../../api",
+          "source": "../../services/api",
           "specifiers": [
             "api"
           ]
@@ -2336,7 +2673,7 @@
     },
     "frontend/src/pages/student/CompleteProfile.tsx": {
       "filePath": "frontend/src/pages/student/CompleteProfile.tsx",
-      "contentHash": "1727d73231e751b24b8c2b8585a6820464a6c09d9da55e8b4884284e41290899",
+      "contentHash": "e84626fc203e436299d3713ff0b100738bcc0c8c8726cc8cbd1063aa27a1eef8",
       "functions": [
         {
           "name": "getSchoolYearFromAdmissionYear",
@@ -2408,7 +2745,7 @@
           ]
         },
         {
-          "source": "../../api",
+          "source": "../../services/api",
           "specifiers": [
             "api"
           ]
@@ -2435,7 +2772,7 @@
     },
     "frontend/src/pages/student/Dashboard.tsx": {
       "filePath": "frontend/src/pages/student/Dashboard.tsx",
-      "contentHash": "bffeeccc04c09f50e1ae8a98eb31dedb13b2062982b0e8a50cbf58e8fa209c96",
+      "contentHash": "49da6da969ddd3490a8739db9cac9352957deb9c277ff03112a744f23a031e08",
       "functions": [
         {
           "name": "gradeColor",
@@ -2526,7 +2863,7 @@
           ]
         },
         {
-          "source": "../../api",
+          "source": "../../services/api",
           "specifiers": [
             "api"
           ]
@@ -2573,7 +2910,7 @@
     },
     "frontend/src/pages/student/Forum.tsx": {
       "filePath": "frontend/src/pages/student/Forum.tsx",
-      "contentHash": "6590fa427ed6596dc648e4c28e188214108dc560d0bcf1a8144d84dc689113e8",
+      "contentHash": "c5edabc3f46799a8fee86a4ee52839ec12c8670dc1810f608969fda51f91e9b8",
       "functions": [
         {
           "name": "formatRelativeTime",
@@ -2645,7 +2982,7 @@
           ]
         },
         {
-          "source": "../../api",
+          "source": "../../services/api",
           "specifiers": [
             "api"
           ]
@@ -2699,7 +3036,7 @@
     },
     "frontend/src/pages/student/Grades.tsx": {
       "filePath": "frontend/src/pages/student/Grades.tsx",
-      "contentHash": "d957e565912800c0d00bca402a0718b861e7bab3b1228fae6182fb244da717fe",
+      "contentHash": "ac556adbee05c21cb7f4ad46093f9a04e787ba6e60151e6f7256b67cf5138f8f",
       "functions": [
         {
           "name": "normalizePdfText",
@@ -2808,7 +3145,7 @@
           ]
         },
         {
-          "source": "../../api",
+          "source": "../../services/api",
           "specifiers": [
             "api"
           ]
@@ -2855,7 +3192,7 @@
     },
     "frontend/src/pages/student/Messages.tsx": {
       "filePath": "frontend/src/pages/student/Messages.tsx",
-      "contentHash": "fef587ca046268e6580cb22b41c20ed8ac006e76fd4e79f88bdaf0d9ae45ec46",
+      "contentHash": "dbcb14740b9cb08bf4d228ffb8c6a9bec5189ad247501791395c8afc2111ffce",
       "functions": [
         {
           "name": "formatTime",
@@ -2985,7 +3322,7 @@
           ]
         },
         {
-          "source": "../../api",
+          "source": "../../services/api",
           "specifiers": [
             "api"
           ]
@@ -3039,7 +3376,7 @@
     },
     "frontend/src/pages/student/Schedule.tsx": {
       "filePath": "frontend/src/pages/student/Schedule.tsx",
-      "contentHash": "5d047004ec3fda3f04b685358abac8630e1f40837b093178ceca99cc8d6dc776",
+      "contentHash": "c81b0d83619f8364398cee7b1deae8cb905dac99b778e89bc4da1629d52b6b90",
       "functions": [
         {
           "name": "toDateParam",
@@ -3165,7 +3502,7 @@
           ]
         },
         {
-          "source": "../../api",
+          "source": "../../services/api",
           "specifiers": [
             "api"
           ]
@@ -3213,7 +3550,7 @@
     },
     "frontend/src/pages/student/Settings.tsx": {
       "filePath": "frontend/src/pages/student/Settings.tsx",
-      "contentHash": "66f621275366d3a3a088abf0814d86d84acb899ec2f3bd280fb3ecafbda775e0",
+      "contentHash": "b0ef4c33775b4be609f652d80183dbc3c53150cb76543740386a587f17e24f0a",
       "functions": [
         {
           "name": "SettingsPage",
@@ -3252,7 +3589,7 @@
           ]
         },
         {
-          "source": "../../api",
+          "source": "../../services/api",
           "specifiers": [
             "api"
           ]
@@ -3299,7 +3636,7 @@
     },
     "frontend/src/pages/student/Statistics.tsx": {
       "filePath": "frontend/src/pages/student/Statistics.tsx",
-      "contentHash": "287caaeb2f9adede460f11898c56829e61207f2c45a4da0550ceaef1acd41372",
+      "contentHash": "202a5633adb1d5d82c2f470106075801e90b26925ad9e4c9a14f971b54efda1b",
       "functions": [
         {
           "name": "formatDelta",
@@ -3371,7 +3708,7 @@
           ]
         },
         {
-          "source": "../../api",
+          "source": "../../services/api",
           "specifiers": [
             "api"
           ]
@@ -3419,7 +3756,7 @@
     },
     "frontend/src/pages/student/Tasks.tsx": {
       "filePath": "frontend/src/pages/student/Tasks.tsx",
-      "contentHash": "d2656370bdab67e27b10cc1092918793be76c4159c356f191d46032c8427b4e5",
+      "contentHash": "a89d59997b1efca59d6e22a306b49ecc7daf73b9fcd6db67530e16e6bf9e4f31",
       "functions": [
         {
           "name": "formatDate",
@@ -3504,7 +3841,7 @@
           ]
         },
         {
-          "source": "../../api",
+          "source": "../../services/api",
           "specifiers": [
             "api"
           ]
@@ -3548,6 +3885,155 @@
         "TasksPage"
       ],
       "totalLines": 619,
+      "hasStructuralAnalysis": true
+    },
+    "frontend/src/pages/student/VietnamMap.css": {
+      "filePath": "frontend/src/pages/student/VietnamMap.css",
+      "contentHash": "e6e59d5002bda5936dea5a85531c8f4a972709f10f353c1d71999ae5173fe1d5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 510,
+      "hasStructuralAnalysis": false
+    },
+    "frontend/src/pages/student/VietnamMap.tsx": {
+      "filePath": "frontend/src/pages/student/VietnamMap.tsx",
+      "contentHash": "d5674b6be0f58f60a1988636179a408ee9e821c24b35696c89655d7f14d576e4",
+      "functions": [
+        {
+          "name": "labelIcon",
+          "params": [
+            "label",
+            "type"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "VietnamMapIntro",
+          "params": [
+            "{\r\n  started,\r\n  onStart,\r\n}"
+          ],
+          "exported": false,
+          "lineCount": 48
+        },
+        {
+          "name": "FitVietnamBounds",
+          "params": [],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "getProvinceName",
+          "params": [
+            "properties"
+          ],
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "VietnamGeoJsonMap",
+          "params": [],
+          "exported": false,
+          "lineCount": 134
+        },
+        {
+          "name": "VietnamMapPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 137
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Compass",
+            "LocateFixed",
+            "MapPinned",
+            "Waves"
+          ]
+        },
+        {
+          "source": "react-leaflet",
+          "specifiers": [
+            "GeoJSON",
+            "MapContainer",
+            "Marker",
+            "Popup",
+            "TileLayer",
+            "Tooltip",
+            "useMap"
+          ]
+        },
+        {
+          "source": "leaflet",
+          "specifiers": [
+            "L"
+          ]
+        },
+        {
+          "source": "geojson",
+          "specifiers": [
+            "GeoJsonObject"
+          ]
+        },
+        {
+          "source": "leaflet/dist/leaflet.css",
+          "specifiers": []
+        },
+        {
+          "source": "../../i18n/language",
+          "specifiers": [
+            "getStoredLanguage",
+            "setStoredLanguage",
+            "getStoredSidebarState",
+            "setStoredSidebarState"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentTaskbar",
+          "specifiers": [
+            "StudentTaskbar"
+          ]
+        },
+        {
+          "source": "../../components/student/StudentHeader",
+          "specifiers": [
+            "StudentHeader"
+          ]
+        },
+        {
+          "source": "../../utils/studentNavigation",
+          "specifiers": [
+            "handleStudentMenuNavigation"
+          ]
+        },
+        {
+          "source": "./VietnamMap.css",
+          "specifiers": []
+        }
+      ],
+      "exports": [
+        "VietnamMapPage"
+      ],
+      "totalLines": 530,
       "hasStructuralAnalysis": true
     },
     "frontend/src/realtime/socket.ts": {
@@ -3620,19 +4106,36 @@
       "totalLines": 27,
       "hasStructuralAnalysis": true
     },
+    "frontend/src/services/api.ts": {
+      "filePath": "frontend/src/services/api.ts",
+      "contentHash": "19fd5b3c31413c8802538874311b981839c4c475ed6e0ae255bfec4ae25e9611",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "axios",
+          "specifiers": [
+            "axios"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
     "frontend/src/styles.css": {
       "filePath": "frontend/src/styles.css",
-      "contentHash": "6a27557655d02691120f65782b9f92c075366d2320ee4d4bd0ba45bd8f48e578",
+      "contentHash": "d4357334b868a88b2e016465a215f81fc501097afdeac4b5ed9275de15a05cb1",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 6500,
+      "totalLines": 7476,
       "hasStructuralAnalysis": false
     },
     "frontend/src/utils/studentNavigation.ts": {
       "filePath": "frontend/src/utils/studentNavigation.ts",
-      "contentHash": "3d95d1f6bcda4e05213e712d57d0af36a3c5b591df150f36ae1c47edba731922",
+      "contentHash": "bcc6505e1e9d88b7566299f5188eb4fbba47003f3a0c3f9a90b502d22b8af9c1",
       "functions": [
         {
           "name": "clearStudentSession",
@@ -3665,7 +4168,7 @@
         "clearStudentSession",
         "handleStudentMenuNavigation"
       ],
-      "totalLines": 38,
+      "totalLines": 39,
       "hasStructuralAnalysis": true
     },
     "frontend/src/vite-env.d.ts": {
@@ -3710,12 +4213,12 @@
     },
     "frontend/vercel.json": {
       "filePath": "frontend/vercel.json",
-      "contentHash": "0ecff71cc2ad5da02ba9cdae5333431044f59c4b7f9376e50356e856fec2e20a",
+      "contentHash": "7e6bd5fcbbd4505f5ed5593139ee6a06817d404437ae8b68d14ce41e5f249fcf",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 9,
+      "totalLines": 12,
       "hasStructuralAnalysis": true
     },
     "frontend/vite.config.ts": {
@@ -3753,12 +4256,12 @@
     },
     "README.md": {
       "filePath": "README.md",
-      "contentHash": "89d6ef0061a8545cd2840cb0f30495b9bceac502022a575ad86e176dda77182c",
+      "contentHash": "f82998c31bf9c2de36507e3d209725b3dad1bd99a801212e3c0d2c6a3d542030",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 184,
+      "totalLines": 60,
       "hasStructuralAnalysis": true
     },
     "vercel.json": {

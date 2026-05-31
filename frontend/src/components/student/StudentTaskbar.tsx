@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   House,
   BookOpen,
@@ -13,6 +14,7 @@ import {
   MapPinned,
 } from "lucide-react";
 import { TASKBAR_TEXT } from "../../i18n/translations";
+import AiChatWidget from "./AiChatWidget";
 
 const PRIMARY_ITEMS = [
   { key: "home", icon: House },
@@ -36,8 +38,10 @@ export default function StudentTaskbar({
   language = "vi",
   isOpen = true,
   onClose,
+  showAiChat = true,
 }) {
   const t = TASKBAR_TEXT[language] || TASKBAR_TEXT.vi;
+  const [isAiChatOpen, setIsAiChatOpen] = useState(false);
 
   return (
     <>
@@ -96,15 +100,25 @@ export default function StudentTaskbar({
 
       {isOpen ? <button type="button" className="taskbar-overlay" aria-label={t.hideMenu} onClick={onClose} /> : null}
 
-      <button
-        type="button"
-        className="ai-floating-button"
-        aria-label={t.menu.aiChat}
-        title={t.menu.aiChat}
-        onClick={() => onMenuClick?.("aiChat")}
-      >
-        <BotMessageSquare size={24} strokeWidth={2.1} />
-      </button>
+      {showAiChat ? (
+        <>
+          <button
+            type="button"
+            className={`ai-floating-button ${isAiChatOpen ? "active" : ""}`}
+            aria-label={t.menu.aiChat}
+            title={t.menu.aiChat}
+            onClick={() => setIsAiChatOpen((prev) => !prev)}
+          >
+            <BotMessageSquare size={24} strokeWidth={2.1} />
+          </button>
+
+          <AiChatWidget
+            open={isAiChatOpen}
+            language={language === "ja" ? "ja" : "vi"}
+            onClose={() => setIsAiChatOpen(false)}
+          />
+        </>
+      ) : null}
     </>
   );
 }

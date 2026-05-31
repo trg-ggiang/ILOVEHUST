@@ -1,4 +1,4 @@
-import {
+﻿import {
   createContext,
   useCallback,
   useContext,
@@ -8,7 +8,18 @@ import {
   type ReactNode,
 } from "react";
 
-import "./LoadingContext.css";
+import { getStoredLanguage } from "../i18n/language";
+
+const LOADING_OVERLAY_TEXT = {
+  vi: {
+    loading: "Đang tải dữ liệu...",
+    slowLoading: "Sắp xong rồi...",
+  },
+  ja: {
+    loading: "データを読み込み中...",
+    slowLoading: "もうすぐ完了します...",
+  },
+};
 
 interface LoadingContextType {
   isLoading: boolean;
@@ -56,6 +67,7 @@ export const LoadingProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useLoading = () => {
   const context = useContext(LoadingContext);
 
@@ -68,6 +80,8 @@ export const useLoading = () => {
 
 export function LoadingOverlay() {
   const [isSlowLoading, setIsSlowLoading] = useState(false);
+  const language = getStoredLanguage();
+  const text = LOADING_OVERLAY_TEXT[language] || LOADING_OVERLAY_TEXT.vi;
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -182,7 +196,7 @@ export function LoadingOverlay() {
               <rect x="45" y="25" width="5" height="5" fill="#f8fafc" />
               <rect x="32" y="27" width="3" height="3" fill="#020617" />
               <rect x="45" y="27" width="3" height="3" fill="#020617" />
-
+          {isSlowLoading ? text.slowLoading : text.loading}
               <rect x="36" y="34" width="8" height="5" fill="#f97316" />
               <rect x="39" y="39" width="4" height="3" fill="#ea580c" />
 
@@ -195,7 +209,7 @@ export function LoadingOverlay() {
         </div>
 
         <p className="bk-loading-text">
-          {isSlowLoading ? "Sắp xong rồi..." : "Đang tải dữ liệu..."}
+          {isSlowLoading ? text.slowLoading : text.loading}
         </p>
       </div>
     </div>

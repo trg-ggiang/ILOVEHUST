@@ -361,11 +361,11 @@ export default function SchedulePage() {
             </div>
 
             <div className="schedule-view-actions">
-              <button type="button" className={viewMode === "week" ? "active" : ""} onClick={() => setViewMode("week")}>
-                {t.week}
-              </button>
               <button type="button" className={viewMode === "month" ? "active" : ""} onClick={() => setViewMode("month")}>
                 {t.month}
+              </button>
+              <button type="button" className={viewMode === "week" ? "active" : ""} onClick={() => setViewMode("week")}>
+                {t.week}
               </button>
               <button type="button" className={viewMode === "day" ? "active" : ""} onClick={() => setViewMode("day")}>
                 {t.day}

@@ -96,6 +96,25 @@ function GpaAreaChart({ data, emptyLabel, chartLabel }) {
     <div className="gpa-svg-wrap">
       {points.length === 0 ? <p className="empty-text">{emptyLabel}</p> : null}
       <svg viewBox={`0 0 ${width} ${height}`} className="gpa-svg" role="img" aria-label={chartLabel}>
+        <defs>
+          <linearGradient id="gpaSoftArea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#dc2626" stopOpacity="0.22" />
+            <stop offset="48%" stopColor="#2563eb" stopOpacity="0.1" />
+            <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="gpaSoftLine" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#2563eb" />
+            <stop offset="52%" stopColor="#ef4444" />
+            <stop offset="100%" stopColor="#dc2626" />
+          </linearGradient>
+          <filter id="gpaSoftGlow" x="-20%" y="-50%" width="140%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
         {[0, 1, 2, 3, 4].map((tick) => {
           const y = paddingTop + (1 - tick / 4) * chartHeight;
           return (
@@ -120,7 +139,7 @@ function GpaAreaChart({ data, emptyLabel, chartLabel }) {
         ))}
 
         {points.length > 1 ? <path d={areaPath} className="gpa-area" /> : null}
-        {points.length > 1 ? <path d={linePath} className="gpa-line" /> : null}
+        {points.length > 1 ? <path d={linePath} className="gpa-line" filter="url(#gpaSoftGlow)" /> : null}
 
         {points.map((point) => (
           <circle key={point.label} cx={point.x} cy={point.y} r="3.5" className="gpa-dot" />
@@ -310,8 +329,17 @@ export default function Dashboard() {
       <main className={`student-main page-fade-in ${sidebarOpen ? "" : "expanded"}`}>
         <section className="student-main-content">
           <div className="welcome-area">
-            <h1>{welcomeText}</h1>
-            <p>{t.sub}</p>
+            <div className="welcome-copy">
+              <span className="welcome-kicker">ILOVEHUST</span>
+              <h1>{welcomeText}</h1>
+              <p>{t.sub}</p>
+            </div>
+            <div className="welcome-status">
+              <div>
+                <strong>{Number(gpa.current || 0).toFixed(2)}</strong>
+                <small>{t.currentGpa}</small>
+              </div>
+            </div>
           </div>
 
           <div className="top-grid">
@@ -497,4 +525,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
