@@ -1,14 +1,4 @@
-function getApiOrigin() {
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "/api";
-
-  if (!/^https?:\/\//i.test(apiBaseUrl)) return "";
-
-  try {
-    return new URL(apiBaseUrl).origin;
-  } catch {
-    return "";
-  }
-}
+import { getApiOrigin } from "./apiUrl";
 
 export function resolveMediaUrl(value) {
   const url = String(value || "").trim();

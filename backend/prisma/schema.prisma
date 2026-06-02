@@ -7,11 +7,13 @@ datasource db {
 }
 
 model User {
-  id           Int     @id @default(autoincrement())
-  email        String  @unique
-  phone        String? @unique
-  passwordHash String  @map("password_hash")
-  role         Int     @default(1) // 0 = admin, 1 = student
+  id                       Int       @id @default(autoincrement())
+  email                    String    @unique
+  phone                    String?   @unique
+  passwordHash             String    @map("password_hash")
+  passwordResetTokenHash   String?   @map("password_reset_token_hash")
+  passwordResetExpiresAt   DateTime? @map("password_reset_expires_at")
+  role                     Int       @default(1) // 0 = admin, 1 = student
 
   preferredLanguage String @default("vi") @map("preferred_language")
 

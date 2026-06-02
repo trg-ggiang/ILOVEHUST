@@ -1,10 +1,12 @@
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import prisma from "../../database.js";
 import authMiddleware from "../../middleware/authMiddleware.js";
 import toUserResponse from "../../utils/toUserResponse.js";
 import { getJwtSecret } from "../../config/env.js";
+import { sendPasswordResetEmail } from "../../utils/email.js";
 
 const router = express.Router();
 const SUPPORTED_LANGUAGES = new Set(["vi", "ja"]);
@@ -92,6 +94,31 @@ function normalizeOptionalText(value) {
 
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function hashToken(value) {
+  return crypto.createHash("sha256").update(value).digest("hex");
+}
+
+function authMessage(lang, key) {
+  const extra = {
+    vi: {
+      resetEmailSent: "Neu email ton tai, he thong da gui lien ket dat lai mat khau",
+      resetInvalid: "Lien ket dat lai mat khau khong hop le hoac da het han",
+      resetSuccess: "Dat lai mat khau thanh cong",
+    },
+    ja: {
+      resetEmailSent: "メールが存在する場合、パスワード再設定リンクを送信しました",
+      resetInvalid: "パスワード再設定リンクが無効または期限切れです",
+      resetSuccess: "パスワードを再設定しました",
+    },
+  };
+
+  return extra[lang === "ja" ? "ja" : "vi"]?.[key] || tr(lang, key);
+}
+
+function getFrontendUrl() {
+  return process.env.FRONTEND_URL?.split(",")[0]?.trim() || "http://localhost:5173";
 }
 
 async function findUserByEmailOrPhone(email, phone) {
@@ -243,6 +270,82 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     console.error("LOGIN ERROR:", error);
+    return res.status(500).json({ message: tr(lang, "loginServerError") });
+  }
+});
+
+router.post("/forgot-password", async (req, res) => {
+  const lang = normalizeLanguage(req.body?.preferredLanguage);
+
+  try {
+    const email = normalizeEmail(req.body?.email);
+    if (!email || !isValidEmail(email)) {
+      return res.json({ message: authMessage(lang, "resetEmailSent") });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (user?.isActive) {
+      const token = crypto.randomBytes(32).toString("hex");
+      const resetUrl = new URL("/reset-password", getFrontendUrl());
+      resetUrl.searchParams.set("token", token);
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          passwordResetTokenHash: hashToken(token),
+          passwordResetExpiresAt: new Date(Date.now() + 30 * 60 * 1000),
+        },
+      });
+
+      await sendPasswordResetEmail(user.email, resetUrl.toString());
+    }
+
+    return res.json({ message: authMessage(lang, "resetEmailSent") });
+  } catch (error) {
+    console.error("FORGOT PASSWORD ERROR:", error);
+    return res.status(500).json({ message: tr(lang, "loginServerError") });
+  }
+});
+
+router.post("/reset-password", async (req, res) => {
+  const lang = normalizeLanguage(req.body?.preferredLanguage);
+
+  try {
+    const token = String(req.body?.token || "").trim();
+    const password = String(req.body?.password || "");
+
+    if (!token) {
+      return res.status(400).json({ message: authMessage(lang, "resetInvalid") });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({ message: tr(lang, "weakPassword") });
+    }
+
+    const user = await prisma.user.findFirst({
+      where: {
+        passwordResetTokenHash: hashToken(token),
+        passwordResetExpiresAt: { gt: new Date() },
+        isActive: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: authMessage(lang, "resetInvalid") });
+    }
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        passwordHash: await bcrypt.hash(password, 10),
+        passwordResetTokenHash: null,
+        passwordResetExpiresAt: null,
+      },
+    });
+
+    return res.json({ message: authMessage(lang, "resetSuccess") });
+  } catch (error) {
+    console.error("RESET PASSWORD ERROR:", error);
     return res.status(500).json({ message: tr(lang, "loginServerError") });
   }
 });

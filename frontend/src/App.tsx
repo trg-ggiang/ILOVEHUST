@@ -1,6 +1,8 @@
 ﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/admin/Login";
 import Register from "./pages/admin/Register";
+import ForgotPassword from "./pages/admin/ForgotPassword";
+import ResetPassword from "./pages/admin/ResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Dashboard from "./pages/student/Dashboard";
 import CompleteProfile from "./pages/student/CompleteProfile";
@@ -20,6 +22,8 @@ function App() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/grades" element={<GradesPage />} />
@@ -38,4 +42,3 @@ function App() {
 }
 
 export default App;
-

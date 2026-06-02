@@ -57,3 +57,47 @@ Since the database is pre-seeded with sample data, you can log in immediately us
 * Open two different browser windows (or one incognito mode).
 * Log in to the Student account on one window and the Admin account on the other.
 * Try sending a message or triggering a notification to see the **Real-time WebSocket** feature in action without refreshing the page!
+
+---
+
+## 4. Authentication Features
+
+ILoveHust supports standard email/password login and password recovery by email.
+
+### Forgot Password
+
+Users can reset their password from the login page:
+
+1. Click **Forgot password**.
+2. Enter the account email address.
+3. Open the reset link sent by email.
+4. Set a new password.
+
+Password reset tokens are stored as SHA-256 hashes and expire after 30 minutes.
+
+If SMTP is not configured, the backend logs the reset URL for local development instead of sending an email.
+
+Backend endpoints:
+
+* `POST /api/auth/forgot-password`
+* `POST /api/auth/reset-password`
+
+Required backend environment variables for sending reset emails:
+
+```env
+SMTP_HOST="smtp.example.com"
+SMTP_PORT=587
+SMTP_USER="no-reply@example.com"
+SMTP_PASS="smtp-password"
+MAIL_FROM="ILoveHust <no-reply@example.com>"
+```
+
+### Database Migration
+
+The password recovery feature adds reset-token columns to the `users` table. Apply migrations before using it against a real database:
+
+```bash
+cd backend
+npx prisma migrate deploy
+npm run prisma:generate
+```

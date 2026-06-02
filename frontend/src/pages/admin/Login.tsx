@@ -73,6 +73,7 @@ export default function Login() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", String(data.user.role));
       localStorage.setItem("fullName", data.user.fullName || "");
+      if (data.user.avatarUrl) localStorage.setItem("avatarUrl", data.user.avatarUrl);
       setStoredLanguage(data.user.preferredLanguage || language);
 
       if (data.user.role === 0) {
@@ -229,7 +230,7 @@ export default function Login() {
                   <span>{t.remember}</span>
                 </label>
 
-                <a href="#">{t.forgot}</a>
+                <Link to="/forgot-password">{t.forgot}</Link>
               </div>
 
               {displayMessage && <p className="login-error">{displayMessage}</p>}
@@ -238,6 +239,7 @@ export default function Login() {
                 <span>{loading ? t.loading : t.button}</span>
                 <ChevronRight size={20} />
               </button>
+
             </form>
 
             <div className="signup-text">
