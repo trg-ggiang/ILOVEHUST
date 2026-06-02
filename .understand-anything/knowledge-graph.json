@@ -3,16 +3,16 @@
   "project": {
     "name": "ilovehust",
     "languages": [
-      "config",
-      "css",
-      "html",
+      "unknown",
       "json",
-      "markdown",
-      "prisma",
+      "config",
+      "typescript",
       "sql",
       "toml",
-      "typescript",
-      "unknown"
+      "prisma",
+      "html",
+      "markdown",
+      "css"
     ],
     "frameworks": [
       "React",
@@ -24,8 +24,8 @@
       "PostgreSQL"
     ],
     "description": "ILoveHust is a TypeScript full-stack student support web app for HUST students, covering profiles, grades, schedules, tasks, forum, messaging, realtime notifications, and admin workflows.",
-    "analyzedAt": "2026-05-31T06:55:09.331Z",
-    "gitCommitHash": "0b00977d3a69ca4ccd595173c226aebac0e5310a"
+    "analyzedAt": "2026-06-02T14:12:50.020Z",
+    "gitCommitHash": "a4b6da9780187b6ad15add05e1aceff9a07edf61"
   },
   "nodes": [
     {
@@ -434,6 +434,17 @@
       "complexity": "moderate"
     },
     {
+      "id": "file:backend/routes/aiRoutes.ts",
+      "type": "file",
+      "name": "aiRoutes.ts",
+      "filePath": "backend/routes/aiRoutes.ts",
+      "summary": "backend/routes/aiRoutes.ts supports the Express backend API and server runtime.",
+      "tags": [
+        "typescript",
+        "code"
+      ]
+    },
+    {
       "id": "file:backend/routes/major/majorRoutes.ts",
       "type": "file",
       "name": "majorRoutes.ts",
@@ -702,20 +713,6 @@
       "complexity": "simple"
     },
     {
-      "id": "file:frontend/src/components/LoadingContext.css",
-      "type": "file",
-      "name": "LoadingContext.css",
-      "filePath": "frontend/src/components/LoadingContext.css",
-      "summary": "Reusable React component used by the ILoveHust frontend interface.",
-      "tags": [
-        "css",
-        "markup",
-        "frontend",
-        "component"
-      ],
-      "complexity": "moderate"
-    },
-    {
       "id": "file:frontend/src/components/LoadingContext.tsx",
       "type": "file",
       "name": "LoadingContext.tsx",
@@ -742,6 +739,17 @@
         "component"
       ],
       "complexity": "simple"
+    },
+    {
+      "id": "file:frontend/src/components/student/AiChatWidget.tsx",
+      "type": "file",
+      "name": "AiChatWidget.tsx",
+      "filePath": "frontend/src/components/student/AiChatWidget.tsx",
+      "summary": "frontend/src/components/student/AiChatWidget.tsx supports the React frontend user interface.",
+      "tags": [
+        "typescript",
+        "code"
+      ]
     },
     {
       "id": "file:frontend/src/components/student/StudentHeader.tsx",
@@ -975,20 +983,6 @@
       "tags": [
         "typescript",
         "code",
-        "frontend",
-        "page"
-      ],
-      "complexity": "complex"
-    },
-    {
-      "id": "file:frontend/src/pages/student/VietnamMap.css",
-      "type": "file",
-      "name": "VietnamMap.css",
-      "filePath": "frontend/src/pages/student/VietnamMap.css",
-      "summary": "React page-level view for the VietnamMap student or admin workflow.",
-      "tags": [
-        "css",
-        "markup",
         "frontend",
         "page"
       ],
@@ -1409,114 +1403,6 @@
   ],
   "edges": [
     {
-      "source": "file:backend/prisma/migrations/20260402174147_init/migration.sql",
-      "target": "table:backend/prisma/migrations/20260402174147_init/migration.sql:users",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260402174147_init/migration.sql",
-      "target": "table:backend/prisma/migrations/20260402174147_init/migration.sql:majors",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260402174147_init/migration.sql",
-      "target": "table:backend/prisma/migrations/20260402174147_init/migration.sql:student-profiles",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260402174147_init/migration.sql",
-      "target": "table:backend/prisma/migrations/20260402174147_init/migration.sql:semesters",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260402174147_init/migration.sql",
-      "target": "table:backend/prisma/migrations/20260402174147_init/migration.sql:courses",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260402174147_init/migration.sql",
-      "target": "table:backend/prisma/migrations/20260402174147_init/migration.sql:grade-records",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql",
-      "target": "table:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql:forum-categories",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql",
-      "target": "table:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql:forum-posts",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql",
-      "target": "table:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql:forum-comments",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql",
-      "target": "table:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql:forum-post-likes",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260502010055_add_student_tasks/migration.sql",
-      "target": "table:backend/prisma/migrations/20260502010055_add_student_tasks/migration.sql:student-tasks",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql",
-      "target": "table:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql:conversations",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql",
-      "target": "table:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql:conversation-members",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql",
-      "target": "table:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql:messages",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260502095714_add_message_attachments/migration.sql",
-      "target": "table:backend/prisma/migrations/20260502095714_add_message_attachments/migration.sql:message-attachments",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260502103222_add_schedule_models/migration.sql",
-      "target": "table:backend/prisma/migrations/20260502103222_add_schedule_models/migration.sql:student-schedule-classes",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260502103222_add_schedule_models/migration.sql",
-      "target": "table:backend/prisma/migrations/20260502103222_add_schedule_models/migration.sql:student-schedule-events",
-      "type": "contains",
-      "weight": 1
-    },
-    {
-      "source": "file:backend/prisma/migrations/20260518120000_add_notifications/migration.sql",
-      "target": "table:backend/prisma/migrations/20260518120000_add_notifications/migration.sql:notifications",
-      "type": "contains",
-      "weight": 1
-    },
-    {
       "source": "file:frontend/src/App.tsx",
       "target": "file:frontend/src/pages/admin/AdminDashboard.tsx",
       "type": "imports",
@@ -1608,7 +1494,13 @@
     },
     {
       "source": "file:frontend/src/components/LoadingContext.tsx",
-      "target": "file:frontend/src/components/LoadingContext.css",
+      "target": "file:frontend/src/i18n/language.ts",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:frontend/src/components/student/AiChatWidget.tsx",
+      "target": "file:frontend/src/services/api.ts",
       "type": "imports",
       "weight": 0.7
     },
@@ -1627,6 +1519,12 @@
     {
       "source": "file:frontend/src/components/student/StudentHeader.tsx",
       "target": "file:frontend/src/services/api.ts",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:frontend/src/components/student/StudentTaskbar.tsx",
+      "target": "file:frontend/src/components/student/AiChatWidget.tsx",
       "type": "imports",
       "weight": 0.7
     },
@@ -2040,12 +1938,6 @@
     },
     {
       "source": "file:frontend/src/pages/student/VietnamMap.tsx",
-      "target": "file:frontend/src/pages/student/VietnamMap.css",
-      "type": "imports",
-      "weight": 0.7
-    },
-    {
-      "source": "file:frontend/src/pages/student/VietnamMap.tsx",
       "target": "file:frontend/src/utils/studentNavigation.ts",
       "type": "imports",
       "weight": 0.7
@@ -2061,32 +1953,132 @@
       "target": "file:frontend/src/realtime/socket.ts",
       "type": "imports",
       "weight": 0.7
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260402174147_init/migration.sql",
+      "target": "table:backend/prisma/migrations/20260402174147_init/migration.sql:users",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260402174147_init/migration.sql",
+      "target": "table:backend/prisma/migrations/20260402174147_init/migration.sql:majors",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260402174147_init/migration.sql",
+      "target": "table:backend/prisma/migrations/20260402174147_init/migration.sql:student-profiles",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260402174147_init/migration.sql",
+      "target": "table:backend/prisma/migrations/20260402174147_init/migration.sql:semesters",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260402174147_init/migration.sql",
+      "target": "table:backend/prisma/migrations/20260402174147_init/migration.sql:courses",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260402174147_init/migration.sql",
+      "target": "table:backend/prisma/migrations/20260402174147_init/migration.sql:grade-records",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql",
+      "target": "table:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql:forum-categories",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql",
+      "target": "table:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql:forum-posts",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql",
+      "target": "table:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql:forum-comments",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql",
+      "target": "table:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql:forum-post-likes",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260502010055_add_student_tasks/migration.sql",
+      "target": "table:backend/prisma/migrations/20260502010055_add_student_tasks/migration.sql:student-tasks",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql",
+      "target": "table:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql:conversations",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql",
+      "target": "table:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql:conversation-members",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql",
+      "target": "table:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql:messages",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260502095714_add_message_attachments/migration.sql",
+      "target": "table:backend/prisma/migrations/20260502095714_add_message_attachments/migration.sql:message-attachments",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260502103222_add_schedule_models/migration.sql",
+      "target": "table:backend/prisma/migrations/20260502103222_add_schedule_models/migration.sql:student-schedule-classes",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260502103222_add_schedule_models/migration.sql",
+      "target": "table:backend/prisma/migrations/20260502103222_add_schedule_models/migration.sql:student-schedule-events",
+      "type": "contains",
+      "weight": 1
+    },
+    {
+      "source": "file:backend/prisma/migrations/20260518120000_add_notifications/migration.sql",
+      "target": "table:backend/prisma/migrations/20260518120000_add_notifications/migration.sql:notifications",
+      "type": "contains",
+      "weight": 1
     }
   ],
   "layers": [
     {
-      "id": "layer:project-docs",
-      "name": "Project Docs",
-      "description": "Repository guidance, API/database notes, and project state documentation.",
-      "nodeIds": [
-        "document:frontend/README.md",
-        "document:README.md"
-      ]
-    },
-    {
-      "id": "layer:frontend-app",
-      "name": "Frontend App",
-      "description": "React application routes, pages, components, styles, client services, and realtime UI helpers.",
+      "id": "layer:frontend",
+      "name": "Frontend",
+      "description": "React client pages, shared components, realtime client helpers, styling, and Vite configuration.",
       "nodeIds": [
         "config:frontend/.env.example",
         "file:frontend/eslint.config.ts",
         "file:frontend/index.html",
         "config:frontend/package.json",
+        "document:frontend/README.md",
         "file:frontend/src/App.tsx",
         "file:frontend/src/components/AxiosLoadingHandler.tsx",
-        "file:frontend/src/components/LoadingContext.css",
         "file:frontend/src/components/LoadingContext.tsx",
         "file:frontend/src/components/ProtectedRoute.tsx",
+        "file:frontend/src/components/student/AiChatWidget.tsx",
         "file:frontend/src/components/student/StudentHeader.tsx",
         "file:frontend/src/components/student/StudentTaskbar.tsx",
         "file:frontend/src/i18n/language.ts",
@@ -2104,7 +2096,6 @@
         "file:frontend/src/pages/student/Settings.tsx",
         "file:frontend/src/pages/student/Statistics.tsx",
         "file:frontend/src/pages/student/Tasks.tsx",
-        "file:frontend/src/pages/student/VietnamMap.css",
         "file:frontend/src/pages/student/VietnamMap.tsx",
         "file:frontend/src/realtime/socket.ts",
         "file:frontend/src/realtime/useSocketEvent.ts",
@@ -2120,9 +2111,9 @@
       ]
     },
     {
-      "id": "layer:backend-api",
-      "name": "Backend API",
-      "description": "Express server, route handlers, auth middleware, realtime gateway, and backend utilities.",
+      "id": "layer:backend",
+      "name": "Backend",
+      "description": "Express routes, middleware, realtime server, Prisma client access, uploads support, and server configuration.",
       "nodeIds": [
         "config:backend/.env.example",
         "file:backend/api/[...path].ts",
@@ -2135,6 +2126,7 @@
         "file:backend/realtime.ts",
         "file:backend/routes/admin/adminRoutes.ts",
         "file:backend/routes/admin/authRoutes.ts",
+        "file:backend/routes/aiRoutes.ts",
         "file:backend/routes/major/majorRoutes.ts",
         "file:backend/routes/notificationRoutes.ts",
         "file:backend/routes/student/forumRoutes.ts",
@@ -2151,9 +2143,9 @@
       ]
     },
     {
-      "id": "layer:database",
-      "name": "Database",
-      "description": "Prisma schema, migrations, seeds, and generated database checks.",
+      "id": "layer:data-model",
+      "name": "Data Model",
+      "description": "Prisma schema, migrations, and database seed/check scripts.",
       "nodeIds": [
         "file:backend/prisma/checkSeed.ts",
         "file:backend/prisma/migrations/20260402174147_init/migration.sql",
@@ -2191,23 +2183,17 @@
       ]
     },
     {
-      "id": "layer:configuration",
-      "name": "Configuration",
-      "description": "Package manifests, TypeScript/Vite/Vercel configuration, environment examples, and local tooling metadata.",
+      "id": "layer:project-tooling",
+      "name": "Project Tooling And Docs",
+      "description": "Repository-level manifests, documentation, ignore files, and shared TypeScript configuration.",
       "nodeIds": [
+        "file:.understand-anything/.understandignore",
         "config:.understand-anything/fingerprints.json",
         "config:.understand-anything/knowledge-graph.json",
         "config:.understand-anything/meta.json",
         "config:package.json",
+        "document:README.md",
         "config:vercel.json"
-      ]
-    },
-    {
-      "id": "layer:other-project-files",
-      "name": "Other Project Files",
-      "description": "Files and extracted symbols that do not fit the main application layers.",
-      "nodeIds": [
-        "file:.understand-anything/.understandignore"
       ]
     }
   ],
@@ -2215,55 +2201,55 @@
     {
       "order": 1,
       "title": "Project Overview",
-      "description": "Start with the repository guidance and README to understand ILoveHust, its full-stack split, and local workflow expectations.",
+      "description": "Start with repository documentation and package manifests to understand the full-stack app shape.",
       "nodeIds": [
-        "document:README.md"
+        "document:README.md",
+        "config:package.json"
       ]
     },
     {
       "order": 2,
-      "title": "Frontend Routing",
-      "description": "Follow the Vite/React boot path into the route table that connects auth, admin, and student pages.",
+      "title": "Frontend Routing And Shell",
+      "description": "Follow the React route table and shared student layout components that frame the user experience.",
       "nodeIds": [
-        "file:frontend/src/main.tsx",
-        "file:frontend/src/App.tsx"
-      ]
-    },
-    {
-      "order": 3,
-      "title": "Student Experience",
-      "description": "Inspect the student dashboard, navigation, pages, and centralized styles that shape the main app experience.",
-      "nodeIds": [
-        "file:frontend/src/pages/student/Dashboard.tsx",
+        "file:frontend/src/App.tsx",
         "file:frontend/src/components/student/StudentHeader.tsx",
         "file:frontend/src/components/student/StudentTaskbar.tsx",
         "file:frontend/src/styles.css"
       ]
     },
     {
+      "order": 3,
+      "title": "Student Workflows",
+      "description": "Inspect representative student pages for dashboard, messages, schedule, statistics, and map interactions.",
+      "nodeIds": [
+        "file:frontend/src/pages/student/Dashboard.tsx",
+        "file:frontend/src/pages/student/Messages.tsx",
+        "file:frontend/src/pages/student/Schedule.tsx",
+        "file:frontend/src/pages/student/Statistics.tsx",
+        "file:frontend/src/pages/student/VietnamMap.tsx"
+      ]
+    },
+    {
       "order": 4,
-      "title": "Backend API",
-      "description": "Move through the server bootstrap, auth middleware, and representative student/admin route modules.",
+      "title": "Backend API And Realtime",
+      "description": "Review the Express bootstrap, route modules, auth middleware, notification helpers, and Socket.IO integration.",
       "nodeIds": [
         "file:backend/server.ts",
+        "file:backend/routes/aiRoutes.ts",
         "file:backend/middleware/authMiddleware.ts",
-        "file:backend/routes/student/forumRoutes.ts",
-        "file:backend/routes/admin/adminRoutes.ts"
+        "file:backend/realtime.ts",
+        "file:backend/utils/notifications.ts"
       ]
     },
     {
       "order": 5,
-      "title": "Data Model",
-      "description": "Review Prisma schema and migrations to see how users, student records, forum content, and support data are persisted.",
+      "title": "Database Model",
+      "description": "Use the Prisma schema, migrations, and seed scripts to understand persisted domain data.",
       "nodeIds": [
-        "file:backend/prisma/checkSeed.ts",
-        "file:backend/prisma/migrations/20260402174147_init/migration.sql",
-        "file:backend/prisma/migrations/20260428040000_add_preferred_language/migration.sql",
-        "file:backend/prisma/migrations/20260502005750_add_forum_models/migration.sql",
-        "file:backend/prisma/migrations/20260502010055_add_student_tasks/migration.sql",
-        "file:backend/prisma/migrations/20260502013806_add_chat_models/migration.sql",
-        "file:backend/prisma/migrations/20260502095714_add_message_attachments/migration.sql",
-        "file:backend/prisma/migrations/20260502103222_add_schedule_models/migration.sql"
+        "schema:backend/prisma/schema.prisma",
+        "file:backend/prisma/seed.ts",
+        "file:backend/database.ts"
       ]
     }
   ]

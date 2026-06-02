@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { HEADER_TEXT } from "../../i18n/translations";
 import { useSocketEvent } from "../../realtime/useSocketEvent";
+import { resolveMediaUrl } from "../../utils/mediaUrl";
 
 function formatNotificationTime(value, language, t) {
   if (!value) return "";
@@ -228,7 +229,7 @@ export default function StudentHeader({
           </div>
           <div className="student-avatar">
             {headerAvatarUrl && !avatarFailed ? (
-              <img src={headerAvatarUrl} alt={fullName || "Avatar"} onError={() => setAvatarFailed(true)} />
+              <img src={resolveMediaUrl(headerAvatarUrl)} alt={fullName || "Avatar"} onError={() => setAvatarFailed(true)} />
             ) : (
               initial
             )}

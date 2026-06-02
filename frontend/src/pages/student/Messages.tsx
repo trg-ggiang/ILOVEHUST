@@ -25,6 +25,7 @@ import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
 import { useSocketEvent } from "../../realtime/useSocketEvent";
+import { resolveMediaUrl } from "../../utils/mediaUrl";
 
 const EMOJI_OPTIONS = [
   "😀",
@@ -170,7 +171,7 @@ function prependConversationMessages(current, older) {
 function ConversationAvatar({ className = "", avatarUrl, initial, name }) {
   return (
     <span className={`conversation-avatar ${className}`}>
-      {avatarUrl ? <img src={avatarUrl} alt={name || "Avatar"} /> : initial}
+      {avatarUrl ? <img src={resolveMediaUrl(avatarUrl)} alt={name || "Avatar"} /> : initial}
     </span>
   );
 }
@@ -746,13 +747,13 @@ export default function MessagesPage() {
                                     {message.attachments.map((attachment) => (
                                       <a
                                         key={attachment.id}
-                                        href={attachment.fileUrl}
+                                        href={resolveMediaUrl(attachment.fileUrl)}
                                         target="_blank"
                                         rel="noreferrer"
                                         className={attachment.isImage ? "message-image-attachment" : "message-file-attachment"}
                                       >
                                         {attachment.isImage ? (
-                                          <img src={attachment.fileUrl} alt={attachment.fileName} />
+                                          <img src={resolveMediaUrl(attachment.fileUrl)} alt={attachment.fileName} />
                                         ) : (
                                           <>
                                             <FileText size={18} />
@@ -860,7 +861,7 @@ export default function MessagesPage() {
                           {(selectedConversation.members || []).map((member) => (
                             <div key={member.id} className="chat-member-row">
                               <span className="chat-member-avatar">
-                                {member.avatarUrl ? <img src={member.avatarUrl} alt={member.name || "Avatar"} /> : member.initial}
+                                {member.avatarUrl ? <img src={resolveMediaUrl(member.avatarUrl)} alt={member.name || "Avatar"} /> : member.initial}
                               </span>
                               <div>
                                 <strong>{member.name}</strong>
@@ -876,7 +877,7 @@ export default function MessagesPage() {
                             <p className="chat-info-empty">{t.emptyFiles}</p>
                           ) : null}
                           {(selectedConversation.attachments || []).map((attachment) => (
-                            <a key={attachment.id} href={attachment.fileUrl} target="_blank" rel="noreferrer" className="chat-file-row">
+                            <a key={attachment.id} href={resolveMediaUrl(attachment.fileUrl)} target="_blank" rel="noreferrer" className="chat-file-row">
                               {attachment.isImage ? <Image size={18} /> : <FileText size={18} />}
                               <span>
                                 <strong>{attachment.fileName}</strong>

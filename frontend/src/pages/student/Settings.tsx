@@ -12,6 +12,7 @@ import { STUDENT_COMMON_TEXT } from "../../i18n/translations";
 import StudentHeader from "../../components/student/StudentHeader";
 import StudentTaskbar from "../../components/student/StudentTaskbar";
 import { handleStudentMenuNavigation } from "../../utils/studentNavigation";
+import { resolveMediaUrl } from "../../utils/mediaUrl";
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -235,7 +236,7 @@ export default function SettingsPage() {
               <>
                 <section className="settings-avatar-section">
                   <div className="settings-avatar">
-                    {avatarPreview ? <img src={avatarPreview} alt={form.fullName || "Avatar"} /> : <span>{initial}</span>}
+                    {avatarPreview ? <img src={resolveMediaUrl(avatarPreview)} alt={form.fullName || "Avatar"} /> : <span>{initial}</span>}
                   </div>
                   <div>
                     <h2>Ảnh đại diện</h2>

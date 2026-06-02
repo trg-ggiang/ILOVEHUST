@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "gitCommitHash": "0b00977d3a69ca4ccd595173c226aebac0e5310a",
-  "generatedAt": "2026-05-31T06:55:54.362Z",
+  "gitCommitHash": "a4b6da9780187b6ad15add05e1aceff9a07edf61",
+  "generatedAt": "2026-06-02T14:12:50.676Z",
   "files": {
     ".understand-anything/.understandignore": {
       "filePath": ".understand-anything/.understandignore",
@@ -15,42 +15,42 @@
     },
     ".understand-anything/fingerprints.json": {
       "filePath": ".understand-anything/fingerprints.json",
-      "contentHash": "26191e54dae6fc0519bfbd0fa731c721a61144969c1e18dd975113f3f67c5104",
+      "contentHash": "a474006b3e17ca11640c418e18382a177a4d1562d3d0a96dc89779e231569d49",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 3775,
+      "totalLines": 4278,
       "hasStructuralAnalysis": true
     },
     ".understand-anything/knowledge-graph.json": {
       "filePath": ".understand-anything/knowledge-graph.json",
-      "contentHash": "5a9b384a45ef4bf42a5616d1e9db7aed40485552b115e0164d9bb69f8396db87",
+      "contentHash": "726675c1868feabb1b24b36da9373ad8a6431bd2af2e3beda9e587fd0355801a",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 2270,
+      "totalLines": 2256,
       "hasStructuralAnalysis": true
     },
     ".understand-anything/meta.json": {
       "filePath": ".understand-anything/meta.json",
-      "contentHash": "075a8060c6088d0a6dcaa28ae183b3a23eab8cc1151c34a2407b6187f7461e24",
+      "contentHash": "f93d3f3015df7eb98b58418ff0ed2d14c735683b5020ce07da9e9c48fa700377",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
+    },
+    "backend/.env.example": {
+      "filePath": "backend/.env.example",
+      "contentHash": "f7240159d42b8faf94a044db439cfa1c52ad37b998238e129d92842d20115521",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
       "totalLines": 7,
-      "hasStructuralAnalysis": true
-    },
-    "backend/.env.example": {
-      "filePath": "backend/.env.example",
-      "contentHash": "e91fc677ad0ae4e540efb4a49c6175077d630e24ce090f2ee60f62ab90c32491",
-      "functions": [],
-      "classes": [],
-      "imports": [],
-      "exports": [],
-      "totalLines": 5,
       "hasStructuralAnalysis": true
     },
     "backend/api/[...path].ts": {
@@ -833,6 +833,55 @@
       "totalLines": 275,
       "hasStructuralAnalysis": true
     },
+    "backend/routes/aiRoutes.ts": {
+      "filePath": "backend/routes/aiRoutes.ts",
+      "contentHash": "8123fb59ad0f92b5edffb497c7b04326b0d6802aff0382b9416f75baeac1899c",
+      "functions": [
+        {
+          "name": "normalizeMessages",
+          "params": [
+            "rawMessages"
+          ],
+          "returnType": "ChatMessage[]",
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "buildSystemPrompt",
+          "params": [
+            "language"
+          ],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "extractOutputText",
+          "params": [
+            "data"
+          ],
+          "exported": false,
+          "lineCount": 27
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "express",
+          "specifiers": [
+            "Router"
+          ]
+        },
+        {
+          "source": "../middleware/authMiddleware.js",
+          "specifiers": [
+            "authMiddleware"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 146,
+      "hasStructuralAnalysis": true
+    },
     "backend/routes/major/majorRoutes.ts": {
       "filePath": "backend/routes/major/majorRoutes.ts",
       "contentHash": "dd8ca0f58e25c947368e0a83bb3552fc6443db59ff2eef74ee070493a8338c5f",
@@ -1602,7 +1651,7 @@
     },
     "backend/server.ts": {
       "filePath": "backend/server.ts",
-      "contentHash": "7e4531b238cc582dbfe7647da7175fa2f29a9750325d0a34e4567e844cd2736e",
+      "contentHash": "855f1e3adfecfcee36e1c60cfc247e198067abbf677130437573b29bda0a5ed7",
       "functions": [],
       "classes": [],
       "imports": [
@@ -1683,6 +1732,12 @@
           ]
         },
         {
+          "source": "./routes/aiRoutes.js",
+          "specifiers": [
+            "aiRoutes"
+          ]
+        },
+        {
           "source": "./realtime.js",
           "specifiers": [
             "initRealtime"
@@ -1699,7 +1754,7 @@
         "app",
         "server"
       ],
-      "totalLines": 61,
+      "totalLines": 63,
       "hasStructuralAnalysis": true
     },
     "backend/tsconfig.json": {
@@ -2083,19 +2138,9 @@
       "totalLines": 38,
       "hasStructuralAnalysis": true
     },
-    "frontend/src/components/LoadingContext.css": {
-      "filePath": "frontend/src/components/LoadingContext.css",
-      "contentHash": "466cb6bbf18c19060b948ef22fdbee5c0c4c0b9a107dfb9d629872a912bd6135",
-      "functions": [],
-      "classes": [],
-      "imports": [],
-      "exports": [],
-      "totalLines": 237,
-      "hasStructuralAnalysis": false
-    },
     "frontend/src/components/LoadingContext.tsx": {
       "filePath": "frontend/src/components/LoadingContext.tsx",
-      "contentHash": "55e3c316e84427a59f26b073d6d16624c4bb6806cb297a276c9f0384f1e530b6",
+      "contentHash": "a3a47d478939283a7997112250f261e8eb62788df9f6729e8dbb35b769d98ef5",
       "functions": [
         {
           "name": "LoadingProvider",
@@ -2115,7 +2160,7 @@
           "name": "LoadingOverlay",
           "params": [],
           "exported": true,
-          "lineCount": 135
+          "lineCount": 137
         }
       ],
       "classes": [],
@@ -2133,8 +2178,10 @@
           ]
         },
         {
-          "source": "./LoadingContext.css",
-          "specifiers": []
+          "source": "../i18n/language",
+          "specifiers": [
+            "getStoredLanguage"
+          ]
         }
       ],
       "exports": [
@@ -2142,7 +2189,7 @@
         "useLoading",
         "LoadingOverlay"
       ],
-      "totalLines": 203,
+      "totalLines": 218,
       "hasStructuralAnalysis": true
     },
     "frontend/src/components/ProtectedRoute.tsx": {
@@ -2172,9 +2219,55 @@
       "totalLines": 11,
       "hasStructuralAnalysis": true
     },
+    "frontend/src/components/student/AiChatWidget.tsx": {
+      "filePath": "frontend/src/components/student/AiChatWidget.tsx",
+      "contentHash": "504d12e138ea654260d501065cf4054fa01ada63ddc7c4bbc543e25aa33a0a72",
+      "functions": [
+        {
+          "name": "AiChatWidget",
+          "params": [
+            "{ open, language = \"vi\", onClose }"
+          ],
+          "exported": true,
+          "lineCount": 115
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState",
+            "FormEvent"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "BotMessageSquare",
+            "Send",
+            "Sparkles",
+            "X"
+          ]
+        },
+        {
+          "source": "../../services/api",
+          "specifiers": [
+            "api"
+          ]
+        }
+      ],
+      "exports": [
+        "AiChatWidget"
+      ],
+      "totalLines": 156,
+      "hasStructuralAnalysis": true
+    },
     "frontend/src/components/student/StudentHeader.tsx": {
       "filePath": "frontend/src/components/student/StudentHeader.tsx",
-      "contentHash": "1fdbfb08005a12895f7f6a49f942b1999bc9d2448da8fe0903b889396819e01d",
+      "contentHash": "b14ff5700d7911e2e612948b5590354aee64544243c1241f9218688527444601",
       "functions": [
         {
           "name": "formatNotificationTime",
@@ -2242,24 +2335,30 @@
       "exports": [
         "StudentHeader"
       ],
-      "totalLines": 241,
+      "totalLines": 242,
       "hasStructuralAnalysis": true
     },
     "frontend/src/components/student/StudentTaskbar.tsx": {
       "filePath": "frontend/src/components/student/StudentTaskbar.tsx",
-      "contentHash": "43f686aefb0e7163631ac8433ff48f924f9383706a8c50a954b6a8afc34cbc49",
+      "contentHash": "e44cf70c514ded6a34155aef28b186fd5439ad277949a49a724d879a8b47248d",
       "functions": [
         {
           "name": "StudentTaskbar",
           "params": [
-            "{\n  activeKey = \"home\",\n  onMenuClick,\n  language = \"vi\",\n  isOpen = true,\n  onClose,\n}"
+            "{\n  activeKey = \"home\",\n  onMenuClick,\n  language = \"vi\",\n  isOpen = true,\n  onClose,\n  showAiChat = true,\n}"
           ],
           "exported": true,
-          "lineCount": 78
+          "lineCount": 90
         }
       ],
       "classes": [],
       "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
         {
           "source": "lucide-react",
           "specifiers": [
@@ -2282,12 +2381,18 @@
           "specifiers": [
             "TASKBAR_TEXT"
           ]
+        },
+        {
+          "source": "./AiChatWidget",
+          "specifiers": [
+            "AiChatWidget"
+          ]
         }
       ],
       "exports": [
         "StudentTaskbar"
       ],
-      "totalLines": 111,
+      "totalLines": 125,
       "hasStructuralAnalysis": true
     },
     "frontend/src/i18n/language.ts": {
@@ -2772,7 +2877,7 @@
     },
     "frontend/src/pages/student/Dashboard.tsx": {
       "filePath": "frontend/src/pages/student/Dashboard.tsx",
-      "contentHash": "49da6da969ddd3490a8739db9cac9352957deb9c277ff03112a744f23a031e08",
+      "contentHash": "e61e0e0607527904221ad087c6920485deab0adae200bfc2ae8908c9bfd5cf84",
       "functions": [
         {
           "name": "gradeColor",
@@ -2822,13 +2927,13 @@
             "{ data, emptyLabel, chartLabel }"
           ],
           "exported": false,
-          "lineCount": 77
+          "lineCount": 96
         },
         {
           "name": "Dashboard",
           "params": [],
           "exported": true,
-          "lineCount": 354
+          "lineCount": 363
         }
       ],
       "classes": [],
@@ -2905,7 +3010,7 @@
       "exports": [
         "Dashboard"
       ],
-      "totalLines": 501,
+      "totalLines": 528,
       "hasStructuralAnalysis": true
     },
     "frontend/src/pages/student/Forum.tsx": {
@@ -3192,7 +3297,7 @@
     },
     "frontend/src/pages/student/Messages.tsx": {
       "filePath": "frontend/src/pages/student/Messages.tsx",
-      "contentHash": "dbcb14740b9cb08bf4d228ffb8c6a9bec5189ad247501791395c8afc2111ffce",
+      "contentHash": "fbc0c332b697ea0c846342110631d62f6bfe23568ff235ecb4ccb2fb4df277bb",
       "functions": [
         {
           "name": "formatTime",
@@ -3285,7 +3390,7 @@
           "name": "MessagesPage",
           "params": [],
           "exported": true,
-          "lineCount": 727
+          "lineCount": 728
         }
       ],
       "classes": [],
@@ -3371,12 +3476,12 @@
       "exports": [
         "MessagesPage"
       ],
-      "totalLines": 905,
+      "totalLines": 906,
       "hasStructuralAnalysis": true
     },
     "frontend/src/pages/student/Schedule.tsx": {
       "filePath": "frontend/src/pages/student/Schedule.tsx",
-      "contentHash": "c81b0d83619f8364398cee7b1deae8cb905dac99b778e89bc4da1629d52b6b90",
+      "contentHash": "d0a5aa202a055b29f11563615ee186a7a5056f70167263a7eb8f17cf033b3fb5",
       "functions": [
         {
           "name": "toDateParam",
@@ -3636,7 +3741,7 @@
     },
     "frontend/src/pages/student/Statistics.tsx": {
       "filePath": "frontend/src/pages/student/Statistics.tsx",
-      "contentHash": "202a5633adb1d5d82c2f470106075801e90b26925ad9e4c9a14f971b54efda1b",
+      "contentHash": "6107b7d0254abbc695e564d04c1c3597c5514e36cc16e97e010d3f68a8b169bb",
       "functions": [
         {
           "name": "formatDelta",
@@ -3651,13 +3756,13 @@
           "name": "chartTooltipStyle",
           "params": [],
           "exported": false,
-          "lineCount": 9
+          "lineCount": 10
         },
         {
           "name": "StatisticsPage",
           "params": [],
           "exported": true,
-          "lineCount": 327
+          "lineCount": 342
         }
       ],
       "classes": [],
@@ -3751,7 +3856,7 @@
       "exports": [
         "StatisticsPage"
       ],
-      "totalLines": 418,
+      "totalLines": 434,
       "hasStructuralAnalysis": true
     },
     "frontend/src/pages/student/Tasks.tsx": {
@@ -3887,19 +3992,9 @@
       "totalLines": 619,
       "hasStructuralAnalysis": true
     },
-    "frontend/src/pages/student/VietnamMap.css": {
-      "filePath": "frontend/src/pages/student/VietnamMap.css",
-      "contentHash": "e6e59d5002bda5936dea5a85531c8f4a972709f10f353c1d71999ae5173fe1d5",
-      "functions": [],
-      "classes": [],
-      "imports": [],
-      "exports": [],
-      "totalLines": 510,
-      "hasStructuralAnalysis": false
-    },
     "frontend/src/pages/student/VietnamMap.tsx": {
       "filePath": "frontend/src/pages/student/VietnamMap.tsx",
-      "contentHash": "d5674b6be0f58f60a1988636179a408ee9e821c24b35696c89655d7f14d576e4",
+      "contentHash": "4677abea0da1b21d4478faeba0785793d04a5b83ddb5266de133c462a94f5a1c",
       "functions": [
         {
           "name": "labelIcon",
@@ -3911,12 +4006,28 @@
           "lineCount": 7
         },
         {
-          "name": "VietnamMapIntro",
+          "name": "getCityPoints",
           "params": [
-            "{\r\n  started,\r\n  onStart,\r\n}"
+            "text"
           ],
           "exported": false,
-          "lineCount": 48
+          "lineCount": 18
+        },
+        {
+          "name": "getIslandPoints",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "VietnamMapIntro",
+          "params": [
+            "{\n  started,\n  text,\n  onStart,\n}"
+          ],
+          "exported": false,
+          "lineCount": 45
         },
         {
           "name": "FitVietnamBounds",
@@ -3927,14 +4038,17 @@
         {
           "name": "getProvinceName",
           "params": [
-            "properties"
+            "properties",
+            "fallback"
           ],
           "exported": false,
-          "lineCount": 15
+          "lineCount": 18
         },
         {
           "name": "VietnamGeoJsonMap",
-          "params": [],
+          "params": [
+            "{ text }"
+          ],
           "exported": false,
           "lineCount": 134
         },
@@ -3942,7 +4056,7 @@
           "name": "VietnamMapPage",
           "params": [],
           "exported": true,
-          "lineCount": 137
+          "lineCount": 138
         }
       ],
       "classes": [],
@@ -4024,16 +4138,12 @@
           "specifiers": [
             "handleStudentMenuNavigation"
           ]
-        },
-        {
-          "source": "./VietnamMap.css",
-          "specifiers": []
         }
       ],
       "exports": [
         "VietnamMapPage"
       ],
-      "totalLines": 530,
+      "totalLines": 543,
       "hasStructuralAnalysis": true
     },
     "frontend/src/realtime/socket.ts": {
@@ -4125,12 +4235,12 @@
     },
     "frontend/src/styles.css": {
       "filePath": "frontend/src/styles.css",
-      "contentHash": "d4357334b868a88b2e016465a215f81fc501097afdeac4b5ed9275de15a05cb1",
+      "contentHash": "0fabe973af9a3cde3aed2f9d839138a20469d49e91e14d0c771f4df0a85da6db",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 7476,
+      "totalLines": 9522,
       "hasStructuralAnalysis": false
     },
     "frontend/src/utils/studentNavigation.ts": {

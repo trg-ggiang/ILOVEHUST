@@ -1,5 +1,6 @@
 import "dotenv/config";
 import http from "http";
+import path from "path";
 import express from "express";
 import cors from "cors";
 import systemRoutes from "./routes/systemRoutes.js";
@@ -19,6 +20,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
 const isVercel = process.env.VERCEL === "1";
+const uploadDir = path.resolve("uploads");
 assertRequiredEnv();
 const allowedOrigins = (process.env.FRONTEND_URL || "")
   .split(",")
@@ -37,7 +39,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(uploadDir));
 app.use("/", systemRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
