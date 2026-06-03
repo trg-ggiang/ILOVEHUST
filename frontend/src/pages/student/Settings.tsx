@@ -23,6 +23,7 @@ export default function SettingsPage() {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [avatarPreview, setAvatarPreview] = useState("");
   const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarFailed, setAvatarFailed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -75,6 +76,7 @@ export default function SettingsPage() {
         setMajors(majorsResponse.data?.majors || []);
         setAvatarUrl(user.avatarUrl || "");
         setAvatarPreview(user.avatarUrl || "");
+        setAvatarFailed(false);
         setForm({
           fullName: user.fullName || "",
           email: user.email || "",
@@ -120,6 +122,7 @@ export default function SettingsPage() {
 
     setAvatarFile(file);
     setAvatarPreview(URL.createObjectURL(file));
+    setAvatarFailed(false);
     setMessage("");
   }
 
@@ -135,6 +138,7 @@ export default function SettingsPage() {
       const nextAvatarUrl = response.data?.avatarUrl || "";
       setAvatarUrl(nextAvatarUrl);
       setAvatarPreview(nextAvatarUrl);
+      setAvatarFailed(false);
       if (nextAvatarUrl) {
         localStorage.setItem("avatarUrl", nextAvatarUrl);
       }
@@ -187,6 +191,7 @@ export default function SettingsPage() {
         localStorage.setItem("avatarUrl", user.avatarUrl);
         setAvatarUrl(user.avatarUrl);
         setAvatarPreview(user.avatarUrl);
+        setAvatarFailed(false);
       }
 
       setMessageType("success");
@@ -236,7 +241,15 @@ export default function SettingsPage() {
               <>
                 <section className="settings-avatar-section">
                   <div className="settings-avatar">
-                    {avatarPreview ? <img src={resolveMediaUrl(avatarPreview)} alt={form.fullName || "Avatar"} /> : <span>{initial}</span>}
+                    {avatarPreview && !avatarFailed ? (
+                      <img
+                        src={resolveMediaUrl(avatarPreview)}
+                        alt={form.fullName || "Avatar"}
+                        onError={() => setAvatarFailed(true)}
+                      />
+                    ) : (
+                      <span>{initial}</span>
+                    )}
                   </div>
                   <div>
                     <h2>Ảnh đại diện</h2>

@@ -1,25 +1,15 @@
 import express from "express";
-import fs from "fs";
-import path from "path";
 import multer from "multer";
 import prisma from "../../database.js";
 import authMiddleware from "../../middleware/authMiddleware.js";
 import toUserResponse from "../../utils/toUserResponse.js";
 import { ensureDueTaskNotifications } from "../../utils/notifications.js";
+import { isAvatarStorageConfigured, uploadAvatarToStorage } from "../../utils/avatarStorage.js";
 
 const router = express.Router();
-const avatarUploadDir = path.resolve("uploads/avatars");
-
-fs.mkdirSync(avatarUploadDir, { recursive: true });
 
 const avatarUpload = multer({
-  storage: multer.diskStorage({
-    destination: avatarUploadDir,
-    filename: (_req, file, cb) => {
-      const extension = path.extname(file.originalname || "").toLowerCase();
-      cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${extension}`);
-    },
-  }),
+  storage: multer.memoryStorage(),
   fileFilter: (_req, file, cb) => {
     if (!file.mimetype.startsWith("image/")) {
       cb(new Error("INVALID_IMAGE"));
@@ -1226,7 +1216,14 @@ router.post("/me/avatar", authMiddleware, avatarUpload.single("avatar"), async (
       return res.status(403).json({ message: "Chi sinh vien moi co the cap nhat anh dai dien" });
     }
 
-    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    if (!isAvatarStorageConfigured()) {
+      return res.status(503).json({ message: "Chua cau hinh Supabase Storage cho avatar" });
+    }
+
+    const avatarUrl = await uploadAvatarToStorage({
+      userId: req.user.id,
+      file: req.file,
+    });
 
     await prisma.studentProfile.upsert({
       where: { userId: req.user.id },

@@ -101,3 +101,37 @@ cd backend
 npx prisma migrate deploy
 npm run prisma:generate
 ```
+
+---
+
+## 5. Image & File Handling
+
+ILoveHust separates uploaded media from application data:
+
+* **Avatar images:** uploaded through the backend to **Supabase Storage**. The database stores only the public image URL, and the frontend renders the avatar directly from that URL.
+* **Message attachments:** currently uploaded to the backend local `uploads/messages` folder and served through `/uploads/messages/...`.
+* **Frontend rendering:** media URLs are normalized before rendering so both absolute storage URLs and local `/uploads/...` paths can work.
+
+For production/demo stability, avatars should use Supabase Storage because local backend files may disappear after redeploys on serverless hosts.
+
+### Supabase Storage Setup
+
+1. Open Supabase Dashboard.
+2. Go to **Storage**.
+3. Create a bucket named `avatars`.
+4. For the simplest demo setup, make the bucket public.
+5. Add these backend environment variables:
+
+```env
+SUPABASE_URL="https://your-project-ref.supabase.co"
+SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+SUPABASE_AVATAR_BUCKET="avatars"
+```
+
+`SUPABASE_SERVICE_ROLE_KEY` must stay backend-only. Never expose it in frontend env variables.
+
+Avatar upload flow:
+
+```text
+React uploads avatar -> Express receives file -> Supabase Storage stores image -> Prisma saves public URL -> React renders avatar URL
+```
