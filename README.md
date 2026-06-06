@@ -77,21 +77,6 @@ Password reset tokens are stored as SHA-256 hashes and expire after 30 minutes.
 
 If SMTP is not configured, the backend logs the reset URL for local development instead of sending an email.
 
-Backend endpoints:
-
-* `POST /api/auth/forgot-password`
-* `POST /api/auth/reset-password`
-
-Required backend environment variables for sending reset emails:
-
-```env
-SMTP_HOST="smtp.example.com"
-SMTP_PORT=587
-SMTP_USER="no-reply@example.com"
-SMTP_PASS="smtp-password"
-MAIL_FROM="ILoveHust <no-reply@example.com>"
-```
-
 ### Database Migration
 
 The password recovery feature adds reset-token columns to the `users` table. Apply migrations before using it against a real database:
@@ -120,18 +105,3 @@ For production/demo stability, avatars should use Supabase Storage because local
 2. Go to **Storage**.
 3. Create a bucket named `avatars`.
 4. For the simplest demo setup, make the bucket public.
-5. Add these backend environment variables:
-
-```env
-SUPABASE_URL="https://your-project-ref.supabase.co"
-SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
-SUPABASE_AVATAR_BUCKET="avatars"
-```
-
-`SUPABASE_SERVICE_ROLE_KEY` must stay backend-only. Never expose it in frontend env variables.
-
-Avatar upload flow:
-
-```text
-React uploads avatar -> Express receives file -> Supabase Storage stores image -> Prisma saves public URL -> React renders avatar URL
-```
