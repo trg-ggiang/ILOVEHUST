@@ -12,7 +12,7 @@ const AI_CHAT_TEXT = {
     close: "Đóng AI Chat",
     thinking: "Đang trả lời...",
     fallbackError: "Chưa kết nối được AI lúc này. Bạn thử lại sau nhé.",
-    notConfigured: "AI Chat chưa được cấu hình OPENAI_API_KEY ở backend.",
+    notConfigured: "AI Chat chưa được cấu hình GEMINI_API_KEY ở backend.",
   },
   ja: {
     title: "AIチャット",
@@ -23,7 +23,7 @@ const AI_CHAT_TEXT = {
     close: "AIチャットを閉じる",
     thinking: "回答中...",
     fallbackError: "現在AIに接続できません。後でもう一度お試しください。",
-    notConfigured: "バックエンドでOPENAI_API_KEYがまだ設定されていません。",
+    notConfigured: "バックエンドでGEMINI_API_KEYがまだ設定されていません。",
   },
 };
 

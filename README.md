@@ -104,3 +104,11 @@ npm run prisma:generate
 - Message attachments are currently stored in the backend `uploads/messages` folder.
 - The frontend supports both Supabase URLs and local backend media URLs.
 - Supabase Storage is recommended because serverless local files may disappear after redeployment.
+
+## 6. AI Chat
+
+- AI Chat uses the Gemini API through the protected backend `/api/ai/chat` route.
+- Create a free API key in Google AI Studio.
+- Configure `GEMINI_API_KEY` and `GEMINI_MODEL="gemini-2.5-flash"` in the backend environment.
+- Keep the Gemini API key only in local `backend/.env` and the Render backend environment.
+- The frontend never receives or exposes the Gemini API key.
