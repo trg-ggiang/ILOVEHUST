@@ -297,7 +297,11 @@ router.post("/forgot-password", async (req, res) => {
         },
       });
 
-      await sendPasswordResetEmail(user.email, resetUrl.toString());
+      try {
+        await sendPasswordResetEmail(user.email, resetUrl.toString());
+      } catch (error) {
+        console.error("PASSWORD RESET EMAIL ERROR:", error);
+      }
     }
 
     return res.json({ message: authMessage(lang, "resetEmailSent") });

@@ -77,6 +77,14 @@ Password reset tokens are stored as SHA-256 hashes and expire after 30 minutes.
 
 If SMTP is not configured, the backend logs the reset URL for local development instead of sending an email.
 
+### Gmail Password Reset Demo
+
+- Gmail SMTP with a Google App Password is used to send password-reset emails.
+- Gmail credentials are configured securely in the Render backend environment.
+- The Vercel frontend provides the forgot-password and reset-password pages.
+- Users enter a registered real email, open the reset link, and create a new password.
+- Seeded accounts ending in `@ilovehust.local` cannot receive email.
+
 ### Database Migration
 
 The password recovery feature adds reset-token columns to the `users` table. Apply migrations before using it against a real database:
@@ -91,17 +99,8 @@ npm run prisma:generate
 
 ## 5. Image & File Handling
 
-ILoveHust separates uploaded media from application data:
-
-* **Avatar images:** uploaded through the backend to **Supabase Storage**. The database stores only the public image URL, and the frontend renders the avatar directly from that URL.
-* **Message attachments:** currently uploaded to the backend local `uploads/messages` folder and served through `/uploads/messages/...`.
-* **Frontend rendering:** media URLs are normalized before rendering so both absolute storage URLs and local `/uploads/...` paths can work.
-
-For production/demo stability, avatars should use Supabase Storage because local backend files may disappear after redeploys on serverless hosts.
-
-### Supabase Storage Setup
-
-1. Open Supabase Dashboard.
-2. Go to **Storage**.
-3. Create a bucket named `avatars`.
-4. For the simplest demo setup, make the bucket public.
+- Student avatars are uploaded to the public Supabase Storage `avatars` bucket.
+- The database stores avatar URLs instead of image files.
+- Message attachments are currently stored in the backend `uploads/messages` folder.
+- The frontend supports both Supabase URLs and local backend media URLs.
+- Supabase Storage is recommended because serverless local files may disappear after redeployment.

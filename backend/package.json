@@ -6,6 +6,7 @@
   "scripts": {
     "prisma:generate": "prisma generate",
     "db:deploy": "prisma migrate deploy",
+    "email:verify": "tsx scripts/verifyEmail.ts",
     "seed": "tsx prisma/seed.ts",
     "seed:check": "tsx prisma/checkSeed.ts",
     "build": "tsc",

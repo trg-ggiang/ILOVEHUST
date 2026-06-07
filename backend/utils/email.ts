@@ -20,6 +20,15 @@ function getTransporter() {
   });
 }
 
+export async function verifyEmailTransport() {
+  const transporter = getTransporter();
+  if (!transporter) {
+    throw new Error("Missing SMTP_HOST, SMTP_USER, SMTP_PASS, or MAIL_FROM");
+  }
+
+  await transporter.verify();
+}
+
 export async function sendPasswordResetEmail(to: string, resetUrl: string) {
   const transporter = getTransporter();
   const subject = "ILoveHust - Dat lai mat khau";
